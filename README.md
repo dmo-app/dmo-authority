@@ -2,19 +2,15 @@
 
 Este repositório é a fonte de verdade não técnica do projeto DMO.
 
-Define:
-- regras de negócio;
-- âmbito funcional;
-- identidades canónicas;
-- restrições comportamentais do domínio.
+Contém as definições fundamentais de negócio, âmbito funcional e identidades canónicas que orientam todos os restantes repositórios.
 
 Conteúdo:
 
-- `AUTHORITY.md` — hierarquia de verdade e resolução de conflitos.
-- `SCOPE.md` — limites funcionais do Beta.
-- `IDENTITIES.md` — identidades canónicas do domínio.
-- `RULES.md` — regras comportamentais transversais.
+- `AUTHORITY.md` — Define a hierarquia de decisão e regras para resolver conflitos entre fontes.
+- `SCOPE.md` — Define o âmbito oficial da Beta, incluindo o que pertence e o que está proibido.
+- `IDENTITIES.md` — Define as identidades canónicas do domínio e as suas relações.
+- `RULES.md` — Define restrições comportamentais e regras transversais do sistema.
 
 No code, SQL, migrations, or implementation details belong here. Only business rules, scope definitions, and domain identities.
 
-Este repositório define o âmbito Beta. A Full App irá crescer a partir destas decisões no futuro, mas este repo apenas governa o que está no Beta hoje.
+Este repositório define o âmbito Beta. A Full App crescerá a partir destas decisões no futuro, mas este repositório apenas governa o que está incluído na Beta hoje.
