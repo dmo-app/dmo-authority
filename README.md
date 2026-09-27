@@ -1,16 +1,12 @@
-# DMO Authority
+# DMO Authority (The Brain)
 
-Este repositório é a fonte de verdade não técnica do projeto DMO.
+This repository is the single source of truth for the **Business Rules**, **Scope**, and **Identities** of the DMO application.
 
-Contém as definições fundamentais de negócio, âmbito funcional e identidades canónicas que orientam todos os restantes repositórios.
+### The Ecosystem
+*   🧠 **`dmo-authority` (This Repo):** Defines **WHAT** we build and the **RULES** we follow.
+*   ⚙️ **`dmo-app-beta`:** The implementation (Code/DB). Must obey this repo.
+*   🎨 **`dmo-design`:** The visual lab (UI/Prototypes). Must obey this repo.
 
-Conteúdo:
-
-- `AUTHORITY.md` — Define a hierarquia de decisão e regras para resolver conflitos entre fontes.
-- `SCOPE.md` — Define o âmbito oficial da Beta, incluindo o que pertence e o que está proibido.
-- `IDENTITIES.md` — Define as identidades canónicas do domínio e as suas relações.
-- `RULES.md` — Define restrições comportamentais e regras transversais do sistema.
-
-No code, SQL, migrations, or implementation details belong here. Only business rules, scope definitions, and domain identities.
-
-Este repositório define o âmbito Beta. A Full App crescerá a partir destas decisões no futuro, mas este repositório apenas governa o que está incluído na Beta hoje.
+### Core Principle
+**"The Beta is a Scope-Reduced Product."**
+It is not a "test version" of the full app. It is a distinct product with strict boundaries. If a module is not in `SCOPE.md`, it is **FORBIDDEN** to design, code, or document it.
