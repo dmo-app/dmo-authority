@@ -139,3 +139,15 @@ DMO is a fixed-layout desktop operational application, not a responsive public w
 
 - `database record != generated PDF != file path`.
 - Use the planned final directory convention from the start:
+
+```text
+<reference>/
+└── <production-number>/
+    ├── Peso_<reference>_<machine>.pdf
+    ├── Pegamentos_<reference>_<machine>.pdf
+    └── Resume_<reference>_<machine>.pdf
+```
+
+- Path/filename is never used as a join key.
+- Document access is gated by the owning workflow/action permission — no separate document authorization model.
+- No artificial document identity is created for symmetry.
