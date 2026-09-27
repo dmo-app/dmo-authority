@@ -7,7 +7,14 @@ Este documento define os limites funcionais do Beta DMO.
 - Identidades e Acessos (Admin, Users, Templates).
 - Catálogo de Ferramentas (`tool_id`).
 - Job On Light (planeamento de produção e contextos CM/MF/BQ).
-- Controlo de Qualidade (Peso, Pegamentos, Resumo, Aprovação).
+- Controlo Create (superfície de criação/edição):
+  - Peso (criação, medição, cálculo, submissão).
+  - Comparação (workflow dentro do Peso Create).
+  - **Pegamentos** (medição de componentes CM/MF/BQ).
+  - Folha (`controlo_sheet_id`).
+  - Resumo (`resumo_id`).
+  - Definições operacionais (Reparadores, Diretório PDF, Listas/Templates de email).
+- Controlo Approve (revisão, decisão e histórico de Pesos submetidos).
 - Boquilhas (agregado de reparação externa e movimentos).
 
 # OUT OF SCOPE (Strictly Forbidden to design or code in Beta)
@@ -21,13 +28,17 @@ Este documento define os limites funcionais do Beta DMO.
 
 # Implementation Status Matrix
 
-| Module | Beta Scope | Backend Status | Frontend Status |
+| Module / Surface | Beta Scope | Backend Status | Frontend Status |
 |---|---|---|---|
 | Admin / Access | IN | Implemented | Implemented |
 | Tools (tool_id) | IN | Implemented | Contextual picker |
 | Job On Light | IN | Implemented | Committed, not yet navigable |
-| Controlo Create (Peso) | IN | Implemented | Committed, not yet navigable |
+| **Controlo Create** | IN | Partial | Committed, not yet navigable |
+| ↳ Peso (core) | IN | Implemented | Committed |
+| ↳ Comparação | IN | NOT IMPLEMENTED | Target only |
+| ↳ **Pegamentos** | IN | **NOT IMPLEMENTED** | **Local working prototype** (see RULES.md) |
+| ↳ Folha | IN | NOT IMPLEMENTED | Target only |
+| ↳ Resumo | IN | Partial | Target only |
+| ↳ Definições | IN | Implemented | Committed |
 | Controlo Approve | IN | NOT IMPLEMENTED | Target only |
-| Pegamentos | IN | NOT IMPLEMENTED | Local working prototype (see RULES.md) |
 | Boquilhas | IN | NOT IMPLEMENTED | Target only |
-| Resumo | IN | Partial | Target only |
