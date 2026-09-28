@@ -5,7 +5,7 @@ Modules listed in "OUT" are strictly forbidden.
 
 ## 🟢 IN SCOPE (The Beta Product)
 1.  **Identity & Access:** Admin, Users, Templates.
-2.  **Tools:** Canonical `tool_id` catalog (CM, MF, BQ).
+2.  **Ferramentas / Tools:** Canonical `tool_id` registry for CM, MF and BQ. The primary surface is consultation/filtering of existing Tools; creating a missing Tool is an action inside that registry. Tool selection is explicit and Ferramentas remains contextual to the workflows that require it.
 3.  **Job On (Light):** Production planning, context creation (`jobon_id`, `cm_id`, `mf_id`, `bq_id`).
 4.  **Controlo:**
     *   **Peso:** Measurement, Calculation, Submission.
