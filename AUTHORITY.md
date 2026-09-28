@@ -1,15 +1,18 @@
 # Authority & Conflict Resolution
 
-When decisions conflict, this hierarchy determines the winner.
+When information conflicts, use the ownership below.
 
-## 1. Decision Ownership Matrix
+## Decision ownership
 
-| Decision Class | Authority Source | Consequence |
+| Decision class | Authority source | Consequence |
 | :--- | :--- | :--- |
-| **Global Rules & Scope** | **`dmo-authority` (This Repo)** | Wins on all business logic, module boundaries, and identities. |
-| **Implementation Reality** | **`dmo-app-beta`** | Wins on *what exists today* (routes, fields, states). If code contradicts rules, it is a bug. |
-| **Visual & Interaction** | **`dmo-design`** | Wins on UI/Layout. Cannot invent business rules or backend endpoints. |
-| **Legacy / Old Repos** | **NONE** | Zero authority. Historical evidence only. Loses every conflict. |
+| **Business rules, scope, identities, module boundaries** | **`dmo-app/dmo-authority`** | Defines the intended DMO behavior. |
+| **Implementation reality** | **`dmo-app/dmo-app-beta`** | Defines what currently exists in code/schema/routes/tests. If it contradicts authority, that is implementation debt or a bug until authority is explicitly changed. |
+| **Visual & interaction design** | **`dmo-app/dmo-design`** | Defines UI/layout/interaction presentation. It cannot invent domain rules, identities, persistence or backend contracts. |
+| **Legacy / old repositories** | **No authority** | Historical evidence only. They never override the three repositories above. |
 
-## 2. The Golden Rule
-If `dmo-app-beta` (Code) does something that contradicts `dmo-authority` (Rules), the Code is considered **Technical Debt** or a **Bug**, unless `dmo-authority` is explicitly updated to reflect a new business decision.
+## Conflict rule
+
+A newer owner-confirmed decision must be written into `dmo-app/dmo-authority` before it is treated as durable project authority.
+
+Implementation details discovered in `dmo-app/dmo-app-beta` may be recorded here when they describe current reality, but implementation existence alone does not create a new business rule.

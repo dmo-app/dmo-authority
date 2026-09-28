@@ -67,21 +67,22 @@ Queries and read models must be context-specific and carry only the data the sur
 
 This rule binds every remaining and future Beta backend work.
 
-## Rule 7: No Lifecycle State Machine
+## Rule 7: No Job On Lifecycle State Machine
 
 No Job On-wide status, stage, phase or state machine exists.
 
-- Specifically absent: `rascunho`, `planeado`, `em fabrico`, `fechado`, `cancelado`, `active`, `locked`, `approved` (as lifecycle states).
+- Specifically absent: `rascunho`, `planeado`, `em fabrico`, `fechado`, `cancelado`, `active`, `locked`, `approved` as Job On lifecycle states.
 - Peso status vocabulary is exactly three values: `pendente` / `aprovado` / `nao_aprovado`.
-- No edit changes any status. Status transitions happen only through explicit human decision actions.
+- Peso status transitions happen only through explicit human decision actions.
 - Warnings stay warnings; they never become stored lifecycle states.
 
-## Rule 8: Backend owns IDs and Attribution
+## Rule 8: Backend owns canonical-ID allocation and attribution
 
-- `peso_id`, `tool_id`, `jobon_id`, `cm_id`, `mf_id`, `bq_id` are created only by the backend inside the create transaction.
-- No client ever supplies or guesses canonical IDs.
-- Actor/time are backend facts (`ICurrentAccountContext`, backend clock) — never client fields.
-- No client-supplied actor/time exists anywhere.
+- New canonical IDs are allocated only by the owning backend workflow/transaction.
+- A client may carry or return an **existing** canonical ID that the backend already issued (for example an explicitly selected `tool_id` or an existing record route ID), but it must never mint, guess or derive a new canonical ID.
+- This applies to implemented identities including `tool_id`, `jobon_id`, `cm_id`, `mf_id`, `bq_id`, `peso_id`, `comparacao_id`, `boquilhas_id` and `movement_id`.
+- The same rule applies to `controlo_id` when that canonical identity is implemented.
+- Actor/time are backend facts (`ICurrentAccountContext`, backend clock) — never client-created audit facts.
 - Audit trail never invents actor/time.
 
 ## Rule 9: Concurrency Discipline
@@ -114,26 +115,27 @@ DMO is a fixed-layout desktop operational application, not a responsive public w
 
 ## Rule 12: HISTÓRICO LOCAL ≠ HISTÓRICO GLOBAL
 
-- **HISTÓRICO LOCAL**: cross-cutting history capability that belongs to each module (e.g. "Histórico de Pesos" inside Controlo Approve). Every Beta module retains its local HISTÓRICO requirement.
-- **HISTÓRICO GLOBAL** (technical identity `historia`): DEFERRED BY DESIGN in this Beta. No route, no availability, no top-level navigation entry. Its identity is preserved in the catalog but never exposed.
-- The local Histórico never aggregates other modules' histories.
+- **HISTÓRICO LOCAL**: history capability that belongs to its operational module (for example Histórico de Pesos inside Controlo Approve).
+- **HISTÓRICO GLOBAL** (technical identity `historia`): DEFERRED BY DESIGN in this Beta. No route, no availability, no top-level navigation entry.
+- Local Histórico requirements remain owned by their modules and do not imply a global history module.
 
 ## Rule 13: No Duplication of Truth
 
-- Do not store Job On production facts (reference, production_number, machine, production_date, processo) on the Resumo — they stay Job On truth and are traversed.
-- Do not store Tool nominal/lot/quantity — Tool truth.
-- Do not store Folha's decisions/observations — Folha truth; Resumo must not project Folha.
-- Do not store Peso status/attribution on other records — Peso truth.
+- Job On production facts stay Job On truth. Controlo/Resumo outputs may read them but do not become a second authority for them.
+- Tool identity and Tool-owned facts stay Tool truth, except for explicit historical snapshots owned by a real operational record.
+- Do not store Peso status/attribution as a second authority on another record.
 - PDF bytes/filename/path are derived output, not stored identity.
-- No convenience column duplicating another module's truth.
+- No convenience column or FK is added merely to make navigation easier when an existing real relation already expresses the domain.
 
 ## Rule 14: Ferramentas is Contextual
 
-- Ferramentas is a shared contextual flow, not a top-level Beta module screen.
-- Do not invent a top-level Ferramentas destination.
-- The origin module never becomes Tool owner: neither Job On nor Controlo nor Boquilhas writes `tools` outside the Tool create command.
-- Tool create returns the canonical `tool_id` to the consumer (never to a shared primitive).
-- No per-module Tool registry; one Tool registry only.
+- Ferramentas is the canonical Tool registry and consultation flow for the Beta, but it is not exposed as a top-level operational destination merely for convenience.
+- Its primary surface is the existing Tool list/search/filter view; Tool creation is an action inside that registry.
+- Search and filters narrow candidates but never auto-select a Tool.
+- The origin module never becomes Tool owner: neither Job On nor Controlo nor Boquilhas creates private Tool identities or writes a private Tool registry.
+- Tool create returns the canonical `tool_id` to the consuming workflow.
+- There is one canonical Tool registry.
+- Specialized `tool_technical_values` are optional Tool-owned data keyed by `tool_id` and are loaded only on demand; they do not create another Tool identity.
 
 ## Rule 15: Record ≠ PDF ≠ File Path
 

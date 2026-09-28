@@ -55,4 +55,29 @@ Creating a Tool does not redefine Ferramentas as a creation form.
 
 If the required Tool does not exist, the user may invoke **Create Tool** from the registry, create the missing canonical Tool, and continue the originating workflow with the resulting `tool_id`.
 
-The UI implementation of this action belongs to `dmo-design`; this authority defines only the functional behavior.
+The UI implementation of this action belongs to `dmo-app/dmo-design`; this authority defines the functional behavior.
+
+## Optional technical values
+
+A Tool may have specialized technical values stored in the optional `tool_technical_values` extension.
+
+That extension:
+
+- is keyed directly by `tool_id`;
+- creates no second identity;
+- is not loaded as part of the normal registry/search path;
+- is retrieved only when a consuming workflow needs those values.
+
+The dedicated task contract is in [VALORES_TECNICOS.md](./VALORES_TECNICOS.md).
+
+## Current implementation association
+
+In `dmo-app/dmo-app-beta`, the current implementation is anchored by:
+
+- `src/DMO.Application/Tools/IToolService.cs`
+- `src/DMO.Application/Tools/ToolService.cs`
+- `src/DMO.Application/Tools/ToolTechnicalValuesReadModel.cs`
+- `src/DMO.Infrastructure/Persistence/ToolJobOn/`
+- migration `20260927114825_011_ToolTechnicalValues`
+
+These paths describe current implementation reality; this document remains the functional authority.

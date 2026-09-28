@@ -1,12 +1,17 @@
-# DMO Authority (The Brain)
+# DMO Authority
 
-This repository is the single source of truth for the **Business Rules**, **Scope**, and **Identities** of the DMO application.
+This repository is the single source of truth for the **business rules**, **scope**, **canonical identities**, and cross-module functional decisions of the DMO application.
 
-### The Ecosystem
-*   🧠 **`dmo-authority` (This Repo):** Defines **WHAT** we build and the **RULES** we follow.
-*   ⚙️ **`dmo-app-beta`:** The implementation (Code/DB). Must obey this repo.
-*   🎨 **`dmo-design`:** The visual lab (UI/Prototypes). Must obey this repo.
+## Ecosystem
 
-### Core Principle
-**"The Beta is a Scope-Reduced Product."**
-It is not a "test version" of the full app. It is a distinct product with strict boundaries. If a module is not in `SCOPE.md`, it is **FORBIDDEN** to design, code, or document it.
+- **`dmo-app/dmo-authority`** — functional and architectural authority: what DMO means and the rules implementation must obey.
+- **`dmo-app/dmo-app-beta`** — implementation reality: code, schema, migrations, routes, tests and runtime wiring.
+- **`dmo-app/dmo-design`** — visual and interaction authority: UI prototypes and presentation decisions.
+
+## Core principle
+
+The Beta is a **scope-reduced product**, not a disposable test version of a larger application.
+
+A capability outside `SCOPE.md` must not be introduced into the Beta merely because it existed in an older repository.
+
+Historical repositories may be used as evidence when recovering information, but they have no authority by themselves.
