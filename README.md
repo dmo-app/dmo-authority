@@ -15,3 +15,11 @@ The Beta is a **scope-reduced product**, not a disposable test version of a larg
 A capability outside `SCOPE.md` must not be introduced into the Beta merely because it existed in an older repository.
 
 Historical repositories may be used as evidence when recovering information, but they have no authority by themselves.
+
+## Curation registers
+
+- `AUTHORITY_SUSPICIONS.md` — questionable, non-canonical, conflicting, or implementation-specific statements found during curation.
+- `OPEN_DECISIONS.md` — unresolved owner decisions that must not be treated as canon.
+- `AUTHORITY_PROMOTION_LOG.md` — record of what was promoted, rejected, demoted, and left unresolved.
+
+If a statement is uncertain, it is not promoted into authority.
