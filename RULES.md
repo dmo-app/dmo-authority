@@ -1,16 +1,13 @@
 # Rules
 
-## Rule 1: Frontend without Backend (Local Prototypes)
+## Rule 1: Prototype behavior is not domain authority
 
-Some surfaces (specifically **Pegamentos**, a sub-surface of Controlo Create) currently exist as local HTML prototypes used in real work, but have NO backend implemented yet.
+Prototype and design surfaces may validate presentation and interaction, but they do not define persistence, canonical identities, backend contracts, or industrial calculations.
 
-- These are classified as "Working Prototypes".
-- Data must live exclusively in the browser session (`sessionStorage`).
-- Browser-generated IDs are FORBIDDEN. The prototype must not mint identifiers that will later collide with backend-allocated canonical IDs.
-- Client-owned formulas are FORBIDDEN. The prototype must not calculate tolerance, ovality, capacity or any industrial result as a second authority.
-- It is strictly FORBIDDEN to invent REST endpoints, create database schemas, or mock APIs for these prototypes until the backend phase officially begins.
-- The prototype serves to validate UI/flow, not to define persistence.
-- When the backend is implemented, it follows the rules in this repo, NOT the structure of the HTML prototype.
+- A prototype must not mint or derive canonical domain identities.
+- A prototype must not become a second authority for backend-owned calculations or business rules.
+- Prototype storage mechanics are implementation detail and are not authority.
+- When a backend workflow is implemented, its persistence and contracts must be derived from canonical authority, not from demo or prototype mechanics.
 
 ## Rule 2: Explicit Human Choice
 
