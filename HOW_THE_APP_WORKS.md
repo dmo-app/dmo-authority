@@ -350,9 +350,6 @@ Comparação is an optional workflow inside Peso that occurs during production. 
 
 Multiple comparison events can exist for the same Peso. Multiple events can reference the same `cm_id`. Each event gets its own `comparacao_id`. The history accumulates naturally.
 
-### Implementation status
-
-Backend, domain, persistence, service, repository, validator, and tests are fully implemented (migration 010). **User-facing UI is not yet implemented.** The functional workflow is defined; the presentation layer is pending.
 
 ---
 
@@ -385,9 +382,9 @@ Pegamentos requires a Job On production context. It consumes the existing `cm_id
 
 A production may have no Pegamentos record. Absence is a valid state, not an error.
 
-### Implementation status
+### Persistence boundary
 
-Pegamentos is **not yet implemented** in the current codebase. No migration, entity, service, endpoint, page, or test exists. The functional rules are established. The persistence shape must be derived from the minimum durable facts and the existing relation graph when implementation begins. **Do not assume a `pegamentos_id` or a specific table structure is required.** That is an implementation derivation, not a foregone decision.
+Pegamentos persistence must be derived from the minimum durable facts and the existing relation graph. Do not assume a `pegamentos_id` or a specific table structure merely from the UI concept.
 
 ---
 
@@ -420,9 +417,9 @@ PU and CS come from the exact Job On production/revision context — not from Ar
 
 The Folha is a distinct record from the Resumo (which is a summary/dashboard) and from Peso (which is a measurement record). The Folha evaluates; Peso measures; Resumo summarizes. They are connected through the production context, not through parent-child FKs.
 
-### Implementation status
+### Persistence boundary
 
-The persisted Folha evaluation layer is **not yet implemented**. The read projection for Resumo exists. The Folha record (per-piece OK/NOK, observations, MCaliper links, states, decision trail) has no table, no service, no UI. The functional rules are established. The persistence shape must be derived from the minimum durable facts when implementation begins.
+The Folha persistence shape must be derived from its minimum durable facts. UI structure alone does not determine tables, identities, or parent-child relations.
 
 ---
 
