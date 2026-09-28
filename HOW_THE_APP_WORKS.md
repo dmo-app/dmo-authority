@@ -265,10 +265,6 @@ This is assembled at query time into a `ProductionResumoReadModel`. The current 
 
 Resumo is not the parent of Peso, Comparação, Pegamentos, or Folha. These records do not have a `resumo_id` FK. The dashboard displays them by traversing existing relations from `jobon_id`. The dashboard aggregates; it does not own.
 
-### The persisted Resumo record (future)
-
-The authority defines a future persisted `resumo_id` record — a summary record for one `jobon_id`, distinct from Folha. It would hold Resumo-specific content (summary attribution, status). It would point to `jobon_id` and read function results by traversal. It would NOT become the parent of function records. This record is not yet implemented. The current Resumo is a read projection.
-
 ### Navigation flow
 
 The Resumo page always opens. With no query, it offers a reference lookup. A reference lookup lists that reference's Job On productions, newest first, for explicit selection (never auto-selected). A selected production renders the Resumo sheet anchored on its `jobon_id`. Switching the production replaces the entire production context.
