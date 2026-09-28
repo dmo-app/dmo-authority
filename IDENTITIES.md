@@ -63,16 +63,6 @@ This file defines domain identities. A database table, read model, UI tab or doc
 
 **Implementation:** present in `dmo-app/dmo-app-beta`.
 
-## 8. `controlo_id` — Controlo production-level node
-
-- Identifies the persistent Controlo-level context associated with a production occurrence.
-- Its purpose is to give Controlo its own production-level node without pushing Controlo-specific facts into Job On or Tool.
-- It must **not** become a god-parent merely because Peso, Pegamentos, Resumo and other functions appear under the Controlo UI.
-- Existing natural anchors remain valid; for example Peso continues to anchor through `cm_id`.
-- **Resumo is a tab/function and produces a consolidated Controlo output; it is not the production-level Controlo node.**
-
-**Implementation status:** canonical recent decision; **not yet implemented** in `dmo-app/dmo-app-beta`.
-
 ## Structures that deliberately do not create new identities
 
 ### `tool_technical_values`
