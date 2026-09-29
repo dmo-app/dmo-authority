@@ -50,22 +50,27 @@ The exact technical representation may be designed during implementation, but th
 - Comparação reuses existing `cm_id`; it does not create a new CM.
 - It does not alter the original Peso and does not create `previous_peso_id`.
 
-## 7. `bq_repair_trace_id` — Boquilhas repair trace
+## 7. Boquilhas register / repair-trace identity
 
-- Identifies one durable Boquilhas repair trace.
-- A trace may begin before Job On and is initially anchored to the canonical BQ `tool_id`.
-- Later association to the production `bq_id` is an explicit human action.
-- The same `bq_repair_trace_id` survives that association.
-- The trace may continue after the production.
-- It is not a start/stop/close/reopen state machine.
+The existing Boquilhas implementation based on `boquilhas_id` is a valid implementation base and must not be treated as an error or replaced automatically.
 
-The allowed cardinality of simultaneous pending traces for the same `tool_id` before association remains an open decision.
+The current product requirement is to preserve the working Boquilhas register and movement flow while adapting the movement balance/discrepancy behavior defined in `modules/boquilhas/MOVIMENTOS.md`.
+
+`bq_repair_trace_id` is **not a required canonical identity at this time**.
+
+It must not replace or complement `boquilhas_id` merely because it appeared in a later authority model. A separate repair-trace identity may only be introduced if a concrete product requirement or explicit owner decision demonstrates that the existing register identity cannot represent the required behavior.
+
+Therefore:
+
+- preserve the existing Boquilhas register model where it works;
+- adapt the existing movement system for the required saldo/discrepancy behavior;
+- do not perform an identity migration from `boquilhas_id` to `bq_repair_trace_id` without a separately justified decision.
 
 ## 8. `movement_id` — Boquilhas movement
 
 - Identifies one Boquilhas quantity movement/event.
 - Movement type is exactly one of `saida`, `entrada`, or `entrada_sem_reparacao`.
-- Movement identity is distinct from `bq_repair_trace_id`, `bq_id`, `tool_id`, and any audit-entry identity.
+- Movement identity is distinct from `bq_id`, `tool_id`, the Boquilhas register identity, and any audit-entry identity.
 
 ## Structures and names that deliberately do not create canonical identities
 
@@ -75,9 +80,11 @@ The allowed cardinality of simultaneous pending traces for the same `tool_id` be
 
 Resumo is a read composition / derived dashboard-document surface inside Controlo. It is not a persisted parent, FK anchor or independent canonical identity.
 
-### `boquilhas_id`
+### `bq_repair_trace_id`
 
-`boquilhas_id` may exist as implementation naming, but it is not a competing product identity. Canonical Boquilhas identities are `tool_id`, `bq_id`, `bq_repair_trace_id` and `movement_id`.
+`bq_repair_trace_id` is not currently a required product identity.
+
+Its prior appearance in authority must not be interpreted as a requirement to replace the existing `boquilhas_id` model. It remains a possible future design only if an explicit product need justifies a separate identity.
 
 ### `tool_technical_values`
 
