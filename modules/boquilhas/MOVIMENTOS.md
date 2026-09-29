@@ -2,6 +2,19 @@
 
 This file is authoritative for the movement discrepancy behavior of the Boquilhas module.
 
+
+## Implementation boundary — adapt the existing movement system
+
+This rule is an evolution of the Boquilhas movement behavior already implemented in the application.
+
+It does **not** declare the existing Boquilhas register model invalid and does not require an identity migration.
+
+Implementation must, wherever possible, preserve the existing `boquilhas_id`-based register and the existing movement flow, adapting that behavior to support the saldo/discrepancy rules below.
+
+In particular, this document does not require `bq_repair_trace_id`. A separate repair-trace identity may only be introduced if a concrete product requirement or explicit owner decision demonstrates that it is necessary.
+
+The work defined here is therefore a **movement/saldo/discrepancy adaptation**, not a replacement of the existing Boquilhas identity model.
+
 ## 1. Operational truth has priority over mathematical reconciliation
 
 Boquilhas must preserve what physically happened, including operational inconsistencies.
