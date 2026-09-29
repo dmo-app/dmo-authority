@@ -4,31 +4,7 @@ This file records statements found during authority curation that are not safe t
 
 Nothing in this file is authority by itself.
 
----
-
-SUSPICION_ID: AS-001
-STATEMENT: A future persisted `resumo_id` record is canonical for Resumo.
-SOURCE: `HOW_THE_APP_WORKS.md`
-LOCATION: Former section "The persisted Resumo record (future)" removed during the 2026-09-28 curation pass.
-WHY_SUSPICIOUS: `resumo_id` is explicitly a suspicion term. The same document defines the current Resumo as a read projection assembled from `jobon_id` and states that function records do not need a `resumo_id` parent.
-CLASSIFICATION: OWNER_CONFIRMATION_REQUIRED
-CURRENT_AUTHORITY_SUPPORT: No retained canonical statement after this curation pass.
-CONFLICTING_EVIDENCE: Resumo is described elsewhere in `HOW_THE_APP_WORKS.md` as a dashboard/read composition over existing production relations, with no parent-child FK requirement.
-OWNER_DECISION_REQUIRED: Decide whether Resumo must remain only a read projection or whether a separate persisted Resumo identity is genuinely required.
-RECOMMENDED_ACTION: Keep `resumo_id` out of canonical identities and persistence rules until the owner explicitly confirms it.
-
----
-
-SUSPICION_ID: AS-002
-STATEMENT: `controlo_id` is already a canonical persistent Controlo production-level identity.
-SOURCE: `IDENTITIES.md`
-LOCATION: Former section "controlo_id — Controlo production-level node" removed during the 2026-09-28 curation pass.
-WHY_SUSPICIOUS: `controlo_id` is explicitly subject to suspicion when wording conflicts. The removed section called it a canonical recent decision, while `HOW_THE_APP_WORKS.md` also emphasizes that the Controlo UI hierarchy must not be mirrored as a database parent and that existing natural anchors remain meaningful.
-CLASSIFICATION: OWNER_CONFIRMATION_REQUIRED
-CURRENT_AUTHORITY_SUPPORT: The current retained authority does not promote `controlo_id` as a canonical identity.
-CONFLICTING_EVIDENCE: The architecture requires minimal truthful relations and rejects creating parent identities merely because multiple functions appear under Controlo. This does not by itself disprove `controlo_id`, but it prevents inferring its exact role.
-OWNER_DECISION_REQUIRED: Confirm whether `controlo_id` exists as a durable identity and, if yes, define its exact purpose and relationship to `jobon_id` without making it a generic parent for Peso, Comparação, Pegamentos, Folha, or Resumo.
-RECOMMENDED_ACTION: Keep `controlo_id` outside `IDENTITIES.md` until the owner decision is explicit and unambiguous.
+Resolved suspicions are removed once the owner decision has been promoted into canonical authority; Git history preserves the prior curation record.
 
 ---
 
