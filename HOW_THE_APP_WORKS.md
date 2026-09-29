@@ -291,6 +291,12 @@ The Resumo page always opens. With no query, it offers a reference lookup. A ref
    - **Glass weight** (per row) = (Capacity + Volume Marisa/BQ − Volume Punção/PU) × glass density.
    - If any computed result is not strictly positive → typed refusal `RESULT_NON_POSITIVE` before any write.
 
+### Stability of Peso calculation inputs
+
+The Peso calculation contract is fixed. **Volume Marisa/BQ, Volume Punção/PU, water density, glass density, and the formulas above are always the inputs/rules used by Peso in this relationship.** DMO does not switch between alternative calculation formulas or formula versions for different Peso records.
+
+Once the values used by a specific Peso are entered or resolved, they are part of that Peso's historical calculation context and do not change later. They are not reinterpreted or replaced by later operations. The system therefore does not require a separate `calculation_receipt`, JSON snapshot, or formula-version payload to preserve an alternative calculation definition.
+
 4. **Save.** The Peso record is created or updated. `peso_id` is allocated by the backend. The record anchors to `cm_id` (production-bound) or `tool_id` (pending, "Job On por associar"). Status: `pendente`.
 
 5. **Submit.** A user with **Controlo Create** explicitly submits the Peso. `submitted_at` and `submitted_by_user_id` are recorded. Status remains `pendente`. The Peso is now ready for review.
