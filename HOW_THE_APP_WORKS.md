@@ -187,6 +187,24 @@ Ferramentas is the canonical tool registry. It answers: "What tools exist, and w
 
 Each physical tool has one `tool_id`. Different lots of the same reference are different Tools (different `tool_id`). The registry stores: type (CM/MF/BQ), reference, lot, processo (NNPB/PS), machine/line compatibility, canonical quantity.
 
+### Technical values attached to a Tool
+
+Some technical values that belong permanently to a Tool are stored separately from the main `tools` record and are linked through `tool_id`.
+
+These values are **part of the Tool**, not production-specific values and not values owned by the modules that consume them. They are immutable for that `tool_id`. Examples used by Peso include **Volume Marisa/BQ** and **Volume Punção/PU**.
+
+The separate technical-values storage exists because these are specialist fields with limited use. Most parts of DMO need the Tool identity and common master facts but do not need to carry every technical field. Keeping them outside the main `tools` row keeps the common Tool path focused, while modules that need technical values retrieve them explicitly through `tool_id`.
+
+This separation is **not** a history or versioning mechanism. A module does not copy these technical values into its own record merely to preserve history, because the same `tool_id` continues to resolve to the same immutable technical values.
+
+The normal access pattern is:
+
+```
+tool_id
+→ tool technical values
+→ only the technical fields required by the current module
+```
+
 ### Relationship with Job On contexts
 
 Ferramentas provides the current canonical state. Job On reads it when creating context snapshots. After the snapshot is created, the snapshot is independent. If someone later edits the tool's master data in Ferramentas, no past production's context changes. The snapshot already froze what was true.
@@ -280,22 +298,23 @@ The Resumo page always opens. With no query, it offers a reference lookup. A ref
 2. **Enter measurements.** The operator enters:
    - **Water temperature** (°C, range 5–35). This is the only temperature input. The operator does not enter water density.
    - **Per-row water weight** (g). Each row is one reading. Variable number of rows, at least one required.
-   - **Volume Marisa/BQ** (cm³, optional). A drawing input.
-   - **Volume Punção/PU** (cm³, optional). A drawing input.
    - **SAP references** (two optional text fields: previous production end, previous average weight). These are informational, not identities.
 
 3. **Backend calculates.** All calculation is server-side. The frontend never computes results.
+   - **Volume Marisa/BQ** and **Volume Punção/PU** are not entered again on the Peso. They are technical values of the Tool and are resolved through the Tool identity: `cm_id → tool_id → tool technical values` (or directly from `tool_id` while the Peso is pending Job On association).
    - **Water density** is resolved from an authoritative 31-value table (one per whole degree, 5–35°C). The entered temperature is rounded to the nearest degree. The corresponding density is used. Never entered manually. Never interpolated.
    - **Glass density** is resolved from Controlo → Definições settings, keyed by processo (NNPB/PS), determined via `cm_id → tool_id → processo`. The resolved value is **frozen** on the Peso at first successful calculate/save. Later settings changes affect only new Pesos.
    - **Capacity** (per row) = water weight ÷ water density.
    - **Glass weight** (per row) = (Capacity + Volume Marisa/BQ − Volume Punção/PU) × glass density.
    - If any computed result is not strictly positive → typed refusal `RESULT_NON_POSITIVE` before any write.
 
-### Stability of Peso calculation inputs
+### Stability and source of Peso calculation values
 
-The Peso calculation contract is fixed. **Volume Marisa/BQ, Volume Punção/PU, water density, glass density, and the formulas above are always the inputs/rules used by Peso in this relationship.** DMO does not switch between alternative calculation formulas or formula versions for different Peso records.
+The Peso calculation relationship is fixed: DMO does not select between alternative formula versions for different Peso records.
 
-Once the values used by a specific Peso are entered or resolved, they are part of that Peso's historical calculation context and do not change later. They are not reinterpreted or replaced by later operations. The system therefore does not require a separate `calculation_receipt`, JSON snapshot, or formula-version payload to preserve an alternative calculation definition.
+Technical values that belong to the Tool — including **Volume Marisa/BQ** and **Volume Punção/PU** — remain attached to the same `tool_id` and are immutable for that Tool. Peso consumes them when required; it does not create a second copy merely to preserve them historically.
+
+Water density is resolved from the authoritative temperature table. The formula consumes the values from their authoritative sources rather than creating a parallel `calculation_receipt`, JSON snapshot, or formula-version payload.
 
 4. **Save.** The Peso record is created or updated. `peso_id` is allocated by the backend. The record anchors to `cm_id` (production-bound) or `tool_id` (pending, "Job On por associar"). Status: `pendente`.
 
