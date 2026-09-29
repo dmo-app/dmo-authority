@@ -25,6 +25,14 @@ This directory provides deeper authority by real module and task. Do not split o
 - `SELECIONAR.md`
 - `VALORES_TECNICOS.md`
 
+## Controlo
+
+Controlo must also be documented as its own canonical domain context, not only through the UI/capability surfaces below.
+
+This documentation must explain the persistent Controlo context and its identity (`controlo_id`), what facts belong to that context, how it relates to production and other canonical identities, and which rules are shared across Controlo Create and Controlo Approve.
+
+The detailed Controlo domain module still needs to be added. It must not be reduced to a UI tab or treated as a generic parent merely because the UI groups functions under Controlo.
+
 ## Controlo Create
 
 `controlo-create/`
