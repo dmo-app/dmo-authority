@@ -142,10 +142,15 @@ This is a different query with a different shape and a different DTO. It assembl
 
 Job On uses module capabilities rather than legacy role titles:
 
-- **Job On View** — navigate and consult Job On information.
+- **Job On View** — navigate and consult Job On information. It has no editing action.
 - **Job On Create** — includes View and permits the Job On creation/editing actions available in the module.
 
 The document therefore describes actions by module capability instead of legacy role titles.
+
+The Job On sheet also has **View mode** and **Edit mode**, but these are UI safety states inside **Job On Create** and must not be confused with the **Job On View** and **Job On Create** module capabilities.
+
+- In **Job On View**, consultation is the only behavior; there is no edit option, so a separate internal View/Edit mode distinction is unnecessary.
+- In **Job On Create**, an existing Job On opens in **View mode** as the safe/base state. The user must explicitly enter **Edit mode** before changing editable values. This exists to reduce accidental modification of production data.
 
 Job On is the production occurrence. It is where a production is planned, where tools are selected, and where the production context is created.
 
@@ -161,13 +166,21 @@ A user with **Job On Create** creates a Job On:
 
 ### Duplication
 
-When a Job On is duplicated (a common pattern — most productions are similar to the previous one):
+**Duplicate Job On** is a user-facing convenience for creating a new production from an existing one. The source is always chosen explicitly by the user; the system must not assume that the immediately previous Job On is the correct source.
 
-- A **new `jobon_id`** is created.
-- The source contributes only the **`tool_id` identities** — which physical tools to use.
-- **New context IDs** (`cm_id`, `mf_id`, `bq_id`) are created from the **current canonical Tool state** at the moment of duplication. The source's frozen snapshots are NOT copied verbatim. If the tool's lot changed between the source production and the duplication, the new production sees the updated lot.
-- The source Job On and its contexts remain immutable.
-- Production-specific configuration values are copied as a starting point, but a user with **Job On Create** reviews and adjusts them. They are not immutable defaults.
+The next production may run on a different machine from the previous production. In that case, the useful source may be an older Job On for the machine in question. The user therefore decides **which Job On to duplicate** and then decides **which copied values must change** for the next production.
+
+The duplication flow works as follows:
+
+- A **new `jobon_id`** is created. The source Job On keeps its own identity and is not modified.
+- The chosen source provides the starting values for the new Job On. These are defaults for convenience, not immutable inherited facts.
+- A user with **Job On Create** may change the editable copied values as required for the new production.
+- Tool selection is carried forward by physical **`tool_id`** identity, not by reusing the source production's context IDs.
+- **New context IDs** (`cm_id`, `mf_id`, `bq_id`) are created from the **current canonical Tool state** for the new production. The source's frozen snapshots are not copied verbatim.
+- The source Job On and its contexts remain unchanged.
+- Immediately after duplication, the UI navigates to the **new `jobon_id`** and opens the Job On sheet in **Edit mode**, so the user can review and change what is necessary before continuing with the next production.
+
+This is intentionally the same identity principle used by **Duplicate Tool**: duplication copies a useful starting state, while the backend creates a new canonical identity for the new real-world occurrence.
 
 ### The same tool across productions
 
