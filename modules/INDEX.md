@@ -64,6 +64,12 @@ The detailed Controlo domain module still needs to be added. It must not be redu
 - `HISTORICO.md`
 - `DEFINICOES.md`
 
+## Templates
+
+Templates require dedicated authority coverage. Their product behavior, types, ownership, data, lifecycle, and usage rules have not yet been populated here and must be recovered from owner-confirmed material before implementation relies on them.
+
+Known references such as Access Templates and email templates are not sufficient on their own to define the Templates domain.
+
 ## Admin
 
 `admin/`
