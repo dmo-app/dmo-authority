@@ -195,6 +195,12 @@ These values are **part of the Tool**, not production-specific values and not va
 
 The separate technical-values storage exists because these are specialist fields with limited use. Most parts of DMO need the Tool identity and common master facts but do not need to carry every technical field. Keeping them outside the main `tools` row keeps the common Tool path focused, while modules that need technical values retrieve them explicitly through `tool_id`.
 
+Only **static design/original values** belong in this technical-values set. It is deliberately not a container for every value that a module may use while working with that Tool. A value that can change from one production to another is not a Tool technical value, even when it influences a workflow that is operating on that Tool.
+
+This also makes creation of a new Tool for a new lot of the same reference safer. The system creates a **new `tool_id`** for the new physical Tool/lot and may carry forward the design-stable technical values from the source Tool/reference without carrying production-specific or previously changed operational data. Because the technical-values set contains only immutable design facts, reuse during this creation flow does not accidentally copy the state of an earlier production.
+
+**Calote/Tampão is an example of what does not belong here.** It can vary from production to production and is not the CM itself, even when it is used in a workflow concerning the CM. For that reason it must not be stored as a permanent CM technical value merely because Controlo or Peso needs to consult it.
+
 This separation is **not** a history or versioning mechanism. A module does not copy these technical values into its own record merely to preserve history, because the same `tool_id` continues to resolve to the same immutable technical values.
 
 The normal access pattern is:
