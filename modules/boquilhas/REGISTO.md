@@ -22,7 +22,13 @@ Each machine card resolves the BQ that is current for that machine from the Job 
 
 The card is therefore a projection of the current production assignment, not an ownership relation and not a stored state on the Boquilhas register.
 
-Selecting a machine card opens the Boquilhas register/ficha for the BQ Tool currently associated with that machine.
+The machine card is also a direct operational shortcut.
+
+A **double-click** on the card opens the Boquilhas registration workflow already contextualized with the correct BQ Tool for that machine. The user must not have to navigate to Registo, search manually by reference/lote, and then select the Tool again.
+
+The shortcut carries the canonical `tool_id` resolved from the current Job On/BQ association into the registration flow so the correct Tool is already selected and ready for the user to register the operation.
+
+This shortcut removes navigation/search work only. It does not create a second Tool-selection authority, does not infer a Tool from text such as reference/lote, and does not change any Boquilhas register semantics.
 
 The navigation follows the canonical Tool identity (`tool_id`) and the current Job On association. The card itself never becomes an authority for Tool identity.
 
