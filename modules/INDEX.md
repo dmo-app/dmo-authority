@@ -1,8 +1,37 @@
 # Module Authority Index
 
-The global application model remains in `../HOW_THE_APP_WORKS.md`.
+The fast application map is in `../HOW_THE_APP_WORKS.md`.
 
-This directory provides deeper authority by real module and task. Do not split one task into separate frontend/backend/flow files: each task document should remain vertically complete.
+This directory contains the canonical detailed explanation of each application area.
+
+The normal context pattern for a person or AI is:
+
+```text
+HOW_THE_APP_WORKS.md
+→ understand the app and main relationships
+
+modules/<relevant-module>/
+→ load the detailed rules needed for the current task
+```
+
+Do not load unrelated module detail merely because it exists.
+
+## Admin
+
+`admin/`
+
+- `OVERVIEW.md`
+- `SETUP.md`
+
+## Ferramentas
+
+`ferramentas/`
+
+- `OVERVIEW.md`
+- `CONSULTAR.md`
+- `CRIAR.md`
+- `SELECIONAR.md`
+- `VALORES_TECNICOS.md`
 
 ## Job On
 
@@ -15,23 +44,15 @@ This directory provides deeper authority by real module and task. Do not split o
 - `DUPLICAR.md`
 - `SELECIONAR_FERRAMENTAS.md`
 
-## Ferramentas
+## Controlo — shared context
 
-`ferramentas/`
+`controlo/`
 
 - `OVERVIEW.md`
-- `CONSULTAR.md`
-- `CRIAR.md`
-- `SELECIONAR.md`
-- `VALORES_TECNICOS.md`
 
-## Controlo
+This directory contains only rules genuinely shared across Controlo Create and Controlo Approve.
 
-Controlo must also be documented as its own canonical domain context, not only through the UI/capability surfaces below.
-
-This documentation must explain the persistent Controlo context and its identity (`controlo_id`), what facts belong to that context, how it relates to production and other canonical identities, and which rules are shared across Controlo Create and Controlo Approve.
-
-The detailed Controlo domain module still needs to be added. It must not be reduced to a UI tab or treated as a generic parent merely because the UI groups functions under Controlo.
+It includes the planned `controlo_id` evolution where applicable. The existence of this shared context must not be interpreted as permission to make `controlo_id` a generic parent for every Controlo record.
 
 ## Controlo Create
 
@@ -64,23 +85,26 @@ The detailed Controlo domain module still needs to be added. It must not be redu
 - `HISTORICO.md`
 - `DEFINICOES.md`
 
+The existing Boquilhas register/movement model is the implementation base.
+
+Saldo/discrepancy is an evolution of that movement behavior. A separate `bq_repair_trace_id` is not a current requirement and must not be inferred merely from older authority text.
+
 ## Templates
 
-Templates require dedicated authority coverage. Their product behavior, types, ownership, data, lifecycle, and usage rules have not yet been populated here and must be recovered from owner-confirmed material before implementation relies on them.
+Template-related behavior is documented only where a concrete owning workflow is already defined.
 
-Known references such as Access Templates and email templates are not sufficient on their own to define the Templates domain.
+Access templates belong to the access/admin model.
 
-## Admin
+Email templates used by Controlo belong to the relevant Controlo configuration workflow.
 
-`admin/`
-
-- `OVERVIEW.md`
-- `SETUP.md`
+Do not invent a separate Templates product domain merely from the shared word "template" without an explicit product requirement.
 
 ## File rule
 
-Each detailed file must be self-contained enough that an implementation agent does not need to guess the missing half of the task.
+Each detailed file should be self-contained enough to implement or review that area without loading the entire authority repository.
 
-Where another module is involved, repeat the minimum required context and then reference the related module document for deeper detail.
+Where another module is involved, include only the minimum cross-module context and link to the owning module for deeper detail.
 
 Do not use historical role titles as current authorization identities.
+
+Do not promote implementation accidents, historical schemas or speculative identities into product authority merely because they appear in older documentation.
