@@ -1,7 +1,38 @@
-# Controlo Create — Folha
+# Controlo — Folha
 
-> STRUCTURE CREATED. Detailed authority not yet populated.
+Folha participates in both Controlo Create and Controlo Approve.
 
-This file will contain the complete current authority for the Folha task inside Controlo Create.
+## Create-side actions
 
-Do not infer missing behavior from this placeholder. Use the global `HOW_THE_APP_WORKS.md` until this file is populated.
+- edit;
+- evaluate;
+- submit.
+
+## Approve-side actions
+
+- approve;
+- reject;
+- reopen.
+
+## Families
+
+Folha covers the families:
+
+- CM
+- BQ
+- MF
+- PU
+- CS
+
+## Per-piece facts
+
+Each applicable piece may carry:
+- OK/NOK;
+- observation;
+- MCaliper link where applicable.
+
+NOK does not automatically stop production.
+
+OK does not automatically authorize production.
+
+These are recorded/evaluated facts; production decisions remain explicit human actions under the owning workflow.
