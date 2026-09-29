@@ -43,7 +43,7 @@ A `jobon_id` answers: "Which production run is this?" It is created when a user 
 
 When a Job On selects a tool, the system creates a **context snapshot**: a `cm_id` (for CM), `mf_id` (for MF), or `bq_id` (for BQ). This snapshot records which physical tool (`tool_id`) was used and freezes the relevant tool state at that moment (type, reference, lot).
 
-**Why snapshots?** Because the physical tool will change over time. Its lot may be updated, its state may change, its processo may be corrected. But production A used the tool as it was on that day. The snapshot preserves that truth. When someone opens production A two years later, they see what was actually used — not the tool's current state.
+**Why snapshots?** Because the canonical Tool may have mutable master facts over time, such as state, processo, or machine compatibility. Its lot does not change in place: a different lot is a different canonical Tool with a different `tool_id`. But production A used the tool as it was on that day. The snapshot preserves that truth. When someone opens production A two years later, they see what was actually used — not the tool's current state.
 
 **Why new context IDs per production?** Because each production is a distinct historical event. The same physical CM tool (same `tool_id`) used in production A and production B gets two different `cm_id` values — one for each production. This keeps the historical record clean: production A's `cm_id` freezes the tool state as it was during A; production B's `cm_id` freezes it as it was during B.
 
@@ -52,10 +52,10 @@ When a Job On selects a tool, the system creates a **context snapshot**: a `cm_i
 Physical CM tool `T-5447` exists. It is registered in Ferramentas with `tool_id = 7a3f…`.
 
 - **Production A** (January): Job On `J-2026-001` selects this tool. The system creates `cm_id = c1a2…` → `jobon_id = J-2026-001` + `tool_id = 7a3f…`, freezing lot "3" and reference "5447".
-- Between productions, the lot is updated to "4" in Ferramentas.
-- **Production B** (March): Job On `J-2026-042` selects the same tool. The system creates `cm_id = c9d8…` → `jobon_id = J-2026-042` + `tool_id = 7a3f…`, freezing lot "4" and reference "5447".
+- Between productions, a new lot "4" of the same reference is registered in Ferramentas as a new canonical Tool with `tool_id = 8b4e…`.
+- **Production B** (March): Job On `J-2026-042` selects that new Tool. The system creates `cm_id = c9d8…` → `jobon_id = J-2026-042` + `tool_id = 8b4e…`, freezing lot "4" and reference "5447".
 
-Both `cm_id` values point to the same `tool_id`. But they preserve different historical states. Production A always shows lot "3". Production B always shows lot "4". Changing the tool's current state in Ferramentas never rewrites either production's history.
+The two `cm_id` values point to different canonical Tools because the lots are different. Production A always shows lot "3" through `tool_id = 7a3f…`. Production B shows lot "4" through `tool_id = 8b4e…`. Later changes to mutable master facts do not rewrite either production's frozen history.
 
 ---
 
@@ -238,7 +238,7 @@ Ferramentas does not store production-specific values (like the Calote used in a
 
 ### Historical data is never rewritten
 
-When the tool's lot is updated, or its processo is corrected, or a machine association changes, these changes affect the tool's **current** state. They do not propagate backward into existing `cm_id`/`mf_id`/`bq_id` snapshots. Each production remembers what it used.
+A Tool's lot is not changed in place: a different lot is registered as a different canonical Tool with a different `tool_id`. When mutable master facts such as processo or machine association are corrected, those changes affect the Tool's **current** state and do not propagate backward into existing `cm_id`/`mf_id`/`bq_id` snapshots. Each production remembers what it used.
 
 ---
 
@@ -734,9 +734,9 @@ The dashboard renders: production context, Peso approved, one Comparação confi
 
 Two weeks later, a user with **Job On Create** creates Job On `J-2026-091` using the same CM tool `T-5447` (`tool_id = 7a3f…`).
 
-The system creates a **new** `cm_id = c7e5…` → `jobon_id = J-2026-091` + `tool_id = 7a3f…`. Between the two productions, the tool's lot was updated to "4" in Ferramentas. The new snapshot freezes lot "4".
+The system creates a **new** `cm_id = c7e5…` → `jobon_id = J-2026-091` + `tool_id = 7a3f…`. Between the two productions, a new lot "4" of the same reference was registered in Ferramentas as a new canonical Tool with a new `tool_id`. The new production selects that new Tool, and its snapshot freezes lot "4".
 
-**Production A (`J-2026-078`) still shows lot "3." Production B (`J-2026-091`) shows lot "4."** The tool's master data changed; the historical productions did not.
+**Production A (`J-2026-078`) still shows lot "3." Production B (`J-2026-091`) shows lot "4."** They refer to different canonical Tools because the lots are different; each production preserves its own historical context.
 
 ### Two years later: inspecting the Tool history
 
