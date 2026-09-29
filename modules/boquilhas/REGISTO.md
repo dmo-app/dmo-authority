@@ -32,7 +32,50 @@ This shortcut removes navigation/search work only. It does not create a second T
 
 The navigation follows the canonical Tool identity (`tool_id`) and the current Job On association. The card itself never becomes an authority for Tool identity.
 
-## 3. Live values shown on the card
+## 3. The machine card is NOT the only way to register
+
+The machine shortcut is an optimization for the BQ that is currently in production on that machine.
+
+It must never become the only entry path into Boquilhas registration.
+
+The **Registo** tab remains an independent operational entry point where the user can search/select a BQ Tool and then:
+
+- create a Boquilhas register for a BQ that has not yet entered production and therefore has no current machine card;
+- open an existing register for a BQ that is no longer the current BQ shown on a machine;
+- record later movements against that older register, including returns from repair that happen after the machine has already changed to the next production.
+
+Example:
+
+    Production A uses BQ-X.
+    Near the end of Production A, 5 BQ-X are sent to repair.
+
+    Production B starts and the machine card now shows BQ-Y.
+
+    One or two days later, the repaired BQ-X return.
+
+The user must still be able to go to Registo, find BQ-X / its existing register, and record the Entrada against that previous register.
+
+The fact that BQ-X is no longer visible as the current machine card must not block or redirect the movement to BQ-Y.
+
+For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and preserve that register until the later production association is made through the normal association flow.
+
+Therefore the module has two valid entry patterns:
+
+    CURRENT PRODUCTION
+    machine card double-click
+    → current Job On/BQ association
+    → correct tool_id already selected
+    → register movement
+
+    GENERAL / NON-CURRENT
+    Registo tab
+    → search/select canonical BQ Tool or existing register
+    → create/open register
+    → register movement
+
+Both paths reach the same Boquilhas registration semantics. The machine-card path is only faster because the context is already known.
+
+## 4. Live values shown on the card
 
 The card must expose, in real time, three operational values derived from the selected BQ register:
 
@@ -44,7 +87,7 @@ These values are read projections over the register facts. They are not independ
 
 The discrepancy value follows the authoritative rules in `MOVIMENTOS.md`: it is the accumulated historical discrepancy of the current trace and is not automatically reconciled by later movements.
 
-## 4. Automatic change when production changes
+## 5. Automatic change when production changes
 
 The BQ shown on a machine card follows the Job On production schedule automatically.
 
@@ -63,7 +106,7 @@ No user action is required to perform this card transition.
 
 The transition is part of normal operational flow.
 
-## 5. Card transition does not close the previous register
+## 6. Card transition does not close the previous register
 
 When a machine changes to a new production/BQ, the previous Boquilhas register is **not closed**.
 
@@ -77,7 +120,7 @@ For example, BQ sent to repair during the previous production may return after t
 
 There is no required close action, acknowledgement, transfer action or extra lifecycle step when the machine card changes production.
 
-## 6. Separation of concerns
+## 7. Separation of concerns
 
 The implementation must preserve these distinct concepts:
 
@@ -85,7 +128,10 @@ The implementation must preserve these distinct concepts:
     → determines which BQ is current on a machine
 
     Machine side panel
-    → navigation + live visual projection
+    → navigation + live visual projection for the current production
+
+    Registo tab
+    → general entry point for current, previous and pre-production BQ registration
 
     Boquilhas register
     → durable operational history
@@ -95,10 +141,14 @@ The implementation must preserve these distinct concepts:
 
 The side panel must never alter register history merely because the current machine assignment changed.
 
-## 7. Explicitly forbidden interpretations
+## 8. Explicitly forbidden interpretations
 
 An implementation must not:
 
+- make the machine card the only way to create or access a Boquilhas register;
+- require a BQ to be currently on a production machine before a register can exist;
+- block a movement because the BQ is no longer the current card on that machine;
+- redirect a late return from a previous production to the BQ currently shown on the machine;
 - close a Boquilhas register when its machine card changes to another BQ;
 - prevent movements on the previous register merely because it is no longer current on the machine;
 - move historical movements to the new production;
@@ -108,4 +158,4 @@ An implementation must not:
 - store the three card values as independent mutable balances;
 - infer that disappearance from the side panel means the register is finished.
 
-The card is a live operational guide and access path. It does not change the semantics or lifecycle of the register.
+The card is a live operational guide and access path. It does not replace the Registo tab and does not change the semantics or lifecycle of the register.
