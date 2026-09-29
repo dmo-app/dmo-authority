@@ -77,7 +77,7 @@ No Job On-wide status, stage, phase or state machine exists.
 
 - New canonical IDs are allocated only by the owning backend workflow/transaction.
 - A client may carry or return an **existing** canonical ID that the backend already issued (for example an explicitly selected `tool_id` or an existing record route ID), but it must never mint, guess or derive a new canonical ID.
-- This applies to implemented identities including `tool_id`, `jobon_id`, `cm_id`, `mf_id`, `bq_id`, `peso_id`, `comparacao_id`, `boquilhas_id` and `movement_id`.
+- This applies to canonical identities including `tool_id`, `jobon_id`, `cm_id`, `mf_id`, `bq_id`, `peso_id`, `comparacao_id`, `bq_repair_trace_id` and `movement_id`.
 - The same rule applies to `controlo_id` when that canonical identity is implemented.
 - Actor/time are backend facts (`ICurrentAccountContext`, backend clock) — never client-created audit facts.
 - Audit trail never invents actor/time.
