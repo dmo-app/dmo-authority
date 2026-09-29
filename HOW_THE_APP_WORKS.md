@@ -49,13 +49,12 @@ When a Job On selects a tool, the system creates a **context snapshot**: a `cm_i
 
 ### Concrete example
 
-Physical CM tool `T-5447` exists. It is registered in Ferramentas with `tool_id = 7a3f…`.
+Physical CM tool `T-5447` exists. It is registered in Ferramentas with `tool_id = 7a3f…`, reference "5447" and lot "3".
 
-- **Production A** (January): Job On `J-2026-001` selects this tool. The system creates `cm_id = c1a2…` → `jobon_id = J-2026-001` + `tool_id = 7a3f…`, freezing lot "3" and reference "5447".
-- Between productions, a new lot "4" of the same reference is registered in Ferramentas as a new canonical Tool with `tool_id = 8b4e…`.
-- **Production B** (March): Job On `J-2026-042` selects that new Tool. The system creates `cm_id = c9d8…` → `jobon_id = J-2026-042` + `tool_id = 8b4e…`, freezing lot "4" and reference "5447".
+- **Production A** (January): Job On `J-2026-001` selects this Tool. The system creates `cm_id = c1a2…` → `jobon_id = J-2026-001` + `tool_id = 7a3f…`, freezing lot "3" and reference "5447".
+- **Production B** (March): Job On `J-2026-042` selects the same canonical Tool. The system creates a different production context, `cm_id = c9d8…` → `jobon_id = J-2026-042` + `tool_id = 7a3f…`, again freezing lot "3" and reference "5447".
 
-The two `cm_id` values point to different canonical Tools because the lots are different. Production A always shows lot "3" through `tool_id = 7a3f…`. Production B shows lot "4" through `tool_id = 8b4e…`. Later changes to mutable master facts do not rewrite either production's frozen history.
+Both `cm_id` values point to the same `tool_id` because both productions used the same canonical Tool. If a new lot "4" of reference "5447" is registered, that lot is a different canonical Tool and receives a different `tool_id`; it is not an in-place lot change on `7a3f…`.
 
 ---
 
@@ -475,20 +474,20 @@ The Folha persistence shape must be derived from its minimum durable facts. UI s
 
 ### What it is
 
-Boquilhas registers the movements related to BQ external repair. It is a manual operational register: the operator introduces movements; the application stores them; the movement remains in history; the application presents the resulting outstanding balance.
+Boquilhas registers the movements related to BQ external repair. It is a manual operational register: the operator introduces movements, the application stores the observed facts, and the movement remains in history. Current in-house / out-for-repair quantities and accumulated discrepancy are derived read projections over those facts.
 
 ### The flow
 
-1. **Pre-JobOn: provisional anchor.** Boquilhas may start work before a Job On/BQ context exists. The register anchors provisionally to the canonical `tool_id`. This is a transitional state, not a permanent standalone flow.
+1. **Pre-JobOn: provisional anchor.** A Boquilhas repair trace may begin before a Job On/BQ context exists. The durable `bq_repair_trace_id` is initially anchored to the canonical BQ `tool_id`.
 
-2. **Association.** When a `bq_contexts` row arrives whose `tool_id` matches the register's provisional anchor, the register can be associated to that `bq_id` through explicit human confirmation. After association: the **same `boquilhas_id`** continues; `bq_id` is set; the provisional `tool_id` is cleared. The register is now production-linked: `boquilhas_id → bq_id → jobon_id + tool_id`.
+2. **Association.** When the matching production BQ context exists, association to `bq_id` is an explicit human action. The same `bq_repair_trace_id` survives that association; the trace does not become a new identity merely because production context is now known.
 
 3. **Movements.** Three movement types, exactly:
    - **`saida`** — sends BQ to external repair. Requires machine and repairer.
-   - **`entrada`** — returns BQ from repair.
-   - **`entrada_sem_reparacao`** — returns BQ that was NOT repaired. Does not mark the tool irreparable. Does not destroy it. Subtracts from outstanding exactly like `entrada`.
+   - **`entrada`** — records BQ observed returning from repair.
+   - **`entrada_sem_reparacao`** — records BQ observed returning without repair. It does not mark the Tool irreparable or destroy it.
 
-4. **Outstanding derived at read time.** `outstanding = Σ(saida) − Σ(entrada) − Σ(entrada_sem_reparacao)`. Never stored. Negative values are valid and visible. No blocking.
+4. **Derived quantities and discrepancy.** Normal accounted movement uses the explainable/matched portion of returns. If an Entrada exceeds the quantity that can be explained by the trace, the full observed movement is still recorded, but the unmatched excess becomes a negative movement discrepancy. That discrepancy is historical evidence and is accumulated for the trace; it is not converted into negative outstanding, used to inflate the accounted lot quantity, or automatically cancelled by later movements.
 
 5. **Editing.** Editing a movement mutates the same `movement_id`. Writes one before/after audit row in the same transaction. `recorded_at` is immutable. `movement_type` is immutable. `business_date` is editable.
 
@@ -732,11 +731,11 @@ The dashboard renders: production context, Peso approved, one Comparação confi
 
 ### Next Job On reuses the same Tool
 
-Two weeks later, a user with **Job On Create** creates Job On `J-2026-091` using the same CM tool `T-5447` (`tool_id = 7a3f…`).
+Two weeks later, a user with **Job On Create** creates Job On `J-2026-091` using the same CM Tool `T-5447` (`tool_id = 7a3f…`, lot "3").
 
-The system creates a **new** `cm_id = c7e5…` → `jobon_id = J-2026-091` + `tool_id = 7a3f…`. Between the two productions, a new lot "4" of the same reference was registered in Ferramentas as a new canonical Tool with a new `tool_id`. The new production selects that new Tool, and its snapshot freezes lot "4".
+The system creates a **new** `cm_id = c7e5…` → `jobon_id = J-2026-091` + `tool_id = 7a3f…`. The new context identity exists because this is a different production occurrence; the canonical Tool identity remains the same because the exact same Tool is reused.
 
-**Production A (`J-2026-078`) still shows lot "3." Production B (`J-2026-091`) shows lot "4."** They refer to different canonical Tools because the lots are different; each production preserves its own historical context.
+**Both productions preserve lot "3" for `tool_id = 7a3f…`.** If production instead uses a new lot "4" of the same reference, that lot must first exist as another canonical Tool with another `tool_id`, and the new `cm_id` must reference that different Tool.
 
 ### Two years later: inspecting the Tool history
 
