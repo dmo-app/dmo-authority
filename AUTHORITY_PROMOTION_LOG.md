@@ -70,3 +70,40 @@ This log records authority-curation actions. It is not itself a source of busine
 - `AUTHORITY_SUSPICIONS.md` (created)
 - `OPEN_DECISIONS.md` (created)
 - `AUTHORITY_PROMOTION_LOG.md` (created)
+
+## 2026-09-29 — Owner-confirmed operational rules
+
+### Boquilhas discrepancy preservation
+
+**SOURCE USED:** Owner-confirmed operational behavior recovered from the working JS runtime and then explicitly clarified by the owner.
+
+**PROMOTED:** A return that exceeds the quantity explainable by the trace is recorded in full; only the matched portion returns to the accounted lot total and the unmatched portion becomes a negative per-movement discrepancy. Normal movements show a blank Saldo cell, not zero. Movement discrepancies are permanent historical facts, never cancel one another, accumulate within one production trace, and reset only for the next trace.
+
+**AUTHORITY FILE:** `modules/boquilhas/MOVIMENTOS.md`.
+
+**IMPLEMENTATION NOTE:** Current implementation behavior must be compared against this authority rather than treated as canon.
+
+### Boquilhas machine side panel and registration entry paths
+
+**SOURCE USED:** Owner-confirmed operational/UI behavior.
+
+**PROMOTED:** Machine cards are live navigation/context projections for the BQ currently used by each machine. A double-click is a shortcut into registration with the correct canonical BQ Tool context already resolved. The card is not the only registration path: the Registo tab remains available for pre-production BQ registers, previous/non-current BQ registers, and late repair returns. A card changing to the next production never closes or blocks the previous register.
+
+**AUTHORITY FILE:** `modules/boquilhas/REGISTO.md`.
+
+### ADMIN external identity boundary and Blank State setup
+
+**SOURCE USED:** Owner-confirmed setup/authentication design.
+
+**PROMOTED:**
+- Blank State is setup mode, not an ADMIN session.
+- Initial infrastructure connection is configured through the DMO setup UI rather than requiring terminal-only bootstrap.
+- The Auth identity used as DMO ADMIN must already exist in Supabase Auth.
+- DMO must never create the Supabase Auth user that becomes ADMIN.
+- ADMIN is never assigned because a user is first, because tables are empty, or because no ADMIN currently resolves.
+- If the associated ADMIN Auth user is deleted in Supabase, the DMO installation/data remain intact and the same Setup concept may reassociate ADMIN to a replacement Auth user created externally in Supabase against the same infrastructure.
+- Reassociation must not recreate or reset operational data.
+
+**AUTHORITY FILES:** `modules/admin/OVERVIEW.md`, `modules/admin/SETUP.md`, and `RULES.md` Rule 16.
+
+**WHY SAFE:** These are explicit owner decisions defining the trust boundary between external authentication authority and DMO authorization/configuration. They deliberately avoid making transient implementation/bootstrap mechanics into identity authority.
