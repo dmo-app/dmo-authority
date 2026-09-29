@@ -25,13 +25,15 @@ Job On Create creates a new production occurrence.
 
 The applicable TP/Tampão/Calote value is defined as part of preparing the production in Job On.
 
-This is a production-specific decision. The person preparing the Job On may choose the applicable calote according to the production setup and the expected/observed glass distribution needed to balance the production.
+This is a production-specific decision. The person preparing the Job On may choose the applicable calote according to the production setup and the glass-distribution behavior that needs to be balanced.
 
 The value therefore belongs to the Job On production context and is reachable through `jobon_id`.
 
-Peso consumes this production value when performing its own calculation/technical evaluation and preserves the value it actually used with the Peso record.
+Peso later uses this value as technical context because the physical Peso measurement is performed with CM + TP. TP adds mass to that physical measurement, so its known contribution can be considered when interpreting/correcting the observed value for wear analysis.
 
-That consumption does not transfer ownership of the production configuration to Peso, and it does not require duplicating the production TP/Calote into `controlo_id`.
+This does not make TP/Calote part of the main Peso formula that produces the value sent to production.
+
+This also does not transfer ownership of TP/Calote to Peso and does not require duplicating the production TP/Calote into `controlo_id`.
 
 No canonical physical `tampao_id` is introduced by this rule. The physical piece may be reused across different references/lots, but DMO currently preserves the production value needed by the workflow rather than inventing a separate Tool identity for Tampão.
 
