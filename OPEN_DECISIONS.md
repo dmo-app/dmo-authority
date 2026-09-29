@@ -4,36 +4,22 @@ This file contains unresolved authority questions only.
 
 An item here is not canonical until the owner decides it and the resulting durable rule is promoted into the appropriate authority file.
 
-## OD-001 — Resumo persistence identity
+`resumo_id` and `controlo_id` are not open decisions:
+- `resumo_id` does not exist. Resumo is a read composition / derived document surface.
+- `controlo_id` exists and is the persistent identity of a Controlo context in one production.
 
-**Question:** Does Resumo remain a read projection over an existing `jobon_id` production context, or does DMO require a separate persisted `resumo_id` identity?
+## OD-001 — Multiple pending Boquilhas repair traces before production association
 
-**Current safe authority:**
-- Resumo is a Controlo function/tab that summarizes one production context.
-- It may compose existing function records at read time.
-- Peso, Comparação, Pegamentos, and Folha must not acquire a `resumo_id` parent merely because Resumo displays them.
-
-**Not decided:**
-- Whether Resumo itself needs a durable persisted record.
-- Whether `resumo_id` should exist at all.
-- Which Resumo-specific facts, if any, would justify independent persistence.
-
-**Owner decision required:** Confirm one of the two models and state the real operational event/facts that justify persistence if `resumo_id` is required.
-
-## OD-002 — Controlo production-level identity
-
-**Question:** Is `controlo_id` a canonical durable identity in DMO?
+**Question:** Before a repair trace is associated to a production `bq_id`, may the same canonical BQ `tool_id` have multiple pending `bq_repair_trace_id` traces, or at most one?
 
 **Current safe authority:**
-- Controlo contains several distinct functions/workflows.
-- UI containment does not imply database parent-child ownership.
-- Existing natural anchors remain authoritative where they already express the domain, such as Peso through its real production/component context.
-- No generic Controlo parent may be inferred merely for navigation convenience.
+- A Boquilhas repair trace may begin before Job On.
+- Before production association it is anchored to the canonical BQ `tool_id`.
+- Association to `bq_id` is an explicit human action.
+- The same `bq_repair_trace_id` survives that association.
+- The trace may continue after the production.
 
 **Not decided:**
-- Whether a standalone `controlo_id` must exist.
-- The exact event that creates it.
-- Whether it is one-to-one with `jobon_id`, optional, or has another lifecycle.
-- Which facts, if any, belong to it rather than to Job On or the function-specific records.
+- Cardinality of simultaneous pending traces for the same `tool_id` before association.
 
-**Owner decision required:** Confirm whether `controlo_id` exists and, if it does, define its minimum durable purpose, creation moment, relation to `jobon_id`, and explicit non-ownership boundaries.
+Do not infer this rule until the owner closes it.
