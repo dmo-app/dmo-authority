@@ -197,7 +197,11 @@ The separate technical-values storage exists because these are specialist fields
 
 Only **static design/original values** belong in this technical-values set. It is deliberately not a container for every value that a module may use while working with that Tool. A value that can change from one production to another is not a Tool technical value, even when it influences a workflow that is operating on that Tool.
 
-This also makes creation of a new Tool for a new lot of the same reference safer. The system creates a **new `tool_id`** for the new physical Tool/lot and may carry forward the design-stable technical values from the source Tool/reference without carrying production-specific or previously changed operational data. Because the technical-values set contains only immutable design facts, reuse during this creation flow does not accidentally copy the state of an earlier production.
+This also supports the **Duplicate Tool** action in the Ferramentas UI. "Duplicate" is a user-facing convenience; the backend does **not** reuse or duplicate the same identity. It creates a **new `tool_id`** and pre-populates the new Tool from the source Tool's base/master data and applicable technical values.
+
+The duplicated Tool is a new Tool before it is saved. During the duplication flow, the user may change any of the copied values. In normal use, the common case is simply creating another lot of the same reference, so usually only the lot changes and the original design values remain the same. But the duplication mechanism does not assume that only the lot can change.
+
+After the new Tool is created, its own technical values are immutable for that new `tool_id`. Therefore "immutable" means **stable after creation for one Tool identity**; it does not mean every Tool created from the same reference must forever have identical technical values.
 
 **Calote/Tampão is an example of what does not belong here.** It can vary from production to production and is not the CM itself, even when it is used in a workflow concerning the CM. For that reason it must not be stored as a permanent CM technical value merely because Controlo or Peso needs to consult it.
 
