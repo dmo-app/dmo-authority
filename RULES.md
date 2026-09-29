@@ -150,3 +150,13 @@ DMO is a fixed-layout desktop operational application, not a responsive public w
 - Path/filename is never used as a join key.
 - Document access is gated by the owning workflow/action permission — no separate document authorization model.
 - No artificial document identity is created for symmetry.
+
+## Rule 16: External Auth owns ADMIN identity creation
+
+- Supabase Auth is the authority for the existence and credentials of the authentication identity used as DMO ADMIN.
+- DMO may associate an **existing** Supabase Auth user as ADMIN, but DMO must never create that Auth user itself.
+- No setup page, bootstrap, seed, migration, recovery path or convenience endpoint may create the Supabase Auth identity that will become ADMIN.
+- ADMIN must never be assigned merely because someone is the first user, because the database is empty, or because the previous ADMIN no longer resolves.
+- Blank State / Setup is an installation/configuration mode, not an authenticated ADMIN identity.
+- If the currently associated ADMIN Auth user is deleted externally, the existing DMO installation and data remain valid; the ADMIN association may be repaired through Setup against the same infrastructure using another Auth user that was first created externally in Supabase.
+- Reassociating ADMIN must not recreate, reset or rewrite operational data.
