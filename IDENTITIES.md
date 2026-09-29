@@ -8,6 +8,7 @@ This file defines domain identities. A database table, read model, UI tab or doc
 - Applies to CM, MF and BQ.
 - Consumer modules reference the Tool; they do not create replacement Tool identities.
 - A different lot is a different canonical Tool and therefore a different `tool_id`.
+- A lot is not mutable state on an existing Tool: new lot means new Tool and new `tool_id`.
 
 ## 2. `jobon_id` — production occurrence
 
@@ -27,7 +28,6 @@ This file defines domain identities. A database table, read model, UI tab or doc
 
 - Identifies the persistent Controlo context for one production.
 - It is the truthful home for facts that belong to Controlo as a production context rather than to Job On, a Tool, or one specific Controlo function.
-- Confirmed example: the applicable tampão/calote value for that production.
 - It does not replace `jobon_id`, `cm_id`, `mf_id`, `bq_id`, `peso_id` or `comparacao_id`.
 - It is not a generic god-parent for every Controlo record.
 - UI grouping under Controlo does not imply persistence ownership under `controlo_id`.
@@ -79,6 +79,12 @@ Therefore:
 `resumo_id` does not exist.
 
 Resumo is a read composition / derived dashboard-document surface inside Controlo. It is not a persisted parent, FK anchor or independent canonical identity.
+
+### `tp_id` / `tampao_id`
+
+TP/Tampão has no independent operational identity in the current process.
+
+DMO preserves the applicable production value in the Job On context. It must not invent a `tp_id` or `tampao_id` merely because Peso reads that value.
 
 ### `bq_repair_trace_id`
 
