@@ -4,7 +4,7 @@
 
 Some technical values belong to a canonical Tool and are reusable by specialized workflows, but they are not required by the normal Ferramentas registry/list read.
 
-They live in an optional Tool extension.
+They live in an optional 1:1 Tool extension.
 
 ## Identity
 
@@ -17,34 +17,58 @@ tool_id
 
 `tool_id` is both the relationship and the identity key of the extension.
 
-Do not introduce `technical_values_id`.
+Do not introduce:
+
+- `technical_values_id`;
+- a second UUID;
+- an independent lifecycle for the extension.
+
+A separate physical table does not create a separate domain identity.
 
 ## Current technical values
 
-The current Beta implementation supports:
+The confirmed reusable technical values currently include:
 
-- `volume_marisa`
-- `volume_puncao`
-- `diametro_gargalo`
-- `peso_nominal_novo`
+- `volume_marisa`;
+- `volume_puncao`;
+- `diametro_gargalo`.
 
-A missing extension row means those optional Tool technical values are not registered. The system must not invent substitute values.
+These values are Tool-owned technical facts.
 
-## Read path
+A missing extension row means the applicable optional technical values are not registered. The system must not invent substitute values.
+
+## Consumption by workflows
 
 The normal Ferramentas list/search path remains light and does not load the extension.
 
-A consuming workflow requests the values only when needed.
+A consuming workflow requests only the technical values it actually needs.
 
-For Peso-related use through a CM production context, the established read path is:
+For Peso-related use through a CM production context:
 
 ```text
 cm_id
-  → cm_contexts.tool_id
-  → tool_technical_values
+→ tool_id
+→ tool_technical_values
 ```
 
-The context is used to resolve the real canonical Tool; the technical values remain Tool-owned.
+Peso uses the applicable Tool technical values without becoming their owner.
+
+Pegamentos and Comparação may likewise consume `diametro_gargalo` through the real Tool/context relations when that value is required by their workflow.
+
+The value remains owned by Ferramentas/Tool and must not be duplicated into consumer-module persistence merely because several workflows use it.
+
+## Boundary
+
+`tool_technical_values` must contain reusable, relatively stable technical facts of the Tool.
+
+It must not become storage for:
+
+- production-specific configuration;
+- measurement results;
+- module-specific workflow state;
+- unrelated historical events.
+
+The exact field set grows only when a real current-scope workflow requires another reusable Tool-owned technical fact.
 
 ## Current implementation association
 
