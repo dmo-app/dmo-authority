@@ -102,20 +102,120 @@ Each module owns its own facts. One module consuming another module's context do
 
 ---
 
-## 4. Frontend and backend relationship
+## 4. How the frontend and backend work together
 
-The frontend establishes the operational context of the current action.
+DMO does not require the backend to pre-consolidate the complete domain state before the UI can operate.
 
-The backend validates that context and retrieves or writes the facts required for that operation.
+The frontend carries the operational context of the current action, but the backend remains authoritative for validating identities, relationships, authorization and persisted truth.
 
-Important distinctions:
+The frontend knows the context it is currently using, such as:
 
-- a read model is not automatically a persisted entity;
-- a query join is not automatically a new domain relation;
-- UI grouping is not automatically database ownership;
-- a DTO is not automatically a canonical identity.
+- module or capability;
+- `jobon_id`;
+- relevant component context such as `cm_id`, `mf_id` or `bq_id`;
+- record identity such as `peso_id`;
+- requested operation;
+- current screen/workflow state.
 
-A screen that needs information from several related records may compose them at read time through existing truthful relations.
+The frontend sends a contextual request.
+
+The backend then:
+
+1. validates the supplied identities and their relationships;
+2. validates authorization;
+3. traverses only the **real persisted relations** required by that operation;
+4. filters and projects the required data;
+5. returns a purpose-specific read model.
+
+The page renders that read model.
+
+### Core distinctions
+
+**READ MODEL ≠ ENTITY**
+
+A model assembled for one screen or operation is not automatically a persisted domain entity.
+
+It does not gain its own identity, table or lifecycle merely because the UI needs that shape.
+
+**QUERY JOIN ≠ DOMAIN RELATION**
+
+A backend query may traverse several existing relationships without creating new foreign keys between the final records.
+
+Example:
+
+```text
+peso_id
+→ cm_id
+→ jobon_id
+```
+
+If this already expresses the real relationship, Peso does not need a duplicate `jobon_id` merely to make a read easier.
+
+**UI GROUPING ≠ DATABASE OWNERSHIP**
+
+Several functions may appear together under Controlo without becoming children of one generic database parent.
+
+Peso, Comparação, Pegamentos, Folha and Resumo remain connected through the identities and relationships that represent the real process.
+
+UI organization does not redefine domain ownership.
+
+**DTO / PROJECTION ≠ DOMAIN IDENTITY**
+
+A purpose-specific backend response exists to serve an operation.
+
+Its existence does not justify a new persisted ID or domain object.
+
+### Peso read example
+
+For an existing Peso, a focused read may start from:
+
+```text
+peso_id
+→ cm_id
+→ jobon_id
+```
+
+When Tool-owned technical values are required, the query follows the separate real relation:
+
+```text
+cm_id
+→ tool_id
+→ required Tool technical values
+```
+
+When the Peso view requires TP/Calote, the backend reads that production value from the Job On context.
+
+TP is a production-specific Job On value. It has no independent operational identity and therefore no `tp_id` or `tampao_id`.
+
+Peso may consume the TP value without becoming its owner and without requiring a new foreign key.
+
+The physical Peso measurement uses:
+
+```text
+CM + TP
+```
+
+TP adds mass to that physical measurement. Its known contribution may be used to correct or interpret the observed value for the relevant technical/wear analysis.
+
+This is distinct from the later technical calculation, which uses the applicable drawing values, including the required BQ and PU technical volumes.
+
+TP does not become a term in the main Peso formula merely because it is physically present in the measurement process.
+
+### Resumo read example
+
+Resumo is a composition of the relevant persisted facts for one production.
+
+A request may begin from:
+
+```text
+jobon_id
+```
+
+The backend can then compose the required state by traversing the real persisted relations for that production, including the relevant component contexts and Controlo records.
+
+This does not require a persisted `resumo_id`, nor does it require every Controlo function to become a child of `controlo_id`.
+
+> Resumo is a composition of the relevant persisted facts for that production.
 
 ---
 
@@ -266,7 +366,7 @@ Before adding a field, relation, identity or persistence object, determine:
 5. whether an existing truthful relation already reaches it;
 6. whether the requirement is persistence or only a read/composition need.
 
-Do not create new identities or duplicate relations solely because a screen would be easier to assemble.
+> **Persist the fact where it truly belongs. Traverse existing relationships when another operation needs to read it. Do not create identities, foreign keys or ownership merely to make a screen or query more convenient. A new identity or relation requires a real persistent business fact, lifecycle, or ownership boundary.**
 
 ---
 
