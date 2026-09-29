@@ -19,20 +19,24 @@ Implementation details discovered in `dmo-app/dmo-app-beta` may be recorded here
 
 ## Commit justification rule
 
-Every commit that changes canonical authority content must preserve the reason for the change.
+Every commit that changes canonical authority content must preserve the reason for the change **inside the commit itself**.
 
-The commit message/body or the changed document must make clear:
+The commit message and, where needed, its body must make clear:
 
 1. **What changed** — the exact rule, identity, relation, scope statement or module behavior that changed.
 2. **Why it changed** — the functional problem, owner decision, recovered context or contradiction that required the change.
 3. **What supports it** — the owner-confirmed decision or evidence used to justify the change.
 4. **What it does not imply** — any nearby interpretation that must not be inferred from the change, especially for identities, ownership and relationships.
 
+A chat, issue, pull-request description, external document or later explanation does **not** satisfy this requirement on its own.
+
+The commit must remain understandable in Git history without depending on external conversational context.
+
 A commit that only says things such as `align authority`, `update identities`, `normalize docs` or `fix context` is insufficient if it does not preserve the underlying reason.
 
 ### Identity / ownership changes
 
-Changes involving IDs, ownership, parent-child relations, persistence boundaries or module responsibility require an explicit functional justification.
+Changes involving IDs, ownership, parent-child relations, persistence boundaries or module responsibility require an explicit functional justification in the commit.
 
 Do not introduce or promote an identity merely because:
 
@@ -46,6 +50,6 @@ The justification must state what real persistent context or fact requires the i
 
 ### Example
 
-For a change involving `controlo_id`, a sufficient justification would explain that Controlo requires a persistent identity for the Controlo context/sheet of one production, while also stating that this does **not** make `controlo_id` a generic parent for Peso, Comparação, Pegamentos or every other Controlo function.
+For a change involving `controlo_id`, a sufficient commit justification would explain that Controlo requires a persistent identity for the Controlo context/sheet of one production, while also stating that this does **not** make `controlo_id` a generic parent for Peso, Comparação, Pegamentos or every other Controlo function.
 
 The purpose of this rule is to preserve not only the final decision, but the reason that made the decision correct, so later curation or AI-assisted changes do not reinterpret it without context.
