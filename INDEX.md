@@ -11,6 +11,7 @@ Read this repository to understand how the application must be created before ch
 - `RULES.md` — cross-cutting product and architecture rules.
 - `SCOPE.md` — Beta scope.
 - `OPEN_DECISIONS.md` — genuinely unresolved decisions only.
+- `IMPLEMENTATION_STATUS.md` — current Beta implementation state, bugs, transitional conditions, and known gaps; not product canon.
 - `AUTHORITY.md` — authority/governance boundary.
 - `README.md` — repository entry point.
 
