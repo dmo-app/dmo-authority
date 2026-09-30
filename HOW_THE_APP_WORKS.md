@@ -482,7 +482,7 @@ See:
 
 `modules/controlo/` contains the rules and context shared by Controlo Create and Controlo Approve.
 
-`controlo_id` is treated there as a planned evolution where applicable. It must not be spread through the model as a universal parent merely because Controlo groups several functions.
+`controlo_id` is a canonical functional identity for the shared Controlo production context; its exact technical representation is still pending. It must not be spread through the model as a universal parent merely because Controlo groups several functions.
 
 See:
 
