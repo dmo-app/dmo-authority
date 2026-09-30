@@ -65,6 +65,7 @@ It includes the planned `controlo_id` evolution where applicable. The existence 
 - `PEGAMENTOS.md`
 - `FOLHA.md`
 - `DEFINICOES.md`
+- `DOCUMENTS.md`
 
 ## Controlo Approve
 
