@@ -2,13 +2,29 @@
 
 Job On Create creates a new production occurrence.
 
+## Beta scope
+
+The Beta Job On keeps only the production context required by the current Beta workflows.
+
+It records:
+
+- production number;
+- production reference derived from the associated Tools;
+- machine;
+- production start date;
+- the selected CM, MF and BQ Tools and their production contexts;
+- TP/Tampão/Calote;
+- only other production values that are strictly required by current Beta Peso or Boquilhas flows.
+
+It does not expand into final-application configuration merely because other piece families or future modules may exist elsewhere.
+
 ## Flow
 
 1. Identify the production:
-   - reference;
    - production number;
+   - reference derived from the selected Tools;
    - machine;
-   - production date.
+   - production start date.
 
 2. Select the relevant CM, MF and BQ Tools from Ferramentas.
 
@@ -17,7 +33,7 @@ Job On Create creates a new production occurrence.
    - production-specific `cm_id`, `mf_id` and `bq_id` as applicable;
    - each component context references the selected canonical `tool_id`.
 
-4. Record production-specific configuration such as PU, CS, TP/Tampão and other values that belong to this production rather than to the Tool master.
+4. Record TP/Tampão/Calote and only the other production-specific values required by the current Beta workflows.
 
 5. Continue into the downstream operational modules using the saved Job On context.
 
