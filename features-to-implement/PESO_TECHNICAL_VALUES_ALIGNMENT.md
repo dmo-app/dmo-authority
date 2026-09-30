@@ -1,15 +1,16 @@
 # Peso / Tool Technical Values Alignment
 
-**Status:** VERIFY CURRENT IMPLEMENTATION — IMPLEMENT CHANGES WHERE MISSING
+**Status:** REQUIRED RECOVERY ALIGNMENT — DEPENDS ON TOOL TECHNICAL VALUES IMPLEMENTATION
 
-**Type:** Controlo Create alignment / regression prevention
+**Type:** Controlo Create recovery alignment / regression prevention
 
 ## Purpose
 
-Verify the current Peso implementation against the current blueprint after the Tool technical-value and ownership rules were clarified.
+Ensure the recovered Peso implementation follows the current blueprint after Tool technical-value ownership was clarified.
 
-Related blueprint:
+The older application backup does not contain the canonical Tool technical-values structure, so this work must be coordinated with:
 
+- `TOOL_TECHNICAL_VALUES_IMPLEMENTATION.md`;
 - `modules/controlo-create/PESO.md`;
 - `modules/ferramentas/VALORES_TECNICOS.md`.
 
@@ -33,6 +34,25 @@ Confirmed reusable Tool-owned values include:
 
 Missing Tool technical values must not be invented.
 
+## Recovery implication
+
+When restoring from the older backup, do not preserve an old input location merely because that is where an earlier implementation happened to obtain a value.
+
+Recovery must move toward the current ownership model:
+
+```text
+stable reusable Tool fact
+-> Tool technical values
+
+production-specific fact
+-> owning production/context record
+
+Peso measurement/result
+-> Peso
+```
+
+Any old data migration must preserve historical truth. It must not silently rewrite a historical Peso with today's Tool value if the value consumed at the time must remain historically frozen.
+
 ## Measurement/calculation distinction
 
 Physical measurement and technical calculation are separate concepts.
@@ -51,24 +71,23 @@ TP does not become a Tool-owned technical value merely because Peso consumes it.
 
 ## Historical stability
 
-Planning/Architect must verify which inputs are stable owner facts and which facts must be frozen on the Peso record when consumed to preserve historical truth.
+Planning/Architect must classify each consumed input as either:
+
+- current stable owner fact that can be resolved through its real relation; or
+- historically consumed/frozen fact that must remain attached to the Peso record to preserve what was actually used.
 
 Do not duplicate stable Tool facts into Peso merely for convenience.
 
-## Verification outcome
-
-This task may end as:
-
-- `VERIFIED_IMPLEMENTED` if the current implementation already matches;
-- `IMPLEMENTED` if changes are required;
-- `BLOCKED_BY_BLUEPRINT_GAP` if a real missing product decision is discovered.
+Do not overwrite truthful historical Peso inputs during recovery.
 
 ## Reviewer checks
 
 Reject an implementation that:
 
-- manually re-enters Tool technical values in Peso when they already belong to the Tool;
+- manually re-enters Tool technical values in Peso when they belong to the Tool;
 - moves TP/Calote ownership into Tool technical values;
 - invents missing technical values;
 - merges physical weighing and the later technical formula into one misleading concept;
-- duplicates owner facts without a historical-stability reason.
+- duplicates owner facts without a historical-stability reason;
+- overwrites historical consumed values with current Tool values during recovery;
+- keeps an obsolete backup ownership model merely because it is easier to migrate.
