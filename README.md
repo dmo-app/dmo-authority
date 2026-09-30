@@ -31,7 +31,30 @@ Historical repositories may be used as evidence when recovering information, but
 - `SCOPE.md` — Beta scope.
 - `IMPLEMENTATION_STATUS.md` — current Beta implementation state, transitional conditions and known gaps; not product canon.
 - `modules/` — detailed functional blueprint organized by module.
+- `features-to-implement/` — implementation work packages connected to those same modules; part of normal implementation context, but never a competing source of product truth.
 
 The blueprint contains decided product behavior only. Unresolved product questions stay outside the canonical blueprint until the owner decides them; once decided, the rule is written directly into the owning module or cross-cutting file.
 
 The detailed functional rule belongs in the file owned by the relevant module or cross-cutting concern. Git history preserves how the blueprint evolved; historical curation records do not define a second product source.
+
+
+## Normal implementation context
+
+A Developer should not treat `features-to-implement/` as a detached backlog that must be discovered separately.
+
+For implementation work, the normal context chain is:
+
+```text
+HOW_THE_APP_WORKS.md
+→ relevant canonical module file(s)
+→ associated features-to-implement slice(s)
+→ IMPLEMENTATION_STATUS.md when current runtime/baseline evidence matters
+```
+
+The module documents answer **what DMO must do**.
+
+The implementation slices answer **what bounded work must be built to reach that behavior**.
+
+`IMPLEMENTATION_STATUS.md` answers **what is currently implemented, missing, defective or unverified**.
+
+These three layers must remain distinct. A slice may organize implementation work, but it may not redefine a product rule owned by the canonical module.

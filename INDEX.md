@@ -47,7 +47,18 @@ Start with `HOW_THE_APP_WORKS.md` for the global model.
 
 Then read the relevant module folder. A module file should contain the complete detail needed for that task: frontend behavior, backend behavior, identities, relations, inputs, writes, reads, validations, history, integrations, and implementation status where relevant.
 
-If the task concerns a planned feature that is not yet implemented, also read the corresponding file under `features-to-implement/`.
+For implementation work, also read the implementation slice(s) associated with that module under `features-to-implement/`, not only when someone already knows the feature is missing.
+
+The normal implementation path is:
+
+```text
+HOW_THE_APP_WORKS.md
+→ canonical module
+→ associated implementation slice(s)
+→ IMPLEMENTATION_STATUS.md when current implementation evidence matters
+```
+
+This makes the implementation backlog part of normal app context rather than a detached folder. Canonical module behavior still wins over any slice wording.
 
 Do not infer missing behavior.
 

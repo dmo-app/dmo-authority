@@ -632,7 +632,88 @@ Document configuration such as the base directory and recipient routing remains 
 
 ---
 
-## 12. Detailed blueprint
+
+---
+
+## 13. Implementation context
+
+The application context includes not only the canonical product behavior above, but also the bounded implementation work required to build that behavior.
+
+For implementation tasks, use this reading order:
+
+```text
+HOW_THE_APP_WORKS.md
+→ understand the global application
+
+modules/<relevant-area>/
+→ load the canonical product rules for that area
+
+features-to-implement/<associated-slice>.md
+→ load the bounded implementation work for that behavior
+
+IMPLEMENTATION_STATUS.md
+→ consult only when current runtime/baseline evidence is relevant
+```
+
+This is one application context with different responsibilities:
+
+```text
+canonical module
+= what the product must do
+
+implementation slice
+= what must be built to achieve it
+
+implementation status
+= what currently exists / is missing / is unverified
+```
+
+The implementation folder is therefore not an optional historical annex. It is the construction backlog connected to the app's current modules.
+
+### Current module-to-implementation map
+
+```text
+Admin
+→ Access Templates / Users / App Definições
+→ Setup provider connection
+
+Ferramentas
+→ Tool technical values
+
+Job On
+→ duplication
+→ context-change awareness
+→ creation-time Controlo context
+
+Controlo shared
+→ controlo_id shared context
+→ Folha shared persistence/evaluation
+
+Controlo Create
+→ Peso historical difference
+→ Peso consumption of Tool technical values
+→ Comparação UI/workflow integration
+→ Pegamentos backend/persistence
+→ Folha persistence/evaluation
+
+Boquilhas
+→ repair-trace implementation
+→ Job On context-change consumption
+
+Prototype / development support
+→ fake-backend rework
+
+Runtime verification
+→ foundation/runtime gaps
+```
+
+The detailed file association map and readiness rules live in `features-to-implement/README.md`.
+
+A Developer must not implement a slice from its filename alone. The owning canonical module must be loaded first, and a BLOCKED slice must not be completed by inventing the missing product decision.
+
+---
+
+## 14. Detailed blueprint
 
 For detailed behavior, use the module documents.
 

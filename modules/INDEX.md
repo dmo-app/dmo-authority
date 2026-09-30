@@ -11,8 +11,13 @@ HOW_THE_APP_WORKS.md
 → understand the app and main relationships
 
 modules/<relevant-module>/
-→ load the detailed rules needed for the current task
+→ load the detailed canonical rules needed for the current task
+
+features-to-implement/<associated-slice>.md
+→ when implementing, load the bounded construction work tied to that module
 ```
+
+`features-to-implement/` is part of normal implementation context, not a detached optional backlog. It never overrides the module canon.
 
 Do not load unrelated module detail merely because it exists.
 
@@ -153,7 +158,9 @@ Runtime/status verification
 → FOUNDATION_RUNTIME_GAPS.md
 ```
 
-Always read `../features-to-implement/README.md` before treating one of these files as a Developer contract. Some remain recovery/alignment drafts and some are explicitly BLOCKED.
+For implementation work, load the relevant entries above as part of the module context rather than waiting until a missing feature is discovered accidentally.
+
+Always read `../features-to-implement/README.md` before treating one of these files as a Developer contract. Some remain recovery/alignment drafts and some are explicitly BLOCKED. The module canon remains authoritative.
 
 ## Templates
 

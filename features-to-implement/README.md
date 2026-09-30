@@ -1,6 +1,8 @@
 # Implementation Slices
 
-This directory is a **fresh-start implementation backlog** derived from the current DMO blueprint.
+This directory is the **fresh-start implementation layer of the DMO application context**, derived from the current canonical blueprint.
+
+It is a backlog, but it is not a detached annex. When a Developer works on a module, the associated implementation slice(s) are part of the normal context package for that work.
 
 Each file represents one bounded slice of the product that must be built so the new application reaches the canonical behavior described in the owning module documents.
 
@@ -19,6 +21,19 @@ what the new application must support
 ```
 
 They must **not** be written as repair notes for an older application.
+
+## Place in the application context
+
+The normal implementation reading path is:
+
+```text
+HOW_THE_APP_WORKS.md
+→ relevant module canon
+→ associated implementation slice(s)
+→ IMPLEMENTATION_STATUS.md when runtime evidence matters
+```
+
+This directory explains bounded construction work. It does not redefine the product.
 
 ## Source-of-truth boundary
 
