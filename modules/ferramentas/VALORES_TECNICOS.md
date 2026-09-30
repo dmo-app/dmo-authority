@@ -35,6 +35,8 @@ The confirmed reusable technical values currently include:
 
 These values are Tool-owned technical facts.
 
+When entered, stored and shown as numeric Tool technical values, they use **two decimal places**.
+
 A missing extension row means the applicable optional technical values are not registered. The system must not invent substitute values.
 
 ## Consumption by workflows
