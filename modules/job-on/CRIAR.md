@@ -67,7 +67,8 @@ The reference may therefore help find candidates, but it never determines `tool_
 3. Create the production context:
    - new `jobon_id`;
    - production-specific `cm_id`, `mf_id` and `bq_id` as applicable;
-   - each component context references the selected canonical `tool_id`.
+   - each component context references the selected canonical `tool_id`;
+   - create the production's `controlo_id` and associate it immediately with this `jobon_id`.
 
 4. Record TP/Tampão/Calote and only the other production-specific values required by the current Beta workflows.
 
@@ -118,7 +119,8 @@ Job On created
 → jobon_id persisted
 → machine + planned production date available
 → Job On planning calendar can project it now
-→ Controlo Resumo can offer that jobon_id as a future preparation choice now
+→ associated controlo_id exists immediately
+→ Controlo Resumo can expose that production/context now
 ```
 
 This does not activate the production early.

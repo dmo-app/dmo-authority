@@ -35,16 +35,28 @@ UI grouping under Controlo does not, by itself, make all of these children of on
 
 ## Future Job On preparation context
 
-A successfully saved future Job On is immediately available to Controlo as a selectable preparation context.
+A successfully created Job On immediately receives its associated canonical `controlo_id`.
+
+That association belongs to the production context itself:
+
+```text
+jobon_id A ↔ controlo_id A
+jobon_id B ↔ controlo_id B
+```
+
+The association is stable, but the Resumo surface is not locked to one Job On/Controlo context. The operator may navigate between productions and their respective `controlo_id` contexts.
+
+A successfully saved future Job On is therefore immediately available to Controlo as a selectable preparation context.
 
 Controlo does not need to wait for that production to become the current machine production before the operator can inspect or prepare its Resumo context.
 
 ```text
 Job On saved
-→ future jobon_id exists
-→ Controlo Resumo production selector can list it
-→ user explicitly selects it
-→ backend reads that jobon_id context
+→ jobon_id exists
+→ associated controlo_id already exists
+→ Controlo Resumo can list that production
+→ user explicitly selects the production/context
+→ backend resolves the existing jobon_id ↔ controlo_id association
 → preparation may begin where the owning Controlo workflow allows it
 ```
 
@@ -114,15 +126,23 @@ Create and Approve may expose different controls around that read because their 
 
 A Create-side change that affects the composed control state must be visible when Approve reads Resumo.
 
-## `controlo_id` — canonical functional identity, technical implementation pending
+## `controlo_id` — canonical Controlo production context
 
 `controlo_id` is the canonical functional identity of the shared Controlo production context where durable Controlo-level facts belong.
 
-Its exact technical representation and migration into the implementation remain pending.
+Each Job On creates and associates its `controlo_id` as part of Job On creation. Controlo therefore has an existing context before Peso, Folha, Pegamentos or another Controlo record is created.
+
+The exact technical representation may still be chosen during implementation, but the functional lifecycle is fixed:
+
+```text
+create Job On
+→ create jobon_id
+→ create associated controlo_id
+```
 
 It is not permission to rewrite every existing Controlo relation.
 
-When introduced, it must represent the Controlo context for a production and provide a truthful home for facts that belong to Controlo as a shared production context rather than to:
+It provides a truthful home for facts that belong to Controlo as a shared production context rather than to:
 
 - Job On;
 - a canonical Tool;
@@ -131,9 +151,7 @@ When introduced, it must represent the Controlo context for a production and pro
 - Comparação;
 - another individual Controlo function.
 
-Its exact implementation and migration boundary must be designed against the existing working model before schema changes are made.
-
-Until that implementation is performed, documentation must not pretend that all current records already use `controlo_id`.
+Its exact implementation boundary must preserve the ownership rules of the individual Controlo functions. Existing function-specific records do not become children of `controlo_id` merely for navigation convenience.
 
 ## What `controlo_id` must not become
 
@@ -157,7 +175,7 @@ Resumo may compose the state of several Controlo functions for one production, b
 
 ```text
 controlo_id
-→ canonical durable shared Controlo production context; technical representation still to be implemented
+→ canonical durable shared Controlo context created with and associated to one Job On
 
 Resumo
 → derived read/document composition

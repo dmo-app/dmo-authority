@@ -30,12 +30,15 @@ This file defines domain identities. A database table, read model, UI tab or doc
 ## 4. `controlo_id` — Controlo context in a production
 
 - Identifies the persistent Controlo context for one production.
+- It is created and associated when its `jobon_id` is created; Controlo does not wait for the first Peso, Folha, Pegamentos or other operational record to create this context.
+- One Job On has its own associated Controlo context, and Resumo may navigate between the `controlo_id` values of different productions.
+- The association does not lock the Resumo UI to one Job On; it only keeps each Controlo context truthfully attached to its production.
 - It is the truthful home for facts that belong to Controlo as a production context rather than to Job On, a Tool, or one specific Controlo function.
 - It does not replace `jobon_id`, `cm_id`, `mf_id`, `bq_id`, `peso_id` or `comparacao_id`.
 - It is not a generic god-parent for every Controlo record.
 - UI grouping under Controlo does not imply persistence ownership under `controlo_id`.
 
-The exact technical representation may be designed during implementation, but the functional identity itself is canonical.
+The exact technical representation may be designed during implementation, but the creation-time association with `jobon_id` is canonical.
 
 ## 5. `peso_id` — Peso record
 

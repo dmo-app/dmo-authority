@@ -25,12 +25,27 @@ Resumo may be used to select a saved Job On context explicitly, including a futu
 
 ```text
 saved future Job On
+→ already has its associated controlo_id
 → appears as a Resumo production/context candidate
-→ user explicitly selects it
-→ jobon_id becomes the active Resumo/preparation context
+→ user explicitly selects the production/context
+→ that controlo_id becomes the current Resumo/preparation context
 ```
 
-The selector is a focused read over Job On planning data. It does not copy Job On production facts into Resumo and does not create `resumo_id`.
+The selector is a focused read over Job On planning data and the existing Job On ↔ Controlo association. It does not copy Job On production facts into Resumo and does not create `resumo_id`.
+
+Resumo is not locked to the first or current production. The operator may switch between available production contexts, each resolving to its own existing `controlo_id`.
+
+A calendar interaction may position Resumo directly on a production context:
+
+```text
+click a concrete production entry in the calendar
+→ explicit production selection
+→ resolve jobon_id
+→ resolve associated controlo_id
+→ Resumo switches to that context
+```
+
+Clicking only a date does not infer a production when multiple Job Ons exist for that date; the available productions are shown and the user chooses the intended one.
 
 If several Job Ons are relevant, the system shows the candidates and the user chooses the intended `jobon_id`. The frontend must not silently activate one.
 
