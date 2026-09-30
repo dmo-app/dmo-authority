@@ -1,18 +1,47 @@
 # Controlo — Folha
 
-Folha participates in both Controlo Create and Controlo Approve.
+Folha is one shared Controlo surface/state exposed through both Controlo Create and Controlo Approve.
 
-## Create-side actions
+There is not a separate "Folha Create" and "Folha Approve" copy.
 
+## Capability behavior
+
+### Controlo Create
+
+Create may:
+
+- read;
 - edit;
 - evaluate;
 - submit.
 
-## Approve-side actions
+Changes made through Create become part of the same underlying Folha/control state that Approve later reads.
+
+### Controlo Approve
+
+Approve reads the same Folha/control state.
+
+It does **not** edit the operational Folha content.
+
+Approve may perform the approval-side actions defined by the approval workflow:
 
 - approve;
 - reject;
-- reopen.
+- reopen where permitted.
+
+Those actions persist approval decisions/history; they do not give Approve permission to change Create-owned Folha fields, measurements, observations or technical facts.
+
+Conceptually:
+
+```text
+Create edits Folha/state
+-> same underlying state changes
+-> Approve sees the updated state
+
+no copied Folha
+no second Folha
+no approval-side editing of operational content
+```
 
 ## Families
 

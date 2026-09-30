@@ -55,6 +55,20 @@ This directory contains only rules genuinely shared across Controlo Create and C
 
 It includes the canonical `controlo_id` functional identity and the still-pending technical implementation boundary. The existence of this shared context must not be interpreted as permission to make `controlo_id` a generic parent for every Controlo record.
 
+Folha and Resumo are shared Controlo surfaces over the same underlying production/control state:
+
+```text
+Controlo Create
+→ may edit/write the operational state allowed by its workflows
+
+Controlo Approve
+→ reads that same state
+→ writes approval decisions/history only
+→ does not edit the operational content
+```
+
+Create and Approve therefore do not own separate copies of Folha or Resumo.
+
 ## Controlo Create
 
 `controlo-create/`

@@ -8,19 +8,27 @@
 
 Implementation must follow `modules/controlo-create/FOLHA.md` and the shared Controlo rules.
 
-Folha participates in both capability surfaces.
+Folha is one shared Controlo surface/state exposed through both capabilities.
+
+It must not be implemented as separate Create and Approve copies.
 
 Create-side actions:
 
+- read;
 - edit;
 - evaluate;
 - submit.
 
-Approve-side actions:
+Approve-side behavior:
 
+- read the same current Folha/control state;
 - approve;
 - reject;
-- reopen.
+- reopen where permitted.
+
+Approve does not edit the operational Folha content. Approval actions persist approval-side decisions/history only.
+
+A Create-side edit must be visible when Approve reads the same control state without copying/synchronizing a second Folha object.
 
 ## Families
 
@@ -62,6 +70,9 @@ Use the real owner/relation where historical reconstruction remains truthful. Pe
 
 Reject an implementation that:
 
+- creates separate persisted Folha copies for Create and Approve;
+- lets Approve edit Create-owned operational Folha content;
+- requires a copy/synchronization step for Create changes to appear in Approve;
 - expands Job On merely to host Beta-only Folha input;
 - treats Folha manual entry as permanent full-application ownership;
 - turns OK/NOK into automatic production approval/rejection;
