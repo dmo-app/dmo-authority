@@ -572,7 +572,9 @@ record ≠ read projection ≠ PDF ≠ filesystem path
 
 Generated documents are derived artifacts. They do not become the authority for the underlying structured record.
 
-Document configuration that belongs to Controlo is documented under Controlo Create → Definições.
+Document behavior is documented under Controlo Create → Documents / PDFs.
+
+Document configuration such as the base directory and recipient routing is documented under Controlo Create → Definições.
 
 ---
 
