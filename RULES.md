@@ -28,6 +28,8 @@ Tolerance warnings, negative balances, stale comparisons and threshold alerts mu
 - **Approve never rejects on warnings and reject never auto-triggers**: status changes only per an explicit human action on the route.
 - Decision commands carry no warning/result input and no code path derives a decision from calculation results.
 - A warning is a gate that a human acknowledgement opens; it is never a hard prohibition and never a stored state.
+- If a selected canonical Tool is already associated with another current machine/production context, the application may warn the user and identify that other context, but it must still allow explicit confirmation and continuation.
+- Tool concurrency warnings must never be implemented as physical-exclusivity invariants, uniqueness constraints, hidden eligibility filters or blocking validation.
 
 ## Rule 4: Presentation does not define domain truth
 

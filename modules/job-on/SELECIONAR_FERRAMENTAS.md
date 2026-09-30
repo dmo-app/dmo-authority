@@ -105,6 +105,38 @@ reference + machine + lot
 
 The application resolves the user's explicit selection to the persisted canonical `tool_id`.
 
+## Concurrent machine/production association warning
+
+DMO must not turn assumed physical Tool exclusivity into a blocking software invariant.
+
+If the selected `tool_id` is already associated with another current machine/production context, Job On may surface that fact as an informational warning before the user continues.
+
+Conceptually:
+
+```text
+selected tool_id
+→ another current machine/production association is found
+→ show the other machine/production context
+→ ask for explicit confirmation
+→ user may continue with the selected tool_id
+```
+
+This warning exists to help catch a likely operational mistake. It does **not** prove that the association is invalid and it must not become:
+
+- a `UNIQUE`/exclusivity constraint;
+- a backend validation refusal;
+- a hidden candidate filter;
+- an automatic Tool replacement;
+- a reason to prevent Job On creation or editing.
+
+```text
+concurrent Tool association warning
+!=
+physical exclusivity rule
+```
+
+The system records the user's explicit Tool choice rather than blocking work because software inferred that the physical situation should be impossible.
+
 ## Consultation inside the selection surface
 
 The Ferramentas surface opened from Job On may also allow the user to inspect what is already registered before selecting or creating a Tool.
