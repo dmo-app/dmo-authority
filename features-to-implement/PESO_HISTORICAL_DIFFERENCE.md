@@ -20,8 +20,14 @@ The read begins from the current Peso / CM production context and follows truthf
 current jobon_id / peso_id
 → current production reference
 → historical Job On / Peso candidates for that reference
-→ rank useful candidates near the top
-→ explicit user selection of one historical peso_id
+→ explicit user choice of one historical peso_id
+
+selection assistance only:
+→ same machine and/or compatible/relevant Tool context may appear first
+→ newer candidates may appear before older candidates
+→ all other candidates remain visible and selectable
+
+after the user's choice:
 → historical difference read model
 ```
 
@@ -33,14 +39,16 @@ The candidate pool is historical Peso data for the same production reference.
 
 The application must not use current-machine equality or Tool equality as exclusion rules. A production on another machine, or with a different Tool set, may still be the comparison the operator needs.
 
-Machine and Tool context are ranking/display assistance only:
+The primary rule is explicit user choice. Ranking is only presentation assistance for that choice:
 
 ```text
 historical candidates for same reference
-→ same machine and/or compatible/relevant Tool context may rank higher
-→ newer candidates may rank before older candidates within that assistance
-→ all candidates remain selectable
-→ user explicitly selects one peso_id
+→ user chooses the historical peso_id
+
+to help that choice:
+→ same machine and/or compatible/relevant Tool context may appear first
+→ newer candidates may appear before older candidates within that assistance
+→ all remaining candidates stay visible and selectable
 ```
 
 The selector shows enough saved context to make the choice deliberately, including production/date, machine and relevant Tool context.
@@ -104,8 +112,9 @@ The two workflows may both display calculated differences, but they do not share
 Tests must prove that:
 
 - historical Pesos for the same production reference remain selectable across different machines and Tool sets;
-- same-machine and/or compatible/relevant-Tool candidates may be ranked near the top without excluding the rest;
-- candidates may be ordered by recency inside the ranking assistance without being auto-selected;
+- explicit user choice is the governing rule before any ranking assistance is described or applied;
+- same-machine and/or compatible/relevant-Tool candidates may appear near the top without excluding the rest;
+- candidates may be ordered by recency inside the presentation assistance without being auto-selected or preselected;
 - machine equality and Tool equality are not hidden eligibility filters;
 - 4 current measurements can be compared against 5, 6 or 3 previous measurements without a same-count validation error;
 - only valid corresponding CMs contribute to the displayed difference/average;

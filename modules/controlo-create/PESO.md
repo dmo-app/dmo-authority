@@ -53,15 +53,21 @@ Conceptually:
 current production / Peso
 → current production reference
 → historical Pesos for that same production reference
-→ rank useful candidates near the top
-→ user explicitly selects one historical Peso
+→ user explicitly chooses which historical Peso to compare
+
+selection assistance only:
+→ same machine and/or compatible/relevant Tool context may appear first
+→ within that assistance, newer productions may appear before older ones
+→ all remaining historical Pesos stay visible and selectable
+
+after the user's choice:
 → compare the valid corresponding measurements
 → show the difference in the normal Peso flow
 ```
 
 The historical list must give the operator freedom to choose. It must not remove a production merely because it ran on another machine or used a different Tool set.
 
-Machine and Tool context may be used only as **ranking assistance**. Historical Pesos from the same machine and/or with Tool context considered compatible/relevant may appear near the top of the list. Within comparable ranking groups, newer productions may appear before older ones.
+The governing rule is the user's explicit choice. Machine and Tool context may be used only to help present the list after that rule is established: historical Pesos from the same machine and/or with compatible/relevant Tool context may appear near the top, and newer productions may appear before older ones within that assistance.
 
 This ranking is assistance, not eligibility and not selection:
 
