@@ -1,126 +1,222 @@
-# Tool Technical Values Implementation
+# Tool Technical Values — Implementation Slice
 
-**Status:** CANONICAL FEATURE DEFINED — REQUIRED WHEN RECOVERING FROM THE OLDER APP BACKUP
+**Readiness:** BLOCKED — canonical ownership/identity is defined, but value representation details still need closure before persistence/UI implementation.
 
-**Type:** Ferramentas persistence / recovery implementation
+**Owning domain:** Ferramentas
 
-## Why this feature is listed
+**Canonical sources:**
+- `modules/ferramentas/OVERVIEW.md`
+- `modules/ferramentas/VALORES_TECNICOS.md`
+- `IDENTITIES.md`
 
-The current blueprint defines Tool technical values as a real part of the DMO model.
+## Objective
 
-The older application backup intended as the recovery base does **not** contain this structure.
+Support optional reusable technical values owned by a canonical Tool without creating a second Tool identity or copying those values into consuming workflows.
 
-Therefore recovery must not assume that restoring the backup is enough. The recovered application must add Tool technical values explicitly according to the current blueprint.
-
-This is different from saying that every current implementation baseline lacks the feature. The recovery baseline is the important fact for this implementation brief.
-
-## Canonical model
-
-Some reusable technical facts belong to the canonical Tool.
-
-They live in an optional 1:1 extension:
+The application must support this relationship:
 
 ```text
 tool_id
-  └── tool_technical_values
+  └── optional tool_technical_values
 ```
 
-The extension has no independent domain identity.
+The extension exists only when one or more applicable technical values are registered.
 
-`tool_id` is the identity key and relationship.
+## Canonical identity and anchor
 
-Do not introduce:
+Operation anchor:
+
+```text
+tool_id
+```
+
+The technical-values extension has **no independent canonical ID**.
+
+It must not create:
 
 - `technical_values_id`;
-- a second UUID;
-- an independent lifecycle for the extension.
+- another UUID;
+- an independent lifecycle identity.
 
-A separate physical table does not create a separate business identity.
+A separate persistence structure is allowed, but physical storage does not create another business identity.
 
-## Current confirmed values
+## Confirmed Tool-owned values
 
-The currently confirmed Tool-owned technical values are:
+The currently confirmed reusable Tool technical facts are:
 
 - `volume_marisa`;
 - `volume_puncao`;
 - `diametro_gargalo`.
 
-They are reusable Tool facts, not production-specific configuration.
+These values belong to the canonical Tool.
 
-A missing value remains missing. Recovery/import must not invent or guess values merely to populate the new structure.
+They are not Job On facts, Controlo facts, Peso measurements, Pegamentos results or production-specific configuration.
 
-## Ownership boundary
+## Inputs
 
-Tool technical values belong to the canonical Tool.
+For a create/update of Tool technical values, the client may provide only the Tool-owned technical facts that the Ferramentas frontend contract allows the user to edit.
 
-Consumers reach them through the real production-context relation.
+The client carries the existing canonical `tool_id`.
 
-For Peso:
+The client must not create or derive another technical-values identity.
+
+For guarded edits, the final backend contract must also carry the applicable concurrency version according to the global concurrency rule.
+
+## Backend resolves
+
+The backend resolves:
+
+- that `tool_id` exists;
+- that the current account has the capability required to edit Tool-owned data;
+- current persisted technical values for the Tool when editing;
+- backend-owned audit/concurrency facts where the final persistence contract requires them.
+
+The client must not supply actor/time as authority.
+
+## Reads
+
+Normal Ferramentas list/search remains light.
+
+It must not automatically load specialized technical values for every Tool.
+
+Technical values are read only when a surface or consuming workflow actually needs them.
+
+Consumer path example:
 
 ```text
 cm_id
--> tool_id
--> tool_technical_values
+→ tool_id
+→ tool_technical_values
 ```
 
-Pegamentos and Comparação may likewise consume `diametro_gargalo` through the applicable Tool/context relation.
+The consumer follows the real production-context relation to the canonical Tool.
 
-Consumer workflows do not become owners of these values merely because they use them.
+## Writes
 
-## Recovery implementation work
+This slice persists only reusable technical facts owned by the Tool.
 
-Planning/Architect must design the recovery addition so that the older backup gains the current canonical structure without distorting existing operational data.
+It must support:
 
-At minimum the work must determine:
+- registering technical values for an existing canonical Tool;
+- editing registered Tool technical values when the owning workflow permits it;
+- leaving technical values absent when they are not known or not applicable.
 
-1. the persistence representation for the optional 1:1 Tool extension;
-2. creation/update behavior from Ferramentas where the product surface requires it;
-3. read paths for consuming workflows;
-4. migration behavior for existing Tools from the backup;
-5. behavior when an existing Tool has no technical values yet;
-6. tests proving that consumer workflows resolve the values through `tool_id` rather than duplicated module-specific fields.
+Adding or editing technical values must never replace the Tool or create a new `tool_id`.
 
-Existing Tools from the backup must preserve their existing `tool_id`.
+## Missing values
 
-Adding technical values must enrich the existing Tool identity, not replace it.
+Missing technical values remain missing.
 
-## Migration/backfill rule
+The backend and frontend must not:
 
-For an existing Tool from the backup:
+- invent defaults that pretend to be real Tool facts;
+- infer missing values from another Tool;
+- create a replacement Tool merely because technical data is absent.
+
+A consuming workflow that requires a missing value must follow that workflow's own explicit missing-data behavior.
+
+This slice must not invent that consumer behavior.
+
+## Consumers and ownership
+
+Known consumers may include:
 
 ```text
-existing tool_id
--> add optional technical-values extension when known
+Peso
+→ Tool technical values required by its calculation
+
+Pegamentos
+→ diametro_gargalo where required
+
+Comparação
+→ diametro_gargalo where required
 ```
 
-Not:
+Consumption does not transfer ownership.
+
+Do not persist a second mutable copy of these Tool facts inside Peso, Pegamentos or Comparação merely for query convenience.
+
+Where a consuming workflow needs historical stability, that workflow must explicitly define which consumed value is frozen and why. This slice does not turn all current Tool values into historical snapshots automatically.
+
+## Derived state
+
+No new business identity, lifecycle state or duplicate aggregate is derived from the presence of technical values.
 
 ```text
-old Tool
--> create replacement Tool only to obtain technical values
+technical values present
+!=
+new Tool
+
+technical values absent
+!=
+invalid Tool
 ```
 
-If reliable source data for a technical value does not exist during recovery, leave it unregistered and let the normal workflow expose/handle the missing value according to the owning module rules.
+A Tool can exist canonically without the optional extension.
 
-## What must not be imported from the old backup as canon
+## Frontend contract requirements
 
-The absence of Tool technical values in the older application is an implementation limitation of that baseline.
+The Ferramentas frontend contract must eventually define:
 
-It does not mean:
+- where technical values are viewed;
+- where an authorized user can add/edit them;
+- field-level missing/optional presentation;
+- validation feedback;
+- loading/error/conflict states;
+- how unsaved edits are preserved if the flow temporarily navigates elsewhere.
 
-- the values belong to Peso;
-- the values belong to Job On;
-- the values should be typed again on every production;
-- a new Tool identity is required;
-- the current blueprint rule should be removed to match the backup.
+The normal Tool search/list must not become heavy merely to display these specialized values.
 
-## Reviewer checks
+## Backend contract requirements
 
-Reject a recovery implementation that:
+The Ferramentas backend contract must eventually define:
 
-- creates a new identity for the technical-values extension;
-- creates replacement Tools instead of enriching existing `tool_id` records;
-- duplicates the same Tool facts into Peso/Pegamentos/Comparação persistence for convenience;
-- moves production-specific facts into Tool technical values;
-- invents missing values during migration;
-- treats the older backup as evidence that the feature is unnecessary.
+- read operation(s) by `tool_id`;
+- create/update semantics for the optional extension;
+- concurrency anchor/version behavior;
+- typed refusals for missing Tool, invalid value and stale write;
+- purpose-specific read model returned to Ferramentas;
+- narrow consumer read contract(s) where another workflow needs one or more values.
+
+## Out of scope
+
+This slice does not define:
+
+- Job On production configuration;
+- Peso measurements/results;
+- Pegamentos measurements/results;
+- Comparação decisions/results;
+- historical snapshot policy for every consumer;
+- a generic metadata/value framework;
+- another Tool identity.
+
+## Missing product decisions blocking implementation
+
+Before persistence and UI for this slice are considered READY, the owning blueprint must explicitly define enough representation rules to avoid implementation invention.
+
+At minimum, close:
+
+1. canonical unit for `volume_marisa`;
+2. canonical unit for `volume_puncao`;
+3. canonical unit for `diametro_gargalo`;
+4. required numeric precision/accepted input precision for each value;
+5. whether zero/negative values are valid or must be refused;
+6. whether any of these values are Tool-type-specific rather than applicable to every Tool type;
+7. which Ferramentas capability is allowed to edit these values, once the access catalogue is closed.
+
+If any of these are already defined elsewhere, point this slice to that canonical source rather than duplicating the rule here.
+
+## Acceptance evidence
+
+When this slice becomes READY and is implemented, reviewers must be able to prove that:
+
+- technical values are anchored only by the existing canonical `tool_id`;
+- no `technical_values_id` or second Tool identity exists;
+- a Tool may exist without technical values;
+- adding technical values does not replace the Tool;
+- normal Tool search/list does not require loading the extension;
+- consumers obtain Tool-owned values through the canonical Tool relation;
+- consumers do not become a second mutable owner of the same Tool facts;
+- missing values are not invented;
+- stale guarded edits are refused without silent overwrite;
+- implementation matches the units/precision/validation rules closed in the canonical Ferramentas blueprint.
