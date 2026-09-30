@@ -10,12 +10,6 @@ This file defines domain identities. A database table, read model, UI tab or doc
 - A different lot is a different canonical Tool and therefore a different `tool_id`.
 - A lot is not mutable state on an existing Tool: new lot means new Tool and new `tool_id`.
 
-## Physical Tool exclusivity
-
-A canonical physical Tool cannot be treated as simultaneously in use in two different machine/production contexts at the same real production moment.
-
-This is a physical-use invariant, not a Job On lifecycle status and not a rule about how many unresolved pre-production repair traces may exist.
-
 ## 2. `jobon_id` — production occurrence
 
 - Identifies one concrete production occurrence.
@@ -69,7 +63,7 @@ The exact technical representation may be designed during implementation, but th
 - This correlation does not make `tool_id` and `bq_id` interchangeable. `tool_id` identifies the canonical Tool; `bq_id` identifies its use in one specific production context.
 - A trace may therefore be created before Job On and initially reference only the canonical BQ `tool_id`, with `bq_id` unresolved.
 - The same `tool_id` may have many repair traces across time because each production receives its own `bq_id` and trace.
-- The allowed cardinality of simultaneous pre-production traces with `bq_id` unresolved for the same `tool_id` is **not yet decided**. This must not be inferred from physical Tool exclusivity or from an existing/provisional database index.
+- The allowed cardinality of simultaneous pre-production traces with `bq_id` unresolved for the same `tool_id` is **not yet decided**. It must not be inferred from an existing/provisional database index or implementation convenience.
 - There is no open/closed lifecycle for a trace. A pre-production trace is simply unresolved until it is associated to its production `bq_id`.
 - When Job On later creates a `bq_id` for that same `tool_id`, automatic association is valid only when the intended pending trace is unambiguous under the product rules then in force.
 - If no pre-production trace exists when the production context is created, that production uses its own new trace.
