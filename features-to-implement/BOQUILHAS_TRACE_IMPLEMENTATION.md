@@ -79,9 +79,7 @@ The current blueprint intentionally leaves one cardinality question unresolved:
 
 > May the same canonical BQ `tool_id` have more than one simultaneous pending `bq_repair_trace_id` with `bq_id = null`?
 
-This question is separate from the physical-use invariant that one physical Tool cannot be in simultaneous use in two different machine/production contexts.
-
-The implementation must not silently decide unresolved-trace cardinality from physical exclusivity, an existing/provisional database index, or implementation convenience.
+The implementation must not silently decide unresolved-trace cardinality from an existing/provisional database index or implementation convenience.
 
 Automatic association is canonical only when the intended pending match is unambiguous. If it is not unambiguous, implementation of that ambiguous case is blocked pending an explicit product decision.
 
