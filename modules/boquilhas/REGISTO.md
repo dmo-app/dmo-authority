@@ -59,7 +59,7 @@ The fact that BQ-X is no longer visible as the current machine card must not blo
 
 For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and create/preserve a future production trace with `bq_id = null`.
 
-The blueprint does **not yet decide** whether the same `tool_id` may have more than one simultaneous unresolved pre-production trace. Registo must therefore not enforce or infer a one-pending-trace rule merely from physical Tool exclusivity.
+The blueprint does **not yet decide** whether the same `tool_id` may have more than one simultaneous unresolved pre-production trace. Registo must not enforce or infer a one-pending-trace rule.
 
 When Job On later creates a `bq_id` that references the same canonical `tool_id`, an existing pending trace is associated automatically only when the intended match is unambiguous. The association does not create a replacement trace or move its existing movements. While `bq_id` is unresolved, Registo shows a persistent Job On association warning derived from that missing association.
 
