@@ -160,3 +160,20 @@ DMO is a fixed-layout desktop operational application, not a responsive public w
 - Blank State / Setup is an installation/configuration mode, not an authenticated ADMIN identity.
 - If the currently associated ADMIN Auth user is deleted externally, the existing DMO installation and data remain valid; the ADMIN association may be repaired through Setup against the same infrastructure using another Auth user that was first created externally in Supabase.
 - Reassociating ADMIN must not recreate, reset or rewrite operational data.
+
+## Rule 17: Job On Context Change Awareness
+
+When a production context used by another module changes while the `jobon_id` remains the same:
+
+- Job On permanently records the change, including the previous and replacement context where applicable, backend actor and timestamp.
+- A lightweight awareness signal is exposed to the consumers of the changed production context.
+- The signal identifies the `jobon_id` and the kind of context that changed; it is not a second snapshot of Job On truth.
+- A receiving module exposes the change as pending awareness until that module acknowledges it.
+- Acknowledgement means only **"seen / taken notice of"**. It does not mean resolved, corrected, recalculated, approved or otherwise treated.
+- Acknowledgement never deletes or rewrites the permanent Job On change log.
+- Acknowledgement is scoped per consuming module; acknowledgement by one module must not clear another module's pending awareness.
+- Notification routing is derived from the same functional production-context dependencies used by the operational workflows. It must not become a separate source of domain truth.
+- This mechanism does not automatically decide impact, create work, recalculate downstream records or rewrite historical records.
+- If a selected CM, MF or BQ Tool is replaced inside the same Job On, the replacement uses a new production-context identity. An existing `cm_id`, `mf_id` or `bq_id` is never retargeted to a different `tool_id`.
+
+Detailed behavior lives in `modules/job-on/CONTEXT_CHANGE_AWARENESS.md`.

@@ -42,10 +42,10 @@ Example:
 tool_id CM-X
 
 Production A
-└─ cm_id C1 -> tool_id CM-X
+└─ cm_id <production_a_cm_id> -> tool_id CM-X
 
 Production B
-└─ cm_id C2 -> tool_id CM-X
+└─ cm_id <production_b_cm_id> -> tool_id CM-X
 ```
 
 A different lot is a different canonical Tool and therefore receives a different `tool_id`.
@@ -180,7 +180,11 @@ Editing a Job On must not silently rewrite:
 - Boquilhas movements;
 - other module-owned operational data.
 
-Changes to Tool selection must preserve truthful history according to the production state and the applicable editing rules.
+Changes to Tool selection must preserve truthful history.
+
+If a selected CM, MF or BQ Tool is replaced while the same `jobon_id` remains valid, the existing component-context identity is not retargeted. A new `cm_id`, `mf_id` or `bq_id` is created for the replacement Tool and the previous context remains referencable by records that already used it.
+
+Relevant production-context changes are also permanently logged and exposed through the lightweight awareness mechanism defined in `CONTEXT_CHANGE_AWARENESS.md`.
 
 ---
 
@@ -222,17 +226,17 @@ The new Job On then creates new production-context identities that initially ref
 
 ```text
 Source Job On
-├─ cm_id C1 -> tool_id CM-X
-├─ mf_id M1 -> tool_id MF-X
-└─ bq_id B1 -> tool_id BQ-X
+├─ cm_id <source_cm_id> -> tool_id CM-X
+├─ mf_id <source_mf_id> -> tool_id MF-X
+└─ bq_id <source_bq_id> -> tool_id BQ-X
 
 Duplicate
         ↓
 
 New Job On
-├─ cm_id C2 -> tool_id CM-X
-├─ mf_id M2 -> tool_id MF-X
-└─ bq_id B2 -> tool_id BQ-X
+├─ cm_id <new_cm_id> -> tool_id CM-X
+├─ mf_id <new_mf_id> -> tool_id MF-X
+└─ bq_id <new_bq_id> -> tool_id BQ-X
 ```
 
 Therefore:
@@ -355,3 +359,5 @@ The module that creates an operational fact remains responsible for that fact.
 - The current Beta requires only Job On Create; this does not remove Job On View from the complete model.
 - UI View/Edit modes must not be confused with access capabilities.
 - Job On provides production context to downstream modules but does not take ownership of their operational facts.
+- Replacing a selected CM, MF or BQ inside an existing Job On creates a new applicable production-context identity; an existing context identity is never retargeted to a different `tool_id`.
+- Relevant Job On context changes are permanently logged and surfaced as awareness to their functional consumers; acknowledgement means only that the change was seen.

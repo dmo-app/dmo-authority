@@ -22,6 +22,9 @@ This file defines domain identities. A database table, read model, UI tab or doc
 - Identify the CM, MF or BQ context used in one `jobon_id`.
 - They reference a canonical `tool_id` but are not Tools themselves.
 - They preserve the production-context snapshot required for historical truth.
+- If the selected Tool changes inside the same `jobon_id`, the replacement receives a new `cm_id`, `mf_id` or `bq_id` as applicable and points to the new canonical `tool_id`.
+- An existing component-context identity must never be retargeted from one canonical Tool to another.
+- The previous context remains referencable by downstream records and history that already used it.
 - Clients never mint these identities.
 
 ## 4. `controlo_id` — Controlo context in a production

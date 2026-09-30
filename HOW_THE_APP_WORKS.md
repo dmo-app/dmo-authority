@@ -469,6 +469,10 @@ See:
 
 Job On owns the production occurrence and establishes the selected Tool context for that production.
 
+The same `jobon_id` may remain valid while a selected production context is replaced. A replacement CM, MF or BQ uses a new production-context identity pointing to the newly selected canonical `tool_id`; the previous context is not retargeted and remains historically referencable.
+
+Relevant context changes are permanently logged and exposed as lightweight awareness to the modules that consume that context. A module acknowledgement means only that the change was seen. It does not resolve, recalculate or rewrite operational work.
+
 See:
 
 - `modules/job-on/OVERVIEW.md`
@@ -477,6 +481,7 @@ See:
 - `modules/job-on/EDITAR.md`
 - `modules/job-on/DUPLICAR.md`
 - `modules/job-on/SELECIONAR_FERRAMENTAS.md`
+- `modules/job-on/CONTEXT_CHANGE_AWARENESS.md`
 
 ### Controlo
 
