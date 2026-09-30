@@ -9,7 +9,7 @@ The Beta Job On keeps only the production context required by the current Beta w
 It records:
 
 - production number;
-- production reference derived from the associated Tools;
+- production reference composed from the selected MF and BQ Tools;
 - machine;
 - production start date;
 - the selected CM, MF and BQ Tools and their production contexts;
@@ -18,11 +18,41 @@ It records:
 
 It does not expand into final-application configuration merely because other piece families or future modules may exist elsewhere.
 
+## Production reference
+
+The production reference is composed from the selected MF and BQ Tool references.
+
+The MF provides the main numeric/product-form reference. The BQ provides the suffix associated with the finish/closure interface.
+
+Example:
+
+```text
+MF = 5447
+BQ = T173
+
+production reference = 5447T173
+```
+
+CM does not define the production reference.
+
+CM is selected independently and may have the same reference as MF or a different one.
+
+Example:
+
+```text
+CM = ST100
+MF = 320
+```
+
+This is valid and must not be treated as a mismatch merely because the references differ.
+
+The production reference therefore must not be reconstructed from CM or from an assumption that CM and MF references are equal.
+
 ## Flow
 
 1. Identify the production:
    - production number;
-   - reference derived from the selected Tools;
+   - production reference composed from the selected MF and BQ Tools;
    - machine;
    - production start date.
 
