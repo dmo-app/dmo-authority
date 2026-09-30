@@ -64,6 +64,9 @@ Queries and read models must be context-specific and carry only the data the sur
 - No loading whole relations/tables to filter or project in the frontend.
 - No "load the universe and filter client-side".
 - Backend reads are built per query contract with the smallest packet that satisfies the surface.
+- On a filterable list/search surface, the frontend sends the user's filter/search criteria as query input; the backend applies those criteria before projecting the response and returns only the matching result packet.
+- A frontend filter must not require loading the full dataset first merely so JavaScript can hide non-matching rows.
+- Each module document defines which filter dimensions are valid for that surface; the global query rule defines where that filtering is executed.
 - History is only loaded when the operator explicitly asks for it.
 
 This rule binds every remaining and future Beta backend work.

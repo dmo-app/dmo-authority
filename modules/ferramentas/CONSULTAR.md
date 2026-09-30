@@ -21,6 +21,18 @@ The user may filter the list by those dimensions.
 
 For process, the current values are `NNPB` and `PS`.
 
+Filtering follows the global surgical-query rule:
+
+```text
+filter/search criteria
+→ frontend sends criteria to Ferramentas backend
+→ backend applies criteria to the Tool-registry query
+→ backend returns only the matching Tool rows/read model
+→ frontend renders the table
+```
+
+The frontend may keep filter controls locally, but it must not load the complete Tool registry simply to hide non-matching rows in JavaScript.
+
 Filters only narrow the candidate set. They never infer or auto-select the correct Tool, including when only one candidate remains.
 
 Selection is always an explicit human action.

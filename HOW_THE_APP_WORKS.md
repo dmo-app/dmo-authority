@@ -133,6 +133,18 @@ The backend then:
 
 The page renders that read model.
 
+For list/search surfaces that expose filters, the same rule applies:
+
+```text
+user enters filter/search criteria
+→ frontend sends the criteria
+→ backend applies them to the focused query
+→ backend returns only the matching read-model packet
+→ frontend renders the result
+```
+
+The frontend may keep the current filter controls as local UI state, but it must not obtain the complete dataset merely to perform the operational filtering itself.
+
 ### Core distinctions
 
 **READ MODEL ≠ ENTITY**
