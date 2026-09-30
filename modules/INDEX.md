@@ -16,6 +16,30 @@ modules/<relevant-module>/
 
 Do not load unrelated module detail merely because it exists.
 
+## Module documentation structure
+
+Each area uses three distinct layers:
+
+```text
+modules/<area>/*.md
+= functional truth
+
+modules/<area>/backend/README.md
+= stack-independent server/application contract
+
+modules/<area>/frontend/README.md
+= stack-independent interface contract
+```
+
+The functional files define business meaning, ownership, identity, lifecycle and allowed behavior.
+
+Backend/frontend contracts make that truth precise enough to implement without becoming documentation of a particular codebase. They must not contain implementation-progress narration.
+
+If a backend or frontend contract uncovers a missing functional decision, resolve it first in the owning functional file.
+
+See `../TECHNICAL_CONTRACT_STANDARD.md` for the shared contract format.
+
+
 ## Admin
 
 `admin/`
@@ -108,7 +132,6 @@ Create and Approve therefore do not own separate copies of Folha or Resumo.
 - `HISTORICO.md`
 - `DEFINICOES.md`
 
-The existing Boquilhas register/movement model is the implementation base.
 
 The canonical Boquilhas model uses one `bq_repair_trace_id` for each `bq_id` / production BQ context, with many movements inside that trace. A pre-production trace may temporarily exist from canonical `tool_id` with `bq_id` unresolved and later associate to the matching production context according to the Boquilhas rules.
 

@@ -1,35 +1,76 @@
 # DMO Blueprint
 
-This repository is the canonical functional blueprint for the DMO application.
+This repository defines the DMO application independently of any implementation state.
 
-It defines the **business rules**, **scope**, **canonical identities**, **relationships**, **module boundaries**, and cross-module functional behavior that implementation must obey.
+It describes **what the application is required to mean and do**, including business rules, scope, identities, ownership, relationships, module boundaries, backend contracts and frontend contracts.
 
-## Ecosystem
+It must not be read as a report of code that already exists or work that remains to be implemented.
 
-- **`dmo-app/dmo-blueprint`** — product and functional blueprint: what DMO means and how it must behave.
-- **`dmo-app/dmo-app-beta`** — implementation reality: code, schema, migrations, routes, tests and runtime wiring.
-- **`dmo-app/dmo-design`** — visual and interaction design source: UI prototypes and presentation decisions.
-- **`dmo-app/development-dmo`** — development workflow, phase process and role responsibilities.
+## Documentation layers
 
-Implementation or design may reveal a conflict or missing decision, but they do not silently redefine the product blueprint.
+```text
+functional blueprint
+→ product meaning, ownership, identities, lifecycle and allowed behavior
 
-## Core principle
+backend contract
+→ stack-independent server/application contract required to support that behavior
 
-The Beta is a **scope-reduced product**, not a disposable test version of a larger application.
+frontend contract
+→ stack-independent interface contract required to consume that behavior
 
-A capability outside `SCOPE.md` must not be introduced into the Beta merely because it existed in an older repository.
+implementation
+→ concrete code, framework, schema, routes, classes and components in the application repository
+```
 
-Historical repositories may be used as evidence when recovering information, but they do not define current product behavior by themselves.
+The first three layers belong here. Concrete implementation does not.
 
 ## Repository map
 
-- `HOW_THE_APP_WORKS.md` — concise global explanation of how the application works.
+- `HOW_THE_APP_WORKS.md` — concise global explanation of application behavior and main relationships.
 - `IDENTITIES.md` — canonical identities and identity boundaries.
 - `RULES.md` — cross-cutting product and architecture rules.
-- `SCOPE.md` — Beta scope.
-- `IMPLEMENTATION_STATUS.md` — current Beta implementation state, transitional conditions and known gaps; not product canon.
-- `modules/` — detailed functional blueprint organized by module.
+- `SCOPE.md` — current product scope.
+- `TECHNICAL_CONTRACT_STANDARD.md` — standard for backend/frontend contract documentation.
+- `modules/` — module-level functional truth plus backend/frontend contracts.
 
-The blueprint contains decided product behavior only. Unresolved product questions stay outside the canonical blueprint until the owner decides them; once decided, the rule is written directly into the owning module or cross-cutting file.
+## Module structure
 
-The detailed functional rule belongs in the file owned by the relevant module or cross-cutting concern. Git history preserves how the blueprint evolved; historical curation records do not define a second product source.
+```text
+modules/<area>/
+├── *.md
+├── backend/
+│   └── README.md
+└── frontend/
+    └── README.md
+```
+
+- Module-root `*.md` files are the **functional truth**.
+- `backend/` describes the server/application contract required to support that truth.
+- `frontend/` describes the interface contract required to consume that truth.
+
+A functional rule does not originate in `backend/` or `frontend/`. If either contract exposes an unresolved business decision, resolve it in the owning functional file first.
+
+## Relationship to design and development
+
+- `dmo-app/dmo-design` owns visual and interaction design decisions within the functional/frontend contract.
+- `dmo-app/development-dmo` owns the development workflow and role/process rules.
+- Application repositories consume this blueprint; their current code state does not redefine it.
+
+Historical repositories may be used as evidence when recovering knowledge, but they do not define current product behavior by themselves.
+
+## Implementation-state rule
+
+Implementation progress is deliberately kept out of the blueprint.
+
+Do not write statements here such as:
+
+```text
+already implemented
+not implemented yet
+current code does...
+existing schema...
+migration pending...
+this is the implementation base...
+```
+
+When implementation progress needs tracking, track it in the implementation/development workspace, not inside product or technical-contract truth.
