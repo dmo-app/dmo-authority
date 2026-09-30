@@ -1,12 +1,12 @@
 # Admin — Overview
 
-This file defines the DMO Admin identity boundary and administration surface.
+This file defines the DMO Admin identity boundary and the administration/configuration surface.
 
 ## 1. ADMIN is a DMO role over an external Auth identity
 
 Supabase Auth owns authentication identity and credentials.
 
-DMO owns the application-side access rules for an authenticated identity.
+DMO owns the application-side access and administration rules for an authenticated identity.
 
 Therefore:
 
@@ -34,9 +34,7 @@ DMO may only:
 2. validate that the selected Auth user already exists;
 3. associate that existing Auth identity as the DMO ADMIN.
 
-This separation is a security boundary.
-
-The application must not be able to manufacture the authentication identity that grants administration over itself.
+This separation applies specifically to the authentication identity used as DMO ADMIN.
 
 ## 3. ADMIN is not "the first user"
 
@@ -50,20 +48,103 @@ DMO must never assign ADMIN because:
 
 Technical database state must not silently choose a privileged human identity.
 
-## 4. ADMIN surface
+## 4. Admin surface
 
-ADMIN is not a USER with every operational module enabled.
+ADMIN is not a normal USER with every operational module enabled.
 
-ADMIN enters the administration/configuration surface of DMO.
+The Admin surface is a separate administration/configuration area.
 
-Operational access for normal USERS follows the DMO access model (USER → Template → modules/permissions).
+Its functional structure is:
 
-The ADMIN association must not be implemented by granting every operational module to a normal USER.
+```text
+Admin
+├── Users
+├── Templates
+└── App Definições
+```
 
-## 5. External identity ownership remains external
+There is **no standalone Modules tab** in Admin.
+
+Modules appear in two different contexts for two different reasons:
+
+```text
+Templates
+→ choose modules/capabilities/permissions
+→ defines operational access for Users assigned to that Template
+
+App Definições
+→ choose a module
+→ edit selected administrative settings owned by that module
+```
+
+These must not be merged conceptually.
+
+Detailed rules:
+
+- `USERS.md`
+- `TEMPLATES.md`
+- `APP_DEFINICOES.md`
+
+## 5. User access model
+
+Operational access for normal USERS follows:
+
+```text
+USER
+→ one current Access Template, or none
+→ modules/capabilities/permissions defined by that Template
+```
+
+The Template name is also the human-facing profile/access label shown for the User.
+
+Examples may be names such as:
+
+- Reparador;
+- Chefe;
+- Operador;
+- another configured Template name.
+
+Those names are labels for the actual Template association.
+
+A separate User `title` such as `Operador`, `Reparador` or `Chefe` must not remain as a second editable source of profile/access truth.
+
+Permissions are not granted by comparing text labels. They come from the User ↔ Template relation and the permissions defined by the associated Template.
+
+## 6. Module settings ownership versus configuration UI
+
+A module owns the meaning of its own settings.
+
+Admin provides the privileged UI used to edit selected settings through:
+
+```text
+Admin
+→ App Definições
+→ select module
+→ edit that module's administrative settings
+```
+
+This does not transfer ownership of those settings to Admin.
+
+It also does not justify a separate operational `Definições` destination inside every module.
+
+The centralized App Definições surface is intended especially for settings that are:
+
+- changed infrequently;
+- specialized/niche;
+- operationally sensitive;
+- capable of causing incorrect behavior if changed casually.
+
+The owning module remains the canonical source for what the setting means and how it affects that module.
+
+## 7. External identity ownership remains external
 
 Credential creation, password management and creation of the Auth identity used as ADMIN remain outside DMO in Supabase Auth administration.
 
-DMO stores/uses only the association required to recognize which already-existing Auth identity is its ADMIN.
+For normal USERS, Admin may expose account-management actions such as password reset only through the configured authentication provider. DMO must not store or invent user passwords itself.
 
-See `SETUP.md` for installation and reassociation behavior.
+See:
+
+- `SETUP.md` for installation and ADMIN reassociation;
+- `USERS.md` for normal User administration;
+- `TEMPLATES.md` for access-template behavior;
+- `APP_DEFINICOES.md` for centralized module configuration.

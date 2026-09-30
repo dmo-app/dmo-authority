@@ -21,7 +21,14 @@ Do not load unrelated module detail merely because it exists.
 `admin/`
 
 - `OVERVIEW.md`
+- `USERS.md`
+- `TEMPLATES.md`
+- `APP_DEFINICOES.md`
 - `SETUP.md`
+
+Admin has no standalone Modules tab.
+
+Modules appear inside Access Templates for permission configuration and inside App Definições as the selected owner of administrative settings. Those are different concerns.
 
 ## Ferramentas
 
@@ -107,13 +114,11 @@ The canonical Boquilhas model uses one `bq_repair_trace_id` for each `bq_id` / p
 
 ## Templates
 
-Template-related behavior is documented only where a concrete owning workflow is already defined.
+Access Templates are defined in `admin/TEMPLATES.md`.
 
-Access templates belong to the access/admin model.
+They connect normal Users to configured modules/capabilities/permissions.
 
-Email templates used by Controlo belong to the relevant Controlo configuration workflow.
-
-Do not invent a separate Templates product domain merely from the shared word "template" without an explicit product requirement.
+Email templates used by Controlo remain module-owned configuration and must not be merged with Access Templates merely because both use the word "template".
 
 ## File rule
 

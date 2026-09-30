@@ -1,17 +1,22 @@
-# Controlo Create — Definições
+# Controlo — Definições
 
-Controlo Definições belongs to Controlo Create.
+This file documents configuration owned by Controlo operational workflows.
 
-It is not:
-- a separate capability;
-- an Admin surface;
-- a permission named `controlo.criar.definicoes`.
+The settings remain Controlo-owned, but their administrative editing surface is centralized under:
 
-Access follows the Controlo Create module/capability boundary.
+```text
+Admin
+→ App Definições
+→ Controlo
+```
+
+This file does **not** imply a visible Definições tab inside the daily Controlo Create navigation.
+
+Centralizing the editing surface keeps infrequently changed or sensitive configuration out of the operational hot path without transferring ownership of those settings to Admin.
 
 ## Current settings
 
-The settings area includes at least:
+The Controlo settings include at least:
 
 - base directory for generated PDFs;
 - glass density by process where applicable;
@@ -23,7 +28,7 @@ The settings area includes at least:
 
 ## PDF recipients
 
-Controlo Create → Definições owns the operational configuration used to resolve PDF recipients.
+Controlo owns the operational configuration used to resolve PDF recipients.
 
 These configured recipients are production/email recipients. They must not be treated as application-authentication users merely because a person may also have an application account.
 
@@ -40,6 +45,6 @@ The person sending the PDF does not need to select an arbitrary recipient list o
 
 Recipient email addresses must not be hardcoded into the sending workflow.
 
-This configuration belongs to Controlo Create, not Admin, because it configures the operational document-sending workflow rather than application authentication or access permissions.
+The values remain Controlo configuration even though ADMIN edits them through App Definições.
 
 Settings provide configuration consumed by operational workflows; they do not become a second source of truth for records created by those workflows.

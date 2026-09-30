@@ -53,7 +53,7 @@ The blueprint remains the definition of intended product behavior. A backup does
 ### Job On / access
 
 - `JOB_ON_DUPLICATION_ALIGNMENT.md` — verify/align Job On duplication against current identity rules.
-- `ACCESS_TEMPLATES_BLUEPRINT_COMPLETION.md` — complete Access Templates product definition before implementation relies on it.
+- `ACCESS_TEMPLATES_BLUEPRINT_COMPLETION.md` — align Admin Users, Access Templates, legacy User title migration and centralized App Definições with the confirmed canonical model.
 
 ## Recovery rule
 

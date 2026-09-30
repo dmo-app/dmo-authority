@@ -4,7 +4,7 @@
 
 ## IN SCOPE
 
-1. **Identity & Access** — Admin, Users, Templates.
+1. **Identity & Access / Admin** — Users, Access Templates and App Definições. Users are associated with one current Access Template or none; Templates define module/capability access; App Definições centralizes selected module-owned administrative settings without creating a standalone Modules tab.
 2. **Ferramentas / Tools** — canonical `tool_id` registry for CM, MF and BQ; consultation/filtering is the primary surface and creation is an action inside the registry. Selection is explicit and Ferramentas remains contextual to consuming workflows.
 3. **Job On (Light)** — production planning and production-context creation: `jobon_id`, `cm_id`, `mf_id`, `bq_id`.
 4. **Controlo**

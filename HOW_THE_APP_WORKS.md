@@ -73,7 +73,8 @@ At a high level:
 
 ```text
 Admin
-→ users and access configuration
+→ Users and Access Templates
+→ App Definições for centralized editing of selected module-owned settings
 
 Ferramentas
 → register/select canonical Tools
@@ -85,7 +86,7 @@ Job On
 
 Controlo Create
 → record measurements and operational control facts
-→ Peso / Comparação / Pegamentos / Folha / Resumo / Definições
+→ Peso / Comparação / Pegamentos / Folha / Resumo
 
 Controlo Approve
 → review the relevant submitted control records
@@ -446,9 +447,29 @@ That does not mean those records require a new shared parent, identity or duplic
 
 Admin owns application administration and access setup.
 
+The main administration surfaces are:
+
+```text
+Users
+→ User identity/details, current Template, account actions
+
+Templates
+→ modules/capabilities/permissions + assigned Users
+
+App Definições
+→ select a module and edit selected administrative settings owned by that module
+```
+
+There is no standalone Modules tab.
+
+The User and Template pages are two management views over the same User ↔ Template association. A legacy User title such as `Operador`, `Reparador` or `Chefe` is not a second access authority; the associated Template name is the visible profile label.
+
 See:
 
 - `modules/admin/OVERVIEW.md`
+- `modules/admin/USERS.md`
+- `modules/admin/TEMPLATES.md`
+- `modules/admin/APP_DEFINICOES.md`
 - `modules/admin/SETUP.md`
 
 ### Ferramentas
@@ -592,7 +613,7 @@ Generated documents are derived artifacts. They do not replace the underlying st
 
 Document behavior is documented under Controlo Create → Documents / PDFs.
 
-Document configuration such as the base directory and recipient routing is documented under Controlo Create → Definições.
+Document configuration such as the base directory and recipient routing remains owned by Controlo and is documented in its configuration blueprint. Administrative editing is reached through Admin → App Definições rather than requiring a dedicated operational settings destination.
 
 ---
 

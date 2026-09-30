@@ -1,6 +1,8 @@
 # Boquilhas — Definições
 
-Boquilhas Definições contains configuration used by the Boquilhas operational workflow.
+Boquilhas Definições documents configuration owned by the Boquilhas operational workflow.
+
+These settings are edited through `Admin → App Definições → Boquilhas`. This file defines their Boquilhas meaning and behavior; it does not imply a visible Definições tab inside the operational Boquilhas module.
 
 ## Production activation time
 
@@ -20,7 +22,7 @@ Boquilhas production-activation time arrives
 -> machine card switches to that context
 ```
 
-This is a Boquilhas setting, not a global application time.
+This is a Boquilhas setting, not a global application time. Its administrative editing surface is `Admin → App Definições → Boquilhas`.
 
 It must not be interpreted as the time when every other module changes production.
 
