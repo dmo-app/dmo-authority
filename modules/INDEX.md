@@ -52,7 +52,7 @@ Do not load unrelated module detail merely because it exists.
 
 This directory contains only rules genuinely shared across Controlo Create and Controlo Approve.
 
-It includes the planned `controlo_id` evolution where applicable. The existence of this shared context must not be interpreted as permission to make `controlo_id` a generic parent for every Controlo record.
+It includes the canonical `controlo_id` functional identity and the still-pending technical implementation boundary. The existence of this shared context must not be interpreted as permission to make `controlo_id` a generic parent for every Controlo record.
 
 ## Controlo Create
 
