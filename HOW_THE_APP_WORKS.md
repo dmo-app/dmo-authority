@@ -219,7 +219,198 @@ This does not require a persisted `resumo_id`, nor does it require every Control
 
 ---
 
-## 5. Module map
+## 5. Hot path vs history
+
+The daily operational path should stay narrow.
+
+A normal operation loads or writes only the records and relations required for that action.
+
+Examples:
+
+```text
+Open Peso
+→ peso_id
+→ cm_id
+→ Peso facts required by the page
+```
+
+```text
+Open Resumo
+→ jobon_id
+→ relevant production contexts
+→ relevant function records for that production
+```
+
+Submitting, approving or deciding a record writes to that record and its own decision/history facts. It does not require unrelated aggregates to be recalculated or rewritten.
+
+### Deep history is explicit
+
+Historical investigation may require longer traversals.
+
+For example, an explicit request to understand a Tool across several productions may traverse:
+
+```text
+tool_id
+→ production component contexts
+→ jobon_id
+→ relevant operational records
+→ decision/history facts where applicable
+```
+
+A heavier read is acceptable when the user explicitly asked for historical depth.
+
+The persistence model must not be denormalized merely to make exceptional history queries shorter.
+
+If a fact is already truthfully reachable through an existing relation, do not duplicate the same anchor on every daily-write record just to remove one join from a rare read.
+
+> Prefer simple truthful writes and focused reads over duplicated write-side relationships created for exceptional queries.
+
+---
+
+## 6. How new features should fit
+
+Before introducing a new fact, relation, identity or persistence object, follow this reasoning sequence.
+
+### What real operational event creates the fact?
+
+Identify the concrete moment when the fact becomes real.
+
+Examples include:
+
+- a measurement is entered;
+- a production is created;
+- a Tool is registered;
+- a human decision is made;
+- a calculation resolves a result.
+
+If no real event or condition makes the fact true, it may not need persistence.
+
+### When does the fact become known?
+
+Determine whether it is known:
+
+- at Tool registration;
+- at Job On creation;
+- during measurement;
+- at decision time;
+- only during later historical review.
+
+The moment when a fact becomes known constrains where it can truthfully live.
+
+### What context is it valid in?
+
+Determine whether the fact is:
+
+- Tool-owned and reusable;
+- valid for one production;
+- specific to one workflow;
+- derived from other persisted facts;
+- required as an exact historical value consumed at a specific moment.
+
+### What existing relation already reaches it?
+
+Trace the real persisted relation graph first.
+
+If the required fact is already reachable through an existing truthful relation, use that relation rather than adding a shortcut solely for convenience.
+
+### Is this a write need or a read need?
+
+A screen needing to display several related facts is normally a **read need**.
+
+The backend may compose those facts with a focused query/read model.
+
+A **write need** exists when a new durable fact actually comes into existence and has no truthful existing home.
+
+Do not denormalize the write model merely because one screen needs a convenient shape.
+
+### Does it need a new identity or relation?
+
+A new identity or relation requires a real persistent business reason.
+
+Possible justifications include:
+
+- independent lifecycle;
+- genuine 1:N multiplicity;
+- independent concurrency boundary;
+- append-only operational events;
+- a durable fact with no truthful existing owner.
+
+A 1:1 extension keyed by an existing identity may also be valid when it isolates optional specialized data without inventing a second identity.
+
+Do not create UUIDs, duplicate relations or catch-all containers without such a reason.
+
+### What is the shortest truthful hot path?
+
+For the common daily action, identify the minimum real traversal needed.
+
+Do not force routine operations to load unrelated history or module state.
+
+### What history actually needs preserving?
+
+First determine whether history already exists naturally through:
+
+- durable operational records;
+- production contexts;
+- decision/event records;
+- values frozen when consumed.
+
+Do not create a generic history mechanism unless a specific historical fact cannot be preserved or reconstructed from the existing model.
+
+### Can the required screen be composed without a new persisted shortcut?
+
+If the frontend already carries the operation context and the backend can validate and retrieve the required data through real persisted relations, a new persisted shortcut is usually unnecessary.
+
+---
+
+## 7. Guardrails against model drift
+
+### Do not create an ID for every noun
+
+A named concept does not automatically deserve an identity.
+
+An identity requires a meaningful durable entity, lifecycle, multiplicity or ownership boundary.
+
+### Do not create direct foreign keys only for navigation convenience
+
+If an existing relation chain already expresses the truth, do not duplicate a direct relation simply to make a query or diagram shorter.
+
+### Do not mirror frontend navigation as database hierarchy
+
+UI grouping does not establish persistence ownership.
+
+Controlo grouping Peso, Comparação, Pegamentos, Folha and Resumo does not make every function a child of one generic persistence parent.
+
+A legitimate shared Controlo context must be justified by real Controlo-level persistent facts, not by menu structure.
+
+### Do not create giant backend aggregates just in case
+
+The backend should retrieve what the current operation needs.
+
+It should not build one universal object containing Job On, every Tool, every Controlo function and full history for ordinary operations.
+
+### Do not turn Tool into a container for every fact
+
+`tool_id` identifies the canonical Tool.
+
+Reusable Tool-owned technical facts may live with the Tool or in its `tool_id`-keyed technical extension.
+
+Production-specific facts, measurements, decisions and repeated histories remain in their truthful operational records.
+
+### Do not create generic history/context/metadata structures without a real need
+
+History often emerges naturally from durable operational records and their real relationships.
+
+A separate generic history mechanism requires a concrete fact that the existing records cannot preserve.
+
+### Do not confuse read composition with persisted structure
+
+A focused backend query may join several records and return one purpose-specific read model.
+
+That does not mean those records require a new shared parent, identity or duplicated relation.
+
+---
+
+## 8. Module map
 
 ### Admin
 
@@ -302,7 +493,7 @@ See:
 
 ---
 
-## 6. Controlo relationship
+## 9. Controlo relationship
 
 Controlo is one operational domain with two capability surfaces:
 
@@ -324,7 +515,7 @@ Resumo is a read/composition surface. It does not become a persistence parent me
 
 ---
 
-## 7. Historical truth
+## 10. Historical truth
 
 DMO must preserve what happened in the correct operational context.
 
@@ -341,7 +532,7 @@ Examples:
 
 ---
 
-## 8. Documents and derived views
+## 11. Documents and derived views
 
 A persisted operational record, a read model and a generated PDF are different things.
 
@@ -355,22 +546,7 @@ Document configuration that belongs to Controlo is documented under Controlo Cre
 
 ---
 
-## 9. How to extend the application
-
-Before adding a field, relation, identity or persistence object, determine:
-
-1. what real operational event creates the fact;
-2. when the fact becomes known;
-3. which module owns it;
-4. which production/Tool/workflow context it belongs to;
-5. whether an existing truthful relation already reaches it;
-6. whether the requirement is persistence or only a read/composition need.
-
-> **Persist the fact where it truly belongs. Traverse existing relationships when another operation needs to read it. Do not create identities, foreign keys or ownership merely to make a screen or query more convenient. A new identity or relation requires a real persistent business fact, lifecycle, or ownership boundary.**
-
----
-
-## 10. Detailed authority
+## 12. Detailed authority
 
 For detailed behavior, use the module documents.
 
