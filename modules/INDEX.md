@@ -16,35 +16,6 @@ modules/<relevant-module>/
 
 Do not load unrelated module detail merely because it exists.
 
-## Functional vs technical contract structure
-
-Each module keeps its product behavior in the existing module files and its implementation-facing contracts in two subdirectories:
-
-```text
-modules/<module>/
-├── <functional files>.md
-├── backend/
-│   └── README.md
-└── frontend/
-    └── README.md
-```
-
-- **functional files** define what the module means and how it behaves;
-- **`backend/`** defines server interaction, anchors, reads, writes, validation, persistence/concurrency boundaries and published cross-module contracts;
-- **`frontend/`** defines page/function context, read needs, user inputs, request payloads, interface states, navigation and the handoff to `dmo-app/dmo-design`.
-
-The technical folders must not duplicate or silently change functional rules. They make decided behavior precise enough to design and implement.
-
-The standing interaction principle is:
-
-```text
-frontend sends the minimum truthful anchor + intent + new facts
-backend resolves only the context required for that operation
-backend returns only the purpose-specific result/read model required
-```
-
-Do not invent endpoints, schema or UI behavior merely to fill these folders. Concrete technical contracts are added as each module is prepared for implementation.
-
 ## Admin
 
 `admin/`
