@@ -27,6 +27,8 @@ Comparação complements the original Peso. It does not replace, revise or rewri
 
 The application must not infer either decision from warnings, measurements or calculated results.
 
+Calculated comparison results may legitimately be negative. A negative derived result is a valid signed result and must not be clamped, converted to zero, or treated as invalid merely because of its sign.
+
 ## Identity and relations
 
 - Comparação has its own `comparacao_id`.
