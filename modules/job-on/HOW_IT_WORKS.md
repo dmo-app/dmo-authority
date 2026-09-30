@@ -104,11 +104,15 @@ In the complete functional model:
 - **Job On View** allows navigation and consultation of Job On information;
 - **Job On Create** allows consultation and the creation/editing actions authorized inside Job On.
 
-These are distinct access functions inside the same module.
+These are distinct, independently assignable access functions inside the same module.
 
 They are not cumulative grants.
 
 A user with **Job On Create** does not also need to be assigned **Job On View**, because Create already includes the consultation capability required for that work.
+
+Conversely, **Job On View** exists so a user may consult Job On information without receiving creation or editing authority.
+
+The existence of Users, Access Templates and multiple access capabilities elsewhere in DMO does not mean every capability must be assigned in the current Beta. Access configuration and Beta operational scope are separate concerns.
 
 This distinction must not be confused with the UI state of the Job On sheet.
 
@@ -128,19 +132,19 @@ In **Job On View**, consultation is the only behavior and no edit action is avai
 
 ## Beta scope
 
-The current Beta exposes only **Job On Create** as the required operational access function.
+The current Beta exposes only **Job On Create** as the required Job On operational access function.
 
-This is a Beta scope decision.
+This is an intentional Beta scope decision, not a residue of an obsolete access model.
 
-The current Beta is intended for a single user, and **Job On Create** already provides both the consultation and modification capabilities required for that use.
+The current Beta is intended for a single operational user in Job On, and **Job On Create** already provides both the consultation and modification capabilities required for that use.
 
 Therefore the Beta does not need to expose or assign **Job On View** separately.
 
-This does not remove **Job On View** from the complete functional model.
+This remains compatible with the existence of Users, Access Templates and permission configuration elsewhere in DMO. Those mechanisms define how access can be assigned; they do not require every defined capability to be separately assigned in the current Beta.
 
-It remains a valid separate read-only access function for a future version where different users may require different levels of access.
+**Job On View** remains part of the complete functional model as the independent read-only capability for users who need Job On information but must not create or edit Job Ons.
 
-The Beta simplification must not be interpreted as a permanent redefinition of the Job On module.
+The Beta simplification must not be interpreted as removal of Job On View, nor as evidence that the access model is incomplete.
 
 ---
 
