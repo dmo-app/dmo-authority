@@ -126,7 +126,7 @@ Resumo may compose the state of several Controlo functions for one production, b
 
 ```text
 controlo_id
-→ canonical durable shared Controlo production context; technical representation still to be implemented
+→ canonical durable shared Controlo production context
 
 Resumo
 → derived read/document composition

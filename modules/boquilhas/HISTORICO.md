@@ -10,7 +10,9 @@ Its movements remain grouped under that trace before and after association to pr
 
 A pre-production trace keeps the same identity when later associated to its `bq_id`. A later machine/production change must not move those historical movements onto the new production trace.
 
-`bq_id` identifies the BQ-in-production context and has one production trace. The canonical `tool_id` may repeat across productions, while each production receives a different `bq_id` and trace. Therefore one physical Tool may have many historical traces over time. The only cardinality restriction is that the same `tool_id` cannot have two simultaneous pre-production traces whose `bq_id` is still unresolved.
+`bq_id` identifies the BQ-in-production context and has one production trace. The canonical `tool_id` may repeat across productions, while each production receives a different `bq_id` and trace. Therefore one physical Tool may have many historical traces over time.
+
+The simultaneous unresolved-trace cardinality for one `tool_id` is not yet defined. History must therefore preserve every real trace independently, and later association must never guess between ambiguous pending candidates.
 
 ## Movement history
 
@@ -36,4 +38,4 @@ Where explicit movement editing is allowed, it must remain auditable.
 
 Editing must not be used as an automatic reconciliation mechanism.
 
-The exact permitted edit boundary follows the movement rules in `MOVIMENTOS.md` and the implemented audit behavior.
+The exact permitted edit boundary follows the movement rules in `MOVIMENTOS.md` and the audit contract defined for movement edits.

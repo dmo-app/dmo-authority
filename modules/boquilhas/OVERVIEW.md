@@ -2,8 +2,6 @@
 
 Boquilhas records the real repair movements of BQ Tools while keeping those movements grouped by production context.
 
-The existing register/movement implementation is a valid base to preserve and evolve.
-
 ## Canonical relationship
 
 ```text
@@ -48,9 +46,9 @@ bq_id = null
 
 The trace keeps that identity.
 
-For one canonical BQ `tool_id`, there may be **at most one** pre-production trace with `bq_id = null` at a time.
+The same `tool_id` may accumulate many traces historically because each production has its own `bq_id` and trace.
 
-This does not mean one trace per Tool. The same `tool_id` may accumulate many traces historically because each production has its own `bq_id` and trace. The restriction applies only while a trace is still waiting for its production association.
+The product rule for whether one `tool_id` may have more than one simultaneous pre-production trace with `bq_id = null` is not yet defined. This unresolved cardinality must not be silently decided by persistence constraints.
 
 There is no trace `open` / `closed` lifecycle. The relevant distinction is only:
 
@@ -62,7 +60,7 @@ associated production trace
 → bq_id = <production_bq_id>
 ```
 
-When Job On later creates the corresponding `bq_id`, both the pending trace and the new `bq_id` reference the same canonical `tool_id`. Because only one unresolved trace can exist for that `tool_id`, the trace is associated automatically:
+When Job On later creates the corresponding `bq_id`, both the pending trace and the new `bq_id` reference the same canonical `tool_id`. The trace is associated automatically only when the pending match is unambiguous:
 
 ```text
 pending trace.tool_id
@@ -105,8 +103,6 @@ Movement types remain:
 - Saída;
 - Entrada;
 - EntradaSemReparação.
-
-The existing `boquilhas_id`-based persistence remains a valid implementation base and must be reconciled without discarding real operational history.
 
 Quantity-in-house, quantity-out and discrepancy are projections/derivations over movement facts. Their detailed mathematics may be refined independently of this identity structure.
 

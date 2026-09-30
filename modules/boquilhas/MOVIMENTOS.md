@@ -3,19 +3,17 @@
 This file defines the movement discrepancy behavior of the Boquilhas module.
 
 
-## Implementation boundary — one movement trace per BQ production context
-
-This rule evolves the Boquilhas movement behavior already implemented in the application.
-
-The existing `boquilhas_id`-based register/persistence is a valid implementation base and its real operational history must be preserved.
+## Trace boundary — one movement trace per BQ production context
 
 The canonical movement boundary is `bq_repair_trace_id`.
 
 One `bq_id` / production context has one repair trace, and that trace groups all Boquilhas movement cycles for that production. A new `saida` does not create another trace.
 
-A trace may begin before Job On from the canonical BQ `tool_id`, with `bq_id` unresolved. At most one such unresolved trace may exist at a time for the same `tool_id`. The same Tool may nevertheless have many traces historically because each associated production has its own `bq_id` and trace. When Job On later creates the matching `bq_id` referencing the same canonical `tool_id`, the pending trace is associated automatically. That association does not replace the trace, move its existing movements, or reset its history. No separate open/closed trace state is required.
+A trace may begin before Job On from the canonical BQ `tool_id`, with `bq_id` unresolved. The same Tool may have many traces historically because each associated production has its own `bq_id` and trace.
 
-Implementation should adapt/reconcile the existing register model rather than destroy valid data merely to rename persistence.
+When Job On later creates the matching `bq_id` referencing the same canonical `tool_id`, the pending trace is associated automatically only when the match is unambiguous. The product rule for whether more than one simultaneous unresolved trace may exist for the same `tool_id` is not yet defined, so no automatic association may guess between multiple candidates.
+
+Association does not replace the trace, move its existing movements, or reset its history. No separate open/closed trace state is required.
 
 ## 1. Operational truth has priority over mathematical reconciliation
 
@@ -137,7 +135,7 @@ Previous traces retain their historical discrepancy unchanged.
 
 A new production has its own `bq_id` and trace. That change must never migrate old movements or discrepancies out of the previous trace.
 
-## 6. Required implementation behavior
+## 6. Required movement behavior
 
 The backend must preserve two separate concepts:
 

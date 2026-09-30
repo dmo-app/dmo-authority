@@ -96,15 +96,3 @@ It does not absorb:
 - arbitrary module-specific records.
 
 A consuming module may reach Tool-owned information through the real persisted relations without taking ownership of that information.
-
-## Current implementation association
-
-In `dmo-app/dmo-app-beta`, the current implementation is anchored by:
-
-- `src/DMO.Application/Tools/IToolService.cs`
-- `src/DMO.Application/Tools/ToolService.cs`
-- `src/DMO.Application/Tools/ToolTechnicalValuesReadModel.cs`
-- `src/DMO.Infrastructure/Persistence/ToolJobOn/`
-- migration `20260927114825_011_ToolTechnicalValues`
-
-These paths describe current implementation reality; this document remains the functional blueprint for Ferramentas.
