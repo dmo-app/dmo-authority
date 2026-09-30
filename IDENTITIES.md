@@ -50,27 +50,27 @@ The exact technical representation may be designed during implementation, but th
 - Comparação reuses existing `cm_id`; it does not create a new CM.
 - It does not alter the original Peso and does not create `previous_peso_id`.
 
-## 7. Boquilhas register / repair-trace identity
+## 7. `bq_repair_trace_id` — Boquilhas repair process
 
-The existing Boquilhas implementation based on `boquilhas_id` is a valid implementation base and must not be treated as an error or replaced automatically.
+- Identifies one concrete Boquilhas repair process / movement trace.
+- It exists so movements belonging to one repair process are grouped under their own durable identity instead of being attached as one flat lifetime movement list directly to `bq_id`.
+- Before a production association exists, a repair trace may be anchored to the canonical BQ `tool_id`.
+- When the production context becomes known, the same `bq_repair_trace_id` is explicitly associated with the applicable `bq_id`.
+- Associating the trace to `bq_id` does not create a replacement trace, move its existing movements, or reset its discrepancy/history.
+- A trace may continue to receive movements after the machine has moved to another production; late returns remain on the trace where that repair process originated.
+- `bq_id` remains the BQ Tool-in-production context. It is not the identity of a repair process and must not become the direct parent for the complete Boquilhas movement history.
+- `movement_id` identifies an individual event inside a repair trace.
 
-The current product requirement is to preserve the working Boquilhas register and movement flow while adapting the movement balance/discrepancy behavior defined in `modules/boquilhas/MOVIMENTOS.md`.
+The existing `boquilhas_id`-based implementation is a valid implementation base and its existing records must be preserved. Introducing the canonical repair-trace identity does not by itself require a destructive rename or loss of existing register data. Implementation must reconcile the existing register persistence with the repair-trace lifecycle while preserving the real operational history.
 
-`bq_repair_trace_id` is **not a required canonical identity at this time**.
-
-It must not replace or complement `boquilhas_id` merely because it appeared in a later authority model. A separate repair-trace identity may only be introduced if a concrete product requirement or explicit owner decision demonstrates that the existing register identity cannot represent the required behavior.
-
-Therefore:
-
-- preserve the existing Boquilhas register model where it works;
-- adapt the existing movement system for the required saldo/discrepancy behavior;
-- do not perform an identity migration from `boquilhas_id` to `bq_repair_trace_id` without a separately justified decision.
+The unresolved cardinality question for multiple simultaneous pre-production traces of the same `tool_id` is tracked separately in `OPEN_DECISIONS.md`.
 
 ## 8. `movement_id` — Boquilhas movement
 
 - Identifies one Boquilhas quantity movement/event.
 - Movement type is exactly one of `saida`, `entrada`, or `entrada_sem_reparacao`.
-- Movement identity is distinct from `bq_id`, `tool_id`, the Boquilhas register identity, and any audit-entry identity.
+- Each movement belongs to one `bq_repair_trace_id`.
+- Movement identity is distinct from `bq_repair_trace_id`, `bq_id`, `tool_id`, the Boquilhas register identity, and any audit-entry identity.
 
 ## Structures and names that deliberately do not create canonical identities
 
@@ -85,12 +85,6 @@ Resumo is a read composition / derived dashboard-document surface inside Control
 TP/Tampão has no independent operational identity in the current process.
 
 DMO preserves the applicable production value in the Job On context. It must not invent a `tp_id` or `tampao_id` merely because Peso reads that value.
-
-### `bq_repair_trace_id`
-
-`bq_repair_trace_id` is not currently a required product identity.
-
-Its prior appearance in authority must not be interpreted as a requirement to replace the existing `boquilhas_id` model. It remains a possible future design only if an explicit product need justifies a separate identity.
 
 ### `tool_technical_values`
 

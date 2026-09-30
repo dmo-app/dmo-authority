@@ -40,8 +40,8 @@ It must never become the only entry path into Boquilhas registration.
 
 The **Registo** tab remains an independent operational entry point where the user can search/select a BQ Tool and then:
 
-- create a Boquilhas register for a BQ that has not yet entered production and therefore has no current machine card;
-- open an existing register for a BQ that is no longer the current BQ shown on a machine;
+- create a Boquilhas repair trace for a BQ that has not yet entered production and therefore has no current machine card;
+- open an existing register/repair trace for a BQ that is no longer the current BQ shown on a machine;
 - record later movements against that older register, including returns from repair that happen after the machine has already changed to the next production.
 
 Example:
@@ -53,11 +53,11 @@ Example:
 
     One or two days later, the repaired BQ-X return.
 
-The user must still be able to go to Registo, find BQ-X / its existing register, and record the Entrada against that previous register.
+The user must still be able to go to Registo, find BQ-X / its existing repair trace, and record the Entrada against that same `bq_repair_trace_id`.
 
 The fact that BQ-X is no longer visible as the current machine card must not block or redirect the movement to BQ-Y.
 
-For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and preserve that register until the later production association is made through the normal association flow.
+For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and create/preserve a `bq_repair_trace_id`. When the production context later becomes known, that same trace is explicitly associated with `bq_id`; the association does not create a replacement trace or move its existing movements.
 
 Therefore the module has two valid entry patterns:
 
@@ -65,12 +65,13 @@ Therefore the module has two valid entry patterns:
     machine card double-click
     → current Job On/BQ association
     → correct tool_id already selected
+    → create/open the applicable repair trace
     → register movement
 
     GENERAL / NON-CURRENT
     Registo tab
-    → search/select canonical BQ Tool or existing register
-    → create/open register
+    → search/select canonical BQ Tool or existing register/trace
+    → create/open repair trace
     → register movement
 
 Both paths reach the same Boquilhas registration semantics. The machine-card path is only faster because the context is already known.
@@ -81,7 +82,7 @@ The card must expose, in real time, three operational values derived from the se
 
 1. quantity currently **in house**;
 2. quantity currently **out for repair**;
-3. total accumulated **discrepancy** for the current production trace.
+3. accumulated **discrepancy** for the relevant repair trace context associated with the current BQ.
 
 These values are read projections over the register facts. They are not independently editable balances and must not be stored as a second authority.
 
@@ -112,7 +113,7 @@ When a machine changes to a new production/BQ, the previous Boquilhas register i
 
 It remains a valid historical/operational register and may continue to receive movements after it stops being the BQ displayed on the machine card.
 
-For example, BQ sent to repair during the previous production may return after the machine has already started the next production. Those movements still belong to the previous register/trace where the operational event originated.
+For example, BQ sent to repair during the previous production may return after the machine has already started the next production. Those movements still belong to the same `bq_repair_trace_id` where the repair process originated.
 
     machine card changed
     !=
@@ -134,12 +135,17 @@ The implementation must preserve these distinct concepts:
     → general entry point for current, previous and pre-production BQ registration
 
     Boquilhas register
-    → durable operational history
+    → durable operational access / existing persistence base
+
+    bq_repair_trace_id
+    → identity of one repair process
+    → groups the movement facts of that process
+    → may be associated to bq_id when production context exists
 
     Movement facts
-    → continue to belong to their register regardless of which BQ is currently shown on the machine card
+    → belong to their repair trace regardless of which BQ is currently shown on the machine card
 
-The side panel must never alter register history merely because the current machine assignment changed.
+The side panel must never alter repair-trace history merely because the current machine assignment changed. `bq_id` must not be used as a replacement container for the complete movement history.
 
 ## 8. Explicitly forbidden interpretations
 
@@ -152,6 +158,7 @@ An implementation must not:
 - close a Boquilhas register when its machine card changes to another BQ;
 - prevent movements on the previous register merely because it is no longer current on the machine;
 - move historical movements to the new production;
+- move movements from their `bq_repair_trace_id` onto `bq_id` merely for navigation convenience;
 - reset the previous register when a new Job On becomes current;
 - require a manual handover action solely to update the machine card;
 - treat the side panel as persistence authority;

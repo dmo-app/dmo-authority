@@ -141,11 +141,16 @@ Only the current Job On capability model is valid during this verification.
 
 Verify the current application against the present Boquilhas authority for:
 
-- repair movement/discrepancy behaviour;
+- preservation of existing Boquilhas register data that already represents real operational history;
+- canonical `bq_repair_trace_id` as the identity/grouping for one repair process;
+- movements belonging to the repair trace rather than being attached as one flat lifetime movement list directly to `bq_id`;
+- pre-production repair traces anchored to canonical BQ `tool_id` where applicable;
+- explicit later association of the same trace to `bq_id` without replacing the trace or moving its existing movements;
+- repair movement/discrepancy behaviour scoped to the repair trace;
 - machine-side current-production context;
-- independence of a repair register/trace from machine production changes;
+- independence of a repair trace from machine production changes;
 - current-production registration shortcut;
-- independent access to old, non-current and pre-production registrations;
+- independent access to old, non-current and pre-production repair traces;
 - preservation of the same repair-trace identity when later associated with production.
 
 Any remaining semantic question must be resolved from current authority/owner confirmation before implementation is changed.

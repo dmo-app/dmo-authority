@@ -509,9 +509,11 @@ See `modules/controlo-approve/`.
 
 ### Boquilhas
 
-Boquilhas preserves the existing register/movement model as the implementation base.
+Boquilhas preserves the existing register/movement implementation as a valid base while giving each repair process its own canonical `bq_repair_trace_id`.
 
-The current evolution is focused on movement-derived quantities and discrepancy behavior. This evolution does not, by itself, require replacing `boquilhas_id` or introducing a new repair-trace identity.
+The repair trace groups the movements of that process. It may begin from a canonical BQ `tool_id` before production association, later be explicitly associated with `bq_id`, and continue after a machine/production change without moving its history onto another BQ context. `bq_id` identifies the BQ-in-production context; it is not the direct lifetime parent of all repair movements.
+
+The current evolution also includes the movement-derived quantity and discrepancy behavior defined by the Boquilhas module files.
 
 See:
 

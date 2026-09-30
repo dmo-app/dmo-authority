@@ -3,17 +3,19 @@
 This file is authoritative for the movement discrepancy behavior of the Boquilhas module.
 
 
-## Implementation boundary — adapt the existing movement system
+## Implementation boundary — preserve the existing register, add the canonical repair-process boundary
 
-This rule is an evolution of the Boquilhas movement behavior already implemented in the application.
+This rule evolves the Boquilhas movement behavior already implemented in the application.
 
-It does **not** declare the existing Boquilhas register model invalid and does not require an identity migration.
+The existing `boquilhas_id`-based register/persistence is a valid implementation base and its real operational history must be preserved.
 
-Implementation must, wherever possible, preserve the existing `boquilhas_id`-based register and the existing movement flow, adapting that behavior to support the saldo/discrepancy rules below.
+The canonical process boundary for movements is `bq_repair_trace_id`.
 
-In particular, this document does not require `bq_repair_trace_id`. A separate repair-trace identity may only be introduced if a concrete product requirement or explicit owner decision demonstrates that it is necessary.
+A repair trace groups the movements of one repair process so that `bq_id` does not become the direct parent of every Boquilhas movement across its lifetime.
 
-The work defined here is therefore a **movement/saldo/discrepancy adaptation**, not a replacement of the existing Boquilhas identity model.
+A trace may begin before Job On from the canonical BQ `tool_id`. When production context becomes known, the same trace is explicitly associated with the applicable `bq_id`; that association does not replace the trace, move its existing movements, or reset its discrepancy.
+
+Implementation should adapt/reconcile the existing register model rather than destroy valid data merely to rename persistence.
 
 ## 1. Operational truth has priority over mathematical reconciliation
 
@@ -110,19 +112,30 @@ where normal movements contribute no discrepancy and are visually blank in the S
 
 ## 5. Scope and reset
 
-The accumulated discrepancy belongs to one production trace.
+The accumulated discrepancy belongs to one repair trace identified by `bq_repair_trace_id`.
 
-It remains part of that trace's history permanently and is available in the broader context of the trace associated with the Job On.
+It is not a lifetime balance of `bq_id` and it is not reset merely because the machine starts another production.
 
-A new production starts a new trace with:
+A repair trace may:
+
+```text
+begin from tool_id before Job On
+→ later associate to bq_id
+→ keep the same bq_repair_trace_id
+→ continue receiving later movements
+```
+
+Association to production does not reset the trace.
+
+A **new repair process** starts a new trace with:
 
 ```text
 trace_discrepancy = 0
 ```
 
-The new trace does not inherit or offset the discrepancy of previous traces.
-
 Previous traces retain their historical discrepancy unchanged.
+
+A production change by itself must not migrate old movements or discrepancies into another trace.
 
 ## 6. Required implementation behavior
 
@@ -155,7 +168,8 @@ An implementation must not:
 - invent a missing Saída to make the numbers reconcile;
 - show `0` in the Saldo column for ordinary movements;
 - use a later movement to cancel an earlier discrepancy;
-- carry a previous trace discrepancy into a new production trace;
+- move or carry a discrepancy from one repair trace into another merely because production changes;
+- attach repair movements directly to `bq_id` as one undifferentiated lifetime movement list;
 - implement Saldo as `Σ Saída - Σ Entrada` or another conventional running stock balance.
 
 ## 8. Acceptance examples
@@ -205,21 +219,23 @@ Trace discrepancy: -8
 
 None of the four historical discrepancies is cancelled by another movement.
 
-### Next production
+### New repair process
 
-Previous trace:
+Previous repair trace:
 
 ```text
 Trace discrepancy: -8
 ```
 
-New trace:
+New repair trace:
 
 ```text
 Trace discrepancy: 0
 ```
 
-The previous `-8` remains historical evidence on the previous trace.
+The previous `-8` remains historical evidence on the previous `bq_repair_trace_id`.
+
+A machine or production change does not by itself rewrite, transfer or reset the previous trace.
 
 ## 9. Editing boundary
 

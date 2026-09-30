@@ -4,6 +4,8 @@ This file contains unresolved authority questions only.
 
 An item here is not canonical until the owner decides it and the resulting durable rule is promoted into the appropriate authority file.
 
+`bq_repair_trace_id` itself is not an open decision: it is the canonical identity of one Boquilhas repair process and groups that process's movements. OD-001 concerns only the permitted multiplicity of pending traces before production association.
+
 `resumo_id` and `controlo_id` are not open decisions:
 - `resumo_id` does not exist. Resumo is a read composition / derived document surface.
 - `controlo_id` exists and is the persistent identity of a Controlo context in one production.

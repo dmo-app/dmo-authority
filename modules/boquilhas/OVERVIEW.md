@@ -1,8 +1,8 @@
 # Boquilhas — Overview
 
-Boquilhas is the operational register for BQ repair movements.
+Boquilhas is the operational register for BQ repair processes and their real movement events.
 
-The existing register and movement implementation is the valid base to preserve and evolve.
+The existing register/movement implementation is a valid base to preserve and evolve. The product model distinguishes the durable repair process from the production BQ context.
 
 ## Current model
 
@@ -12,21 +12,45 @@ The module records real movement events, including:
 - Entrada;
 - EntradaSemReparação.
 
-The existing `boquilhas_id`-based register must not be treated as an error merely because another identity model appeared in later documentation.
+Each repair process has a canonical `bq_repair_trace_id`.
 
-A separate `bq_repair_trace_id` is not currently required.
+The relationship is conceptually:
+
+```text
+BQ Tool
+  ↓
+bq_repair_trace_id
+  ↓
+movements
+```
+
+Before production association, the trace may be anchored to the canonical BQ `tool_id`.
+
+When the relevant production context becomes known, the same trace is explicitly associated with `bq_id`:
+
+```text
+bq_repair_trace_id
+  ↓
+bq_id
+```
+
+The association does not replace the trace, reset it, or move its movements onto `bq_id`.
+
+`bq_id` identifies the BQ Tool-in-production context. `bq_repair_trace_id` identifies the repair process. `movement_id` identifies an event inside that process.
+
+The existing `boquilhas_id`-based persistence remains a valid implementation base and must be reconciled without discarding valid operational history.
 
 ## Planned evolution
 
-The main evolution is the saldo/discrepancy behavior:
+The movement model must support:
 
 - quantity in house;
 - quantity out for repair;
 - discrepancy when observed quantities do not reconcile with explainable movement history;
 - discrepancy preserved as historical fact;
-- unmatched quantity must not inflate the accounted maximum/lot quantity.
+- unmatched quantity not inflating the accounted maximum/lot quantity.
 
-This evolution should be implemented by adapting the existing movement system wherever possible.
+Saldo/discrepancy is evaluated inside the repair trace. Broader BQ history is composed from its repair traces rather than by making `bq_id` carry one undifferentiated lifetime movement list.
 
 Detailed rules:
 
