@@ -175,7 +175,7 @@ context_changed = BQ
 
 or the corresponding CM, MF, TP/Calote or other relevant production context.
 
-It does not carry a complete Job On snapshot and does not become a second authority for production state.
+It does not carry a complete Job On snapshot and does not become a second source of production truth.
 
 The normal module/backend relationship already knows how to read the current production context it needs.
 

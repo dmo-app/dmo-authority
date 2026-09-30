@@ -42,4 +42,4 @@ Recipient email addresses must not be hardcoded into the sending workflow.
 
 This configuration belongs to Controlo Create, not Admin, because it configures the operational document-sending workflow rather than application authentication or access permissions.
 
-Settings provide configuration consumed by operational workflows; they do not become a second authority for records created by those workflows.
+Settings provide configuration consumed by operational workflows; they do not become a second source of truth for records created by those workflows.

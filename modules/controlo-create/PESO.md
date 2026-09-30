@@ -19,7 +19,7 @@ Approval actions do not belong to this surface.
 - The same `peso_id` persists through the later decision lifecycle.
 - Approval does not create a copy.
 - Peso is normally anchored through the production `cm_id`.
-- Peso may consume production/context facts without becoming their authority.
+- Peso may consume production/context facts without taking ownership of them.
 
 ## Physical measurement vs technical calculation
 
@@ -50,7 +50,7 @@ BQ and PU are therefore part of the later calculation through their technical/dr
 The frontend must not calculate the industrial result.
 
 Water density:
-- authoritative table;
+- canonical table;
 - valid temperature range: 5–35 °C;
 - use rounded whole-degree temperature;
 - no interpolation.
@@ -81,4 +81,4 @@ cm_id
 → tool_technical_values
 ```
 
-The Tool remains the authority for those technical values. Missing values must not be invented.
+The Tool remains the canonical owner of those technical values. Missing values must not be invented.

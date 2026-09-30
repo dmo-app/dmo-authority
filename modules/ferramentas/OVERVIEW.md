@@ -64,7 +64,7 @@ Creating a Tool does not redefine Ferramentas as a creation form.
 
 If the required Tool does not exist, the user may invoke **Create Tool** from the registry, create the missing canonical Tool, and continue the originating workflow with the resulting `tool_id`.
 
-The UI implementation of this action belongs to `dmo-app/dmo-design`; this authority defines the functional behavior.
+The UI implementation of this action belongs to `dmo-app/dmo-design`; this blueprint defines the functional behavior.
 
 ## Optional technical values
 
@@ -107,4 +107,4 @@ In `dmo-app/dmo-app-beta`, the current implementation is anchored by:
 - `src/DMO.Infrastructure/Persistence/ToolJobOn/`
 - migration `20260927114825_011_ToolTechnicalValues`
 
-These paths describe current implementation reality; this document remains the functional authority.
+These paths describe current implementation reality; this document remains the functional blueprint for Ferramentas.

@@ -66,7 +66,7 @@ Only the historical facts required by the production context should be preserved
 
 Changes to mutable Tool master information must not rewrite historical production contexts.
 
-Ferramentas remains authoritative for canonical Tool identity and Tool-owned master facts.
+Ferramentas remains the canonical owner of Tool identity and Tool-owned master facts.
 
 ---
 

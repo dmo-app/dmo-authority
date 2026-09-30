@@ -1,6 +1,6 @@
 # Boquilhas — Registo
 
-This file is authoritative for the Boquilhas Registo surface and its machine side panel.
+This file defines the Boquilhas Registo surface and its machine side panel.
 
 ## 1. The machine side panel is navigation and live operational context
 
@@ -28,9 +28,9 @@ A **double-click** on the card opens the Boquilhas registration workflow already
 
 The shortcut carries the canonical `tool_id` resolved from the current Job On/BQ association into the registration flow so the correct Tool is already selected and ready for the user to register the operation.
 
-This shortcut removes navigation/search work only. It does not create a second Tool-selection authority, does not infer a Tool from text such as reference/lote, and does not change any Boquilhas register semantics.
+This shortcut removes navigation/search work only. It does not create a second Tool-selection source, does not infer a Tool from text such as reference/lote, and does not change any Boquilhas register semantics.
 
-The navigation follows the canonical Tool identity (`tool_id`) and the current Job On association. The card itself never becomes an authority for Tool identity.
+The navigation follows the canonical Tool identity (`tool_id`) and the current Job On association. The card itself never becomes a source of Tool identity.
 
 ## 3. The machine card is NOT the only way to register
 
@@ -84,9 +84,9 @@ The card must expose, in real time, three operational values derived from the se
 2. quantity currently **out for repair**;
 3. accumulated **discrepancy** for the relevant repair trace context associated with the current BQ.
 
-These values are read projections over the register facts. They are not independently editable balances and must not be stored as a second authority.
+These values are read projections over the register facts. They are not independently editable balances and must not be stored as a second source of truth.
 
-The discrepancy value follows the authoritative rules in `MOVIMENTOS.md`: it is the accumulated historical discrepancy of the current trace and is not automatically reconciled by later movements.
+The discrepancy value follows the rules in `MOVIMENTOS.md`: it is the accumulated historical discrepancy of the current trace and is not automatically reconciled by later movements.
 
 ## 5. Automatic change when production changes
 
@@ -161,7 +161,7 @@ An implementation must not:
 - move movements from their `bq_repair_trace_id` onto `bq_id` merely for navigation convenience;
 - reset the previous register when a new Job On becomes current;
 - require a manual handover action solely to update the machine card;
-- treat the side panel as persistence authority;
+- treat the side panel as the source of persisted truth;
 - store the three card values as independent mutable balances;
 - infer that disappearance from the side panel means the register is finished.
 

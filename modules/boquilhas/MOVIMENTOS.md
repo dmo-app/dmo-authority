@@ -1,6 +1,6 @@
 # Boquilhas — Movimentos
 
-This file is authoritative for the movement discrepancy behavior of the Boquilhas module.
+This file defines the movement discrepancy behavior of the Boquilhas module.
 
 
 ## Implementation boundary — one movement trace per BQ production context

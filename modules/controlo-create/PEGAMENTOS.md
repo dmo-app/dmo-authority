@@ -47,7 +47,7 @@ Pegamentos uses the real production component identities:
 - `mf_id`;
 - `bq_id`.
 
-Known technical inputs are resolved from the relevant production context and canonical Tool data. The frontend must not invent them or become a second calculation authority.
+Known technical inputs are resolved from the relevant production context and canonical Tool data. The frontend must not invent them or become a second source of calculation truth.
 
 The component Tools are already established by the active Job On context. Pegamentos does not reselect CM, MF or BQ merely to perform the measurement.
 

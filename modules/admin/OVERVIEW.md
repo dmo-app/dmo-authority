@@ -1,12 +1,12 @@
 # Admin — Overview
 
-This file is authoritative for the DMO Admin identity boundary and administration surface.
+This file defines the DMO Admin identity boundary and administration surface.
 
 ## 1. ADMIN is a DMO role over an external Auth identity
 
-Supabase Auth is the authority for authentication identity and credentials.
+Supabase Auth owns authentication identity and credentials.
 
-DMO is the authority for what an authenticated identity is allowed to do inside the application.
+DMO owns the application-side access rules for an authenticated identity.
 
 Therefore:
 
@@ -60,7 +60,7 @@ Operational access for normal USERS follows the DMO access model (USER → Templ
 
 The ADMIN association must not be implemented by granting every operational module to a normal USER.
 
-## 5. External authority remains external
+## 5. External identity ownership remains external
 
 Credential creation, password management and creation of the Auth identity used as ADMIN remain outside DMO in Supabase Auth administration.
 

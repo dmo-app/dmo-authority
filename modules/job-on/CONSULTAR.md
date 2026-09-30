@@ -24,4 +24,4 @@ Visible fields such as reference or production number help humans find the recor
 
 Consultation must not mutate the Job On.
 
-Job On View does not gain edit behavior through a hidden UI state or legacy role mapping.
+Job On View does not gain edit behavior through a hidden UI state or historical role mapping.

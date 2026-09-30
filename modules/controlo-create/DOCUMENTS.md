@@ -56,7 +56,7 @@ PDF generation belongs to the relevant Controlo Create workflow.
 
 Generated content is composed from the persisted facts and read data required for that document.
 
-The document layer must not invent domain facts or become a second authority for calculations or decisions.
+The document layer must not invent domain facts or become a second source of truth for calculations or decisions.
 
 Generated PDFs must not be silently overwritten.
 

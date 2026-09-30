@@ -24,4 +24,4 @@ Creation does not mint `jobon_id`, `cm_id`, `mf_id`, or `bq_id`; those identitie
 
 ## Presentation boundary
 
-Whether creation is rendered as a modal, panel, or another interaction pattern is visual authority owned by `dmo-design`, not by this document.
+Whether creation is rendered as a modal, panel, or another interaction pattern is a visual-design decision owned by `dmo-app/dmo-design`, not by this document.

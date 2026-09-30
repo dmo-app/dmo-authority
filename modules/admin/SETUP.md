@@ -1,6 +1,6 @@
 # Admin — Setup / Blank State
 
-This file is authoritative for initial DMO setup and ADMIN reassociation.
+This file defines initial DMO setup and ADMIN reassociation.
 
 ## 1. Blank State
 
@@ -52,7 +52,7 @@ If the Auth user does not exist, Setup must not create it as a convenience. The 
 
 ## 4. Security boundary
 
-The security boundary is that authority to create the identity used as DMO ADMIN remains outside the application.
+The security boundary is that creation of the identity used as DMO ADMIN remains outside the application.
 
 A person who only has access to DMO must not gain the ability to create the external Auth identity that can be associated as ADMIN.
 
@@ -111,10 +111,10 @@ An implementation must not:
 
 ```text
 Supabase Auth
-= authority for existence and credentials of the ADMIN authentication identity
+= owns existence and credentials of the ADMIN authentication identity
 
 DMO
-= authority for associating that already-existing identity with the ADMIN function
+= owns the association of that already-existing identity with the ADMIN function
 ```
 
-The two authorities must remain separate.
+These two ownership boundaries must remain separate.

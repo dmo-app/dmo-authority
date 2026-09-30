@@ -96,7 +96,7 @@ Measurements, calculations, alerts and technical OK/NOK states may inform a pers
 
 They must not silently become human approval/rejection decisions unless the specific workflow explicitly defines such behavior.
 
-## Related authority
+## Related blueprint references
 
 Create-side details:
 
