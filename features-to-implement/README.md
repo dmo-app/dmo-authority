@@ -37,6 +37,42 @@ A slice never overrides its owning canonical module document.
 
 If a slice and the canonical blueprint disagree, the canonical blueprint wins and the slice must be corrected.
 
+
+## Canonical association map
+
+Every implementation file must be read together with the canonical blueprint that owns the behavior.
+
+This map is the discovery bridge between `features-to-implement/` and the current product canon. It does **not** make every listed file READY.
+
+| Implementation file | Canonical owner / source | Current use |
+| --- | --- | --- |
+| `ACCESS_TEMPLATES_BLUEPRINT_COMPLETION.md` | `modules/admin/OVERVIEW.md`, `USERS.md`, `TEMPLATES.md`, `APP_DEFINICOES.md` | Admin implementation/alignment draft; reconcile recovery wording before Developer use. |
+| `BOQUILHAS_TRACE_IMPLEMENTATION.md` | `modules/boquilhas/OVERVIEW.md`, `REGISTO.md`, `MOVIMENTOS.md`, `HISTORICO.md`, `IDENTITIES.md` | Repair-trace implementation work. The ambiguous multiple-unresolved-trace case remains blocked by the owning canon. |
+| `COMPARACAO_UI_COMPLETION.md` | `modules/controlo-create/COMPARACAO.md` | Older UI-completion framing; use the canonical Comparação workflow as authority and reconcile before fresh-start implementation. |
+| `CONTROLO_CONTEXT_IMPLEMENTATION.md` | `modules/controlo/OVERVIEW.md`, `modules/job-on/CRIAR.md`, `modules/controlo-create/RESUMO.md`, `IDENTITIES.md` | Older recovery framing for the shared Controlo context; current canon owns the `jobon_id ↔ controlo_id` behavior. Reconcile before Developer use. |
+| `FOLHA_PERSISTENCE_IMPLEMENTATION.md` | `modules/controlo-create/FOLHA.md`, `modules/controlo/OVERVIEW.md`, `modules/controlo-approve/OVERVIEW.md` | Persistence/evaluation draft. Canonical Folha ownership/lifecycle detail must be sufficient before implementation proceeds. |
+| `FOUNDATION_RUNTIME_GAPS.md` | `IMPLEMENTATION_STATUS.md` plus the owning functional documents for each affected area | Volatile implementation/runtime checklist, not product canon and not a durable functional slice. Re-verify before use. |
+| `JOB_ON_CONTEXT_CHANGE_AWARENESS.md` | `modules/job-on/CONTEXT_CHANGE_AWARENESS.md` plus the consuming module documents | Cross-cutting implementation slice. Timing semantics are canonical; exact consumer dependency mapping must come from the owning workflows. |
+| `JOB_ON_DUPLICATION_ALIGNMENT.md` | `modules/job-on/DUPLICAR.md` | Job On duplication implementation/alignment slice. |
+| `PEGAMENTOS_BACKEND_IMPLEMENTATION.md` | `modules/controlo-create/PEGAMENTOS.md` | BLOCKED until the Pegamentos identity/cardinality/lifecycle/tolerance/applicability questions listed in the slice are closed in canon. |
+| `PESO_HISTORICAL_DIFFERENCE.md` | `modules/controlo-create/PESO.md`, with global explicit-choice/query rules in `RULES.md` | Fresh-start implementation slice for the normal Peso historical-difference flow. |
+| `PESO_TECHNICAL_VALUES_ALIGNMENT.md` | `modules/controlo-create/PESO.md`, `modules/ferramentas/VALORES_TECNICOS.md` | Older recovery/alignment framing; depends on the Tool technical-values contract and must be reconciled before Developer use. |
+| `PROTOTYPE_FAKE_BACKEND_REWORK.md` | `RULES.md`, `HOW_THE_APP_WORKS.md`, and the relevant module canon | Prototype-support work only. It must never be used as a production backend/API/schema contract. |
+| `SETUP_MODE_PROVIDER_CONNECTION.md` | `modules/admin/SETUP.md`, `modules/admin/OVERVIEW.md`, `RULES.md` | Setup/infrastructure slice; technical provider validation may still block implementation details. |
+| `TOOL_TECHNICAL_VALUES_IMPLEMENTATION.md` | `modules/ferramentas/OVERVIEW.md`, `modules/ferramentas/VALORES_TECNICOS.md`, `IDENTITIES.md` | BLOCKED until the units/domain/applicability/edit-capability decisions listed in the slice are closed in canon. |
+
+Reading rule:
+
+```text
+implementation file
+→ load its canonical owner/source
+→ check whether the slice is READY or BLOCKED
+→ if wording conflicts, canonical owner wins
+→ if the slice still uses recovery/baseline framing, reconcile it before handing it to a Developer
+```
+
+An implementation filename is therefore a pointer to work, not proof that the product contract is complete.
+
 ## Fresh-start rule
 
 Do not frame a slice as:

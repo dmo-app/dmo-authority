@@ -112,6 +112,49 @@ The existing Boquilhas register/movement model is the implementation base.
 
 The canonical Boquilhas model uses one `bq_repair_trace_id` for each `bq_id` / production BQ context, with many movements inside that trace. A pre-production trace may temporarily exist from canonical `tool_id` with `bq_id` unresolved and later associate to the matching production context according to the Boquilhas rules.
 
+
+## Implementation-slice associations
+
+The canonical module documents above own product behavior. The following implementation files are associated work packages only; they never override the module canon.
+
+```text
+Admin
+→ ACCESS_TEMPLATES_BLUEPRINT_COMPLETION.md
+→ SETUP_MODE_PROVIDER_CONNECTION.md
+
+Ferramentas
+→ TOOL_TECHNICAL_VALUES_IMPLEMENTATION.md
+→ PESO_TECHNICAL_VALUES_ALIGNMENT.md (consumer alignment)
+
+Job On
+→ JOB_ON_DUPLICATION_ALIGNMENT.md
+→ JOB_ON_CONTEXT_CHANGE_AWARENESS.md
+→ CONTROLO_CONTEXT_IMPLEMENTATION.md (creation-time Controlo association)
+
+Controlo shared
+→ CONTROLO_CONTEXT_IMPLEMENTATION.md
+→ FOLHA_PERSISTENCE_IMPLEMENTATION.md
+
+Controlo Create
+→ PESO_HISTORICAL_DIFFERENCE.md
+→ PESO_TECHNICAL_VALUES_ALIGNMENT.md
+→ COMPARACAO_UI_COMPLETION.md
+→ PEGAMENTOS_BACKEND_IMPLEMENTATION.md
+→ FOLHA_PERSISTENCE_IMPLEMENTATION.md
+
+Boquilhas
+→ BOQUILHAS_TRACE_IMPLEMENTATION.md
+→ JOB_ON_CONTEXT_CHANGE_AWARENESS.md (consumer behavior)
+
+Prototype / development support
+→ PROTOTYPE_FAKE_BACKEND_REWORK.md
+
+Runtime/status verification
+→ FOUNDATION_RUNTIME_GAPS.md
+```
+
+Always read `../features-to-implement/README.md` before treating one of these files as a Developer contract. Some remain recovery/alignment drafts and some are explicitly BLOCKED.
+
 ## Templates
 
 Access Templates are defined in `admin/TEMPLATES.md`.
