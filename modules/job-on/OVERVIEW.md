@@ -15,7 +15,11 @@ Job On has two access capabilities:
 - **Job On View** — consultation only;
 - **Job On Create** — creation/editing capability and the viewing behavior required to perform that work.
 
-These are module capabilities, not historical role titles.
+These are independently assignable module capabilities, not historical role titles.
+
+**Job On Create** already includes the consultation behavior needed to perform its work, so a user assigned Job On Create does not also need Job On View. **Job On View** exists for users who need consultation without creation/editing authority.
+
+The current Beta may intentionally require only Job On Create for its Job On operator. This does not conflict with Users, Access Templates or the broader access model; it is a scope choice about which capability is needed for that operational use.
 
 Inside Job On Create, an existing Job On normally opens in a safe View state and requires an explicit switch to Edit before editable values are changed. This UI state is not a separate permission.
 
