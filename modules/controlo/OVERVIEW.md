@@ -33,9 +33,11 @@ Examples include:
 
 UI grouping under Controlo does not, by itself, make all of these children of one generic parent.
 
-## `controlo_id` — planned evolution
+## `controlo_id` — canonical functional identity, technical implementation pending
 
-`controlo_id` is an evolution planned for the shared Controlo production context where a durable Controlo-level identity is genuinely required.
+`controlo_id` is the canonical functional identity of the shared Controlo production context where durable Controlo-level facts belong.
+
+Its exact technical representation and migration into the implementation remain pending.
 
 It is not permission to rewrite every existing Controlo relation.
 
@@ -74,7 +76,7 @@ Resumo may compose the state of several Controlo functions for one production, b
 
 ```text
 controlo_id
-→ planned durable shared Controlo production context where justified
+→ canonical durable shared Controlo production context; technical representation still to be implemented
 
 Resumo
 → derived read/document composition
