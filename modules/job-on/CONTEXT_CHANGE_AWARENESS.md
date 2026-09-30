@@ -159,7 +159,8 @@ A module acknowledgement does **not** mean:
 - corrected;
 - recalculated;
 - approved;
-- operationally treated.
+- operationally treated;
+- that a planned production transition has already been applied.
 
 It means only that the awareness was seen/taken notice of.
 
@@ -168,6 +169,34 @@ Acknowledgement never deletes or rewrites the Job On change log.
 Acknowledgement is scoped to the consuming module. If the same event matters to more than one module, acknowledgement by one module must not clear another module's pending awareness.
 
 If nobody has acknowledged a relevant event for a module, the awareness remains available when that module is opened later. The mechanism must not depend on a transient on-screen event being witnessed at the exact time of delivery.
+
+### Acknowledgement does not cancel a scheduled production transition
+
+For `PRODUCTION_TRANSITION`, seeing or acknowledging the awareness before the configured activation time does not complete the transition.
+
+Conceptually:
+
+```text
+transition awareness arrives
+-> human/module may acknowledge that it was seen
+
+configured activation time has not arrived
+-> transition is still operationally pending
+
+configured activation time arrives
+-> consumer re-reads Job On
+-> consumer resolves and applies the production/context that is applicable then
+```
+
+Therefore:
+
+```text
+acknowledged
+!=
+production transition applied
+```
+
+An implementation must keep the scheduled activation obligation distinct from the lightweight acknowledgement state.
 
 ---
 
@@ -218,6 +247,12 @@ jobon_id
 ```
 
 The signal does not carry a complete Job On snapshot and does not become a second source of production truth.
+
+For `PRODUCTION_TRANSITION`, any `jobon_id` carried by the awareness identifies the planned production known when that awareness was produced. It is not the final source of truth at activation time.
+
+When the configured activation time arrives, the consumer must re-read Job On and use the production/context that is applicable at that moment.
+
+Therefore a later planning edit may change what the consumer ultimately adopts without requiring the awareness payload itself to become a mutable production snapshot.
 
 The normal module/backend relationship already knows how to read the Job On context it needs.
 
@@ -291,9 +326,10 @@ For a planned production transition:
 ```text
 transition awareness
 -> pending if received early
+-> may be acknowledged as seen without completing the transition
 -> consumer activation time arrives
 -> consumer re-reads Job On
--> consumer uses the applicable production context
+-> consumer uses the production/context applicable at that moment
 ```
 
 A module may still have its own independent domain behavior. For example, Boquilhas may use its own canonical identity rules to associate a pre-production trace to a later BQ production context. That behavior is not performed by the generic Job On awareness mechanism.
@@ -341,14 +377,16 @@ The mechanism is conceptually closed at this level:
 ```text
 1. awareness distinguishes production_transition from context_changed
 2. a production_transition is handled at the consuming module's configured activation time
-3. a context_changed event is handled immediately
-4. no global midnight/hardcoded-hour rule controls all modules
-5. real same-jobon context changes are permanently logged
-6. awareness remains lightweight and does not duplicate the Job On snapshot
-7. consumers are derived from existing functional dependencies
-8. pending awareness is scoped per consumer module
-9. acknowledgement means only "seen"
-10. historical operational records are never rewritten by awareness
+3. acknowledging a production_transition does not mark that transition as applied
+4. at activation time the consumer re-reads Job On and uses the then-applicable production/context
+5. a context_changed event is handled immediately
+6. no global midnight/hardcoded-hour rule controls all modules
+7. real same-jobon context changes are permanently logged
+8. awareness remains lightweight and does not duplicate the Job On snapshot
+9. consumers are derived from existing functional dependencies
+10. pending awareness/acknowledgement is scoped per consumer module
+11. acknowledgement means only "seen"
+12. historical operational records are never rewritten by awareness
 ```
 
 Still to refine with module dependency documentation:
@@ -366,6 +404,8 @@ That refinement does not reopen the awareness timing model itself.
 ## Core rules
 
 > **A planned production transition and a change inside the same Job On are different awareness events. Planned transitions are consumed at each module's own configured production-activation time; same-`jobon_id` context changes are surfaced immediately.**
+
+> **Acknowledging a planned production-transition awareness means only that it was seen. The transition remains operationally pending until the consumer reaches its configured activation time, re-reads Job On and applies the production/context that is applicable then.**
 
 > **Awareness remains lightweight. The consuming module re-reads Job On instead of receiving a duplicated production snapshot.**
 

@@ -2,280 +2,127 @@
 
 **Status:** FUNCTIONALLY DEFINED — NOT IMPLEMENTED
 
-**Type:** Cross-cutting product feature
+**Type:** Cross-cutting implementation feature
 
-## Purpose
+## Canonical functional source
 
-Job On awareness has two distinct operational cases that may share the same delivery infrastructure but must not share the same timing semantics:
+The complete functional behavior belongs to:
 
-1. a **planned production transition** for a machine, where a different `jobon_id` becomes the production a consumer module should use;
-2. an **immediate context change** inside the same `jobon_id`, where CM, MF, BQ, TP/Calote or another relevant production fact changes.
+- `modules/job-on/CONTEXT_CHANGE_AWARENESS.md`
 
-This is an **awareness mechanism**, not an automatic operational decision system.
+Consumer-specific configuration/behavior belongs to the relevant owning module, for example:
 
-## Two awareness event kinds
+- `modules/boquilhas/DEFINICOES.md`
+- `modules/boquilhas/REGISTO.md`
 
-### 1. Planned production transition
+This feature file is an implementation/review checklist. It must not become a second copy of the functional rule.
 
-Job On provides the planned production by machine and production date.
+If wording here and the canonical Job On document ever differ, the module blueprint is the functional source.
 
-A consumer module may receive awareness that a new production is due, but the module does not have to switch its operational context at midnight or at one application-wide hardcoded hour.
+## Implementation scope
 
-Each consuming module owns its own configurable daily production-activation time.
-
-Conceptually:
+Implement one awareness capability that preserves two distinct event semantics:
 
 ```text
-Job On
--> production date + machine + jobon_id
+PRODUCTION_TRANSITION
+-> may be known before activation
+-> consumer reacts at its own configured production-activation time
+-> consumer re-reads Job On at that time
+-> acknowledgement before activation does not complete/cancel the scheduled transition
 
-consumer module settings
--> production activation time
-
-awareness may already be pending
--> configured module time arrives
--> module reads Job On
--> module resolves the applicable production/context
--> module updates its own current operational context
+CONTEXT_CHANGED
+-> same jobon_id
+-> relevant CM/MF/BQ/TP or other consumed context changes
+-> consumer awareness is immediate
+-> consumer re-reads Job On immediately
 ```
 
-The configured time belongs to the consuming module, not to a global application setting.
+The implementation may share transport/storage infrastructure for both event kinds, but it must preserve their different timing behavior.
 
-Different modules may therefore react to the same planned production on different configured schedules.
+## Required implementation properties
 
-A planned-transition ping may exist before the module's activation time and remain pending until the module performs its scheduled read.
+The implementation must provide:
 
-The rule must not depend on an arbitrary universal time such as midnight or a hardcoded `07:00`.
+- permanent Job On change history for real same-`jobon_id` context changes;
+- lightweight awareness rather than a duplicated Job On snapshot;
+- an event-kind distinction equivalent to `PRODUCTION_TRANSITION` vs `CONTEXT_CHANGED`;
+- per-consumer pending/acknowledgement state where acknowledgement is used;
+- module-owned production-activation configuration for consumers that use planned transitions;
+- re-reading of Job On when the consumer must react;
+- preservation of historical records on their original CM/MF/BQ/other production contexts;
+- consumer routing derived from the real production-context dependencies rather than a second independent notification map.
 
-### 2. Immediate Job On context change
+For a planned transition, any `jobon_id` stored/carried with the awareness must not be treated as the final production truth at activation time. The consumer re-reads Job On and uses the then-applicable plan.
 
-A Job On may remain the same production while one of its production contexts is replaced because operational reality changed.
+## Acknowledgement boundary
 
-Examples:
+A reviewer must distinguish:
 
 ```text
-jobon_id stays the same
-
-old_cm_id -> new_cm_id
-old_mf_id -> new_mf_id
-old_bq_id -> new_bq_id
-old TP/Calote -> new TP/Calote
+awareness acknowledged
+!=
+production transition applied
 ```
 
-This awareness is **immediate**.
+A user/module may see or acknowledge a future `PRODUCTION_TRANSITION` before the configured activation time.
 
-A consumer that depends on the changed context must not wait until its configured planned-production activation time before checking the Job On again.
+That must not remove or cancel the consumer's obligation to perform the scheduled Job On re-read when its activation time arrives.
 
-Conceptually:
+For `CONTEXT_CHANGED`, acknowledgement still means only that the immediate change awareness was seen. It does not mean corrected, recalculated, approved or operationally resolved.
+
+## Technical choices intentionally left open
+
+Planning/Architect may choose the technical representation for:
+
+- change-log persistence;
+- awareness/event persistence;
+- per-consumer acknowledgement state;
+- scheduling mechanism;
+- delivery/revalidation mechanism;
+- storage of each consumer module's activation time;
+- UI treatment of pending/seen awareness;
+- retention/query UX for the permanent change history.
+
+The blueprint does not require an event bus, message bus, polling implementation or a particular scheduler.
+
+## Dependency work still required
+
+Before implementation is considered complete, the real consumer map must be confirmed from the owning workflows for:
 
 ```text
-same jobon_id
--> relevant context changes
--> immediate awareness
--> consumer reads Job On now
--> historical records remain attached to their previous context
+CM -> actual consumers
+MF -> actual consumers
+BQ -> actual consumers
+TP/Calote -> actual consumers
+other production facts -> actual consumers
 ```
 
-The module-specific production-activation time governs planned production transitions only. It does not delay awareness of changes inside an already identified Job On.
-
-## Identity boundary
-
-A previously created production-context identity must not silently change the canonical Tool underneath it.
-
-Example:
-
-```text
-old_bq_id -> tool_id X
-new_bq_id -> tool_id Y
-```
-
-Not:
-
-```text
-same bq_id
-tool_id X -> tool_id Y
-```
-
-The previous context remains referencable by historical records that used it.
-
-The same principle applies to CM/MF/BQ production-context identities.
-
-## Three separate concerns
-
-### 1. Job On change log
-
-A relevant change inside an existing Job On is recorded permanently as a historical fact.
-
-The record must be able to identify, at minimum:
-
-- the `jobon_id`;
-- what production context/fact changed;
-- the previous identity/value;
-- the new identity/value;
-- actor;
-- timestamp.
-
-The log is not a snapshot of the whole Job On.
-
-It records the fact of the change.
-
-Acknowledgement must never delete this history.
-
-A planned production transition does not require a duplicate Job On snapshot merely to support awareness. The consumer can re-read the planned/current Job On context when its configured activation time arrives.
-
-### 2. Lightweight awareness signal
-
-The signal remains deliberately small.
-
-For an immediate context change:
-
-```text
-event_kind = context_changed
-jobon_id
-changed context type
-```
-
-For a planned production transition:
-
-```text
-event_kind = production_transition
-machine
-jobon_id
-```
-
-The signal must not become a second copy of Job On truth.
-
-It means only that the consumer must re-read the Job On context at the timing appropriate to that event kind.
-
-The exact transport mechanism is an implementation decision. This blueprint does not require an event bus, message bus, polling model or any other specific technical mechanism.
-
-### 3. Per-consumer acknowledgement
-
-A consumer may expose a lightweight pending indication until the relevant awareness has been handled/seen by that module.
-
-```text
-check = "I saw this change"
-```
-
-Acknowledgement does **not** mean:
-
-- corrected;
-- resolved;
-- recalculated;
-- approved;
-- automatically synchronized;
-- historical data rewritten.
-
-One consumer acknowledging a change must not clear awareness for another consumer.
-
-Example:
-
-```text
-one Job On BQ change
-
-Boquilhas -> acknowledged
-Controlo  -> still pending
-```
-
-The underlying Job On change log remains permanent where a real Job On context change occurred.
-
-## Consumer routing
-
-Notification/awareness routing must not create a second dependency model.
-
-The same production-context dependency that tells the application which workflows consume CM, MF, BQ, TP/Calote or another Job On fact must also determine which consumers need awareness when that fact changes.
-
-Conceptually:
-
-```text
-workflow depends on CM
--> CM changes
--> that workflow is an interested consumer
-```
-
-The exact dependency map is documented as the owning workflows are finalized.
-
-Do not maintain one map for operational data dependency and another independent map for notification routing.
-
-The timing rule is then owned by the consumer:
-
-```text
-production_transition
--> respond at that module's configured production-activation time
-
-context_changed
--> respond immediately
-```
-
-## BQ example
-
-A BQ may be physically replaced because of repair timing, lot availability or another operational reason.
-
-The Job On keeps the same `jobon_id`, but the BQ production context is replaced:
-
-```text
-old_bq_id -> canonical Tool X
-new_bq_id -> canonical Tool Y
-```
-
-The old `bq_id`, its repair trace and its historical movements remain intact.
-
-The change log records that the Job On BQ context changed.
-
-Consumers that already depend on BQ receive immediate awareness.
-
-This immediate BQ-change behavior is independent from the configured hour at which a module normally adopts the next planned production.
-
-The feature does not attempt to guess the physical replacement or decide the required human action.
-
-## Human role
-
-The application guarantees visibility of a relevant change.
-
-The human decides what the change means operationally.
-
-This feature must not grow into automatic recalculation, automatic correction, automatic approval or a general task-resolution engine unless a separate module-specific rule explicitly requires such behavior.
-
-## Current planning boundary
-
-A planned production transition and a Job On context change are different events.
-
-A machine reassignment inside planning is also not automatically equivalent to an urgent CM/MF/BQ context-change alert.
-
-The important v1 timing rule is:
-
-```text
-planned production transition
--> module-specific configured activation time
-
-same-jobon context change
--> immediate awareness
-```
-
-## Implementation choices
-
-The functional behavior above is defined. The following remain implementation choices or later detail:
-
-- persistence shape for the Job On change log;
-- persistence shape for per-consumer acknowledgement;
-- exact UI location and visual treatment of pending awareness;
-- transport/delivery mechanism;
-- final production-context dependency map for CM/MF/BQ/TP and other facts;
-- retention/query UX for viewing the permanent Job On change log;
-- technical storage shape for each module's production-activation time.
-
-These technical choices must not change the functional distinction between scheduled production-transition handling and immediate context-change handling.
-
-## Reviewer checks
-
-A reviewer must reject an implementation that:
-
-- mutates a historical CM/MF/BQ context to point to a different Tool instead of creating the replacement context required by the domain;
-- deletes the permanent change fact when acknowledgement occurs;
-- treats acknowledgement as automatic operational resolution;
-- rewrites historical Peso, Boquilhas traces or other records merely because the Job On now exposes a different context;
-- introduces a separate notification dependency map that can disagree with the real workflow dependency map;
-- turns the awareness signal into a full Job On snapshot without a separately justified need;
-- uses midnight or one global hardcoded hour as the production-transition rule for every module;
-- delays a same-`jobon_id` context change until the module's scheduled production-activation time;
-- makes one module's configured activation time silently control another module.
+Do not create a separate routing truth merely for awareness.
+
+## Acceptance / reviewer checks
+
+Reject an implementation that:
+
+- treats `PRODUCTION_TRANSITION` and `CONTEXT_CHANGED` as having the same timing;
+- uses midnight, `07:00` or another global application time for every consumer;
+- lets one module's activation time control another module;
+- lets acknowledgement of a future production transition cancel or complete the scheduled activation;
+- trusts an old transition payload instead of re-reading Job On at activation time;
+- delays a same-`jobon_id` context change until a later scheduled activation time;
+- mutates an existing CM/MF/BQ context to point at a replacement Tool;
+- rewrites historical Peso, Boquilhas traces or other existing records onto the new context;
+- deletes the permanent same-Job-On change fact when awareness is acknowledged;
+- interprets acknowledgement as correction, recalculation, approval or resolution;
+- duplicates a full Job On snapshot into the awareness system without a separately justified need;
+- introduces a notification-routing map that can disagree with the actual operational dependency model.
+
+## Completion rule
+
+This feature may be marked implemented only when:
+
+1. the selected app baseline implements both event timings correctly;
+2. the consuming modules that need planned transitions own/configure their own activation times;
+3. immediate context-change consumers revalidate without waiting for those scheduled times;
+4. acknowledgement and scheduled application are separate states/concerns;
+5. historical identities and records remain truthful;
+6. tests cover both event kinds and the acknowledgement-vs-activation distinction.
