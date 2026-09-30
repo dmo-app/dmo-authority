@@ -52,18 +52,23 @@ The backend therefore resolves the immediately previous eligible production for 
 
 This is deterministic previous-production resolution inside normal Peso, not a UI for freely choosing among arbitrary historical Pesos.
 
-## Unequal CM counts
+## Unequal Peso measurement counts
 
-The current and previous productions do not need the same number of CM measurement rows.
+The current and previous Peso records do not need the same number of measurement rows.
 
-Example:
+The backend must not reject the historical difference merely because the counts differ.
 
 ```text
-current:    CM1 CM2 CM3 CM4
-previous:   CM1 CM2 CM3 CM4 CM5
+current Peso = 4 measurements
+
+previous Peso = 5 measurements  → valid
+previous Peso = 6 measurements  → valid
+previous Peso = 3 measurements  → valid
 ```
 
-Only valid corresponding CMs participate:
+Only valid corresponding measurement rows/CMs participate.
+
+Example:
 
 ```text
 CM1 ↔ CM1
@@ -106,7 +111,7 @@ Tests must prove that:
 - a Tool compatible with B1 and C1 can resolve its immediately previous eligible production across either machine;
 - with `202601/B1 → 202602/C1 → 202603/B1`, the previous production for `202603` is `202602/C1`;
 - current-machine equality is not a hidden history filter;
-- unequal CM counts do not block the historical difference;
+- 4 current measurements can be compared against 5, 6 or 3 previous measurements without a same-count validation error;
 - only valid corresponding CMs contribute to the displayed difference/average;
 - unmatched CMs are excluded;
 - no valid counterpart produces an explicit refusal;

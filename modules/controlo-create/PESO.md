@@ -80,7 +80,23 @@ The system must not filter history to `B1` merely because the current production
 
 Machine remains useful context/display information, but current-machine equality is not the rule that determines the previous production.
 
-If current and previous productions contain different numbers of CM measurements, the difference view remains valid:
+The number of Peso measurement rows does **not** have to be equal between the current and previous productions.
+
+A same-count check is forbidden as a precondition for the historical difference.
+
+Examples:
+
+```text
+current Peso = 4 measurements
+
+previous Peso = 5 measurements  → valid
+previous Peso = 6 measurements  → valid
+previous Peso = 3 measurements  → valid
+```
+
+Only the measurement rows/CMs that have a valid counterpart participate in the difference.
+
+Example:
 
 ```text
 current:    CM1 CM2 CM3 CM4
@@ -93,7 +109,9 @@ CM4 ↔ CM4
 CM5 → no current counterpart → excluded
 ```
 
-Only valid corresponding CMs participate in the historical difference and its average. Unmatched rows are excluded rather than fabricated or used to block the operation.
+The same principle applies when the previous Peso has fewer rows: only the valid corresponding rows participate.
+
+Unmatched rows are excluded rather than fabricated or used to block the operation. The historical difference average uses only the participating matched rows.
 
 The operation is refused only when no valid CM counterpart exists to compare.
 
