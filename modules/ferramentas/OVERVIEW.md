@@ -78,7 +78,12 @@ The surface may expose actions such as:
 
 - view Tool details;
 - edit a Tool where the workflow allows it;
-- create a missing Tool.
+- create a missing Tool;
+- delete a Tool where the delete operation is valid.
+
+For the current Beta, Tool creation and Tool deletion are available to any user who has access to the DMO application. A separate Ferramentas permission is not required for those two actions in the Beta. This broad access exists to support testing and does not define the permanent full-application authorization model.
+
+This access rule answers **who may invoke** create/delete. It does not, by itself, define whether a Tool that is already referenced by persisted production/history may be physically deleted; relation/history safety must follow the canonical identity and historical-truth rules.
 
 ## Contextual use
 

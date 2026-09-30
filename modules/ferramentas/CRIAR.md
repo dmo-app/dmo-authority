@@ -14,6 +14,17 @@ Lot is Tool metadata and part of the Tool's real-world distinction. A different 
 
 The searchable attributes of a Tool do not form a derived identity key. The new canonical identity is the backend-issued `tool_id`.
 
+
+## Beta access
+
+In the current Beta there is no need to restrict Tool creation by a separate Ferramentas capability.
+
+Any user who has access to the DMO application may create a Tool.
+
+The same Beta access rule applies to the Tool delete action so test data can be created and removed during validation of the application.
+
+This is a Beta access decision. It does not create a permanent full-application permission model for Ferramentas.
+
 ## Optional CM → MF-reference association
 
 Most CM Tools require no extra association beyond their own canonical reference.
