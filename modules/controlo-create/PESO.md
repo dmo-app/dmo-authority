@@ -50,42 +50,34 @@ This is part of Peso itself. It is **not** the separate `Comparação` workflow 
 Conceptually:
 
 ```text
-current Peso / current CM context
-→ current cm_id
-→ tool_id
-→ eligible historical production contexts for that same canonical CM Tool
+current production / Peso
+→ current production reference
+→ historical Pesos for that same production reference
+→ rank useful candidates near the top
 → user explicitly selects one historical Peso
-→ compare the valid corresponding CM measurements
+→ compare the valid corresponding measurements
 → show the difference in the normal Peso flow
 ```
 
-Historical lookup follows the canonical CM Tool identity and the machines on which that Tool is allowed to work.
+The historical list must give the operator freedom to choose. It must not remove a production merely because it ran on another machine or used a different Tool set.
 
-The comparison filter must **not** be limited to the machine of the current production. It must consider the previous use of the same canonical `tool_id` across the Tool's compatible machines.
+Machine and Tool context may be used only as **ranking assistance**. Historical Pesos from the same machine and/or with Tool context considered compatible/relevant may appear near the top of the list. Within comparable ranking groups, newer productions may appear before older ones.
 
-Example:
-
-```text
-tool_id = X
-compatible machines = B1, C1
-
-202601 → B1
-202602 → C1
-202603 → B1  ← current production
-```
-
-For `202603`, both earlier productions remain valid historical candidates:
+This ranking is assistance, not eligibility and not selection:
 
 ```text
-202602 / C1
-202601 / B1
+same machine / compatible Tool context
+→ may rank higher
+
+different machine / different Tool context
+→ remains visible and selectable
+
+first result
+!=
+selected result
 ```
 
-They may be presented in descending production/date order so the nearest history appears first.
-
-The system must not filter history to `B1` merely because the current production is on B1, and it must not automatically associate `202602 / C1` merely because it is the nearest candidate.
-
-Machine remains useful context/display information, but current-machine equality is not the rule that determines historical eligibility.
+The application must never automatically associate a historical Peso. The user always chooses the production that makes operational sense.
 
 The number of Peso measurement rows does **not** have to be equal between the current and previous productions.
 
@@ -122,7 +114,7 @@ Unmatched rows are excluded rather than fabricated or used to block the operatio
 
 The operation is refused only when no valid CM counterpart exists to compare.
 
-The normal Peso flow presents the eligible historical Peso candidates for that canonical CM Tool across its compatible machines.
+The normal Peso flow presents historical Peso candidates for the same production reference.
 
 The user explicitly selects which historical Peso to compare. Sorting by nearest/latest date is presentation assistance only.
 
