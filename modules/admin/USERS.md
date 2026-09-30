@@ -12,7 +12,6 @@ The current User facts are:
 
 - name;
 - operator number / BA Glass identification;
-- login email;
 - current Access Template, if assigned;
 - current account availability such as active or stand-by.
 
@@ -30,10 +29,13 @@ Conceptually:
 User
 ├── Name
 ├── Operator / BA Glass ID
-├── Login email
 ├── Template
 └── Account availability
 ```
+
+The operator / BA Glass ID is the login identifier known by the operator.
+
+DMO keeps its own User identity and the configured authentication provider keeps the technical authentication identity. Provider-specific attributes required under the hood must not become extra operator-facing login requirements.
 
 The User detail must not maintain a second role/profile label independent from the Template.
 
@@ -73,20 +75,58 @@ This is the same canonical association managed from the Template detail page.
 
 Changing it from Users or Templates must not create two independent relations.
 
-## 4. Password reset
+## 4. User creation and temporary password
 
-The User detail exposes a password-reset action for the User's login.
+ADMIN may create a normal User from DMO using:
 
-The authentication provider remains responsible for credentials and password-reset mechanics.
+- name;
+- operator / BA Glass ID;
+- Access Template where applicable;
+- a temporary password.
 
-DMO:
+DMO uses the configured authentication provider for the normal User's authentication identity and credential.
 
-- may initiate the supported provider reset flow;
-- must not expose an existing password;
-- must not store a replacement password as application-owned user data;
-- must not treat a password reset as a change of User identity or Template.
+This differs from ADMIN bootstrap: the Auth identity used as DMO ADMIN must already exist outside DMO according to `SETUP.md`.
 
-## 5. Stand-by
+The temporary password is bootstrap/reset access only. It is not stored as DMO-owned User data and is not a historical password.
+
+```text
+ADMIN creates User
+→ temporary password
+→ User authenticates
+→ password change required
+→ User defines new password
+→ normal application access
+```
+
+The definitive password remains owned by the authentication provider and cannot be read back through DMO.
+
+## 5. Password reset
+
+Reset creates a new temporary-access condition through the authentication provider:
+
+```text
+ADMIN resets password
+→ new temporary password
+→ next successful login requires password change
+```
+
+DMO never shows the previous password and never stores the definitive password.
+
+Reset does not change User identity or Template.
+
+## 6. Personal User menu
+
+The application shell exposes a personal User menu with:
+
+- current User identification/name;
+- visible Template/profile label;
+- change password;
+- logout.
+
+This is shell behavior, not a separate operational module.
+
+## 7. Stand-by
 
 A User may be placed in **stand-by**.
 
@@ -98,7 +138,7 @@ The User may later be returned to active use without recreating historical opera
 
 Stand-by must not rewrite operations, approvals, movements or other historical facts previously attributed to that User.
 
-## 6. Delete
+## 8. Delete
 
 If a person has definitively left and the User no longer needs to remain available for operational use, Admin may expose a delete action.
 
@@ -114,7 +154,7 @@ historical actions lose their actor
 
 Deletion is distinct from temporary stand-by and must not happen automatically merely because a User is placed in stand-by.
 
-## 7. Explicitly forbidden interpretations
+## 9. Explicitly forbidden interpretations
 
 An implementation must not:
 
@@ -123,4 +163,8 @@ An implementation must not:
 - allow a stand-by User to retain normal operational access;
 - delete historical records when a User is put in stand-by or removed;
 - maintain separate User→Template and Template→User assignment systems;
-- treat the operator/BA Glass identification as an arithmetic quantity.
+- treat the operator/BA Glass identification as an arithmetic quantity;
+- require login email as an operator-facing product credential;
+- allow temporary-password authentication to enter the operational application before password change;
+- persist temporary or definitive passwords as DMO-owned User data;
+- expose an existing password during reset.

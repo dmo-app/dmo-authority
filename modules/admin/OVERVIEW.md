@@ -136,11 +136,32 @@ The centralized App Definições surface is intended especially for settings tha
 
 The owning module remains the canonical source for what the setting means and how it affects that module.
 
-## 7. External identity ownership remains external
+## 7. Authentication boundary
 
-Credential creation, password management and creation of the Auth identity used as ADMIN remain outside DMO in Supabase Auth administration.
+The ADMIN authentication identity follows the special setup rule: it must already exist outside DMO and DMO only associates it with the ADMIN function.
 
-For normal USERS, Admin may expose account-management actions such as password reset only through the configured authentication provider. DMO must not store or invent user passwords itself.
+Normal USERS follow a different provisioning flow.
+
+ADMIN may create a normal User through DMO, and DMO may use the configured authentication provider to establish that User's technical authentication identity and temporary credential.
+
+For normal Users:
+
+```text
+operator / BA Glass ID
+→ operator-facing login identifier
+
+DMO User identity
+→ application identity and historical attribution
+
+provider Auth identity
+→ technical authentication identity
+```
+
+The provider remains the owner of password credentials.
+
+DMO may initiate creation/reset using a temporary password, but it must not persist that password as User data. Temporary-password authentication requires the User to define a new password before normal application access.
+
+This normal-User provisioning rule does not weaken or replace the stricter ADMIN bootstrap/reassociation boundary in `SETUP.md`.
 
 See:
 
