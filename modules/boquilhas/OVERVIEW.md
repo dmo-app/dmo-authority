@@ -32,6 +32,12 @@ trace
 
 A new production creates a new `bq_id` and a new trace, even if both the previous and new `bq_id` reference the same physical BQ `tool_id`.
 
+## Physical exclusivity
+
+A canonical physical BQ Tool cannot be simultaneously in use in two different machine/production contexts at the same real production moment.
+
+This limits valid production use of the Tool, but it does **not** decide how many unresolved pre-production repair traces may exist before a production association is known.
+
 ## Pre-production trace
 
 A repair movement may need to be recorded before the relevant Job On exists.
@@ -48,9 +54,9 @@ bq_id = null
 
 The trace keeps that identity.
 
-For one canonical BQ `tool_id`, there may be **at most one** pre-production trace with `bq_id = null` at a time.
+The same `tool_id` may accumulate many traces historically because each production has its own `bq_id` and trace.
 
-This does not mean one trace per Tool. The same `tool_id` may accumulate many traces historically because each production has its own `bq_id` and trace. The restriction applies only while a trace is still waiting for its production association.
+The allowed number of simultaneous pre-production traces with `bq_id = null` for the same `tool_id` is **not yet decided**. Physical Tool exclusivity does not, by itself, answer this persistence/cardinality question.
 
 There is no trace `open` / `closed` lifecycle. The relevant distinction is only:
 
@@ -62,17 +68,21 @@ associated production trace
 → bq_id = <production_bq_id>
 ```
 
-When Job On later creates the corresponding `bq_id`, both the pending trace and the new `bq_id` reference the same canonical `tool_id`. Because only one unresolved trace can exist for that `tool_id`, the trace is associated automatically:
+When Job On later creates a `bq_id` that references the same canonical `tool_id`, the same pre-production trace is associated automatically **only when the intended match is unambiguous** under the current product rules:
 
 ```text
 pending trace.tool_id
 ==
 new bq_id.tool_id
 
++ unambiguous intended match
+
 → same bq_repair_trace_id
 → attach to bq_id
 → preserve existing movements
 ```
+
+If more than one unresolved trace could legitimately exist and the intended match cannot be determined without a still-missing product rule, the implementation must not guess.
 
 While `bq_id` remains unresolved, the UI exposes a persistent Job On association warning derived from the missing association.
 
