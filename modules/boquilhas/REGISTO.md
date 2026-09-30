@@ -88,24 +88,36 @@ These values are read projections over the register facts. They are not independ
 
 The discrepancy value follows the rules in `MOVIMENTOS.md`: it is the accumulated historical discrepancy of the current trace and is not automatically reconciled by later movements.
 
-## 5. Automatic change when production changes
+## 5. Planned production transition
 
-The BQ shown on a machine card follows the Job On production schedule automatically.
+The BQ shown on a machine card follows the Job On production plan, but Boquilhas does not assume that a new production becomes active at midnight or at a hardcoded application-wide hour.
+
+Boquilhas owns a configurable production-activation time in `DEFINICOES.md`.
+
+A production-transition awareness may be available before that configured time. Boquilhas keeps that awareness pending and, when its configured activation time arrives, reads Job On to resolve the production/BQ context that now applies to the machine.
 
 Example:
 
     Machine: B1
 
-    29/09/2026
-    → card shows the BQ associated with the current B1 production
+    Job On
+    → next production date = 30/09/2026
 
-    30/09/2026 at 07:00 local time
-    → the new B1 Job On becomes the current production
-    → the B1 card automatically points to the BQ associated with that new production
+    Boquilhas Definições
+    → production activation time = <configured time>
 
-No user action is required to perform this card transition.
+    before configured time
+    → transition awareness may already be pending
+    → current Boquilhas machine context remains unchanged
 
-The transition is part of normal operational flow.
+    at configured time
+    → Boquilhas reads Job On
+    → resolves the applicable B1 production/BQ context
+    → machine card points to that BQ
+
+No manual handover is required solely to perform the planned card transition.
+
+This scheduled rule applies only to moving Boquilhas to the next planned production. If the BQ context changes inside the same `jobon_id` that Boquilhas is already consuming, the context-change awareness is immediate and Boquilhas must re-read Job On without waiting for the next configured activation time.
 
 ## 6. Card transition does not close the previous register
 
@@ -125,8 +137,11 @@ There is no required close action, acknowledgement, transfer action or extra lif
 
 The implementation must preserve these distinct concepts:
 
-    Job On schedule
-    → determines which BQ is current on a machine
+    Job On production plan
+    → provides the planned production/context by machine and date
+
+    Boquilhas production-activation time
+    → determines when Boquilhas adopts the next planned Job On context
 
     Machine side panel
     → navigation + live visual projection for the current production
@@ -162,7 +177,9 @@ An implementation must not:
 - move historical movements to the new production;
 - move movements from their `bq_repair_trace_id` onto `bq_id` merely for navigation convenience;
 - reset the previous register when a new Job On becomes current;
-- require a manual handover action solely to update the machine card;
+- require a manual handover action solely to perform a planned production transition;
+- hardcode midnight, 07:00 or another universal application time as the Boquilhas production-transition rule;
+- delay a same-jobon BQ context change until the next configured production-activation time;
 - treat the side panel as the source of persisted truth;
 - store the three card values as independent mutable balances;
 - infer that disappearance from the side panel means the register is finished.

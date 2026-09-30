@@ -2,18 +2,19 @@
 
 ## Purpose
 
-This document defines the functional v1 mechanism for making relevant changes to an existing Job On production context visible to the modules and people that depend on that context.
+This document defines the functional v1 awareness mechanism used when Job On information relevant to another module changes.
 
-The goal is awareness, not automatic operational decision-making.
-
-The minimum behavior is:
+There are two distinct event kinds:
 
 ```text
-Job On context changes
--> permanent change log
--> awareness for relevant consumers
--> module acknowledgement when seen
+PRODUCTION_TRANSITION
+= a consumer module moves from one planned jobon_id to another for a machine
+
+CONTEXT_CHANGED
+= the same jobon_id remains, but a relevant production fact/context changes
 ```
+
+The goal is awareness and revalidation, not automatic operational decision-making.
 
 No additional resolution workflow is implied.
 
@@ -21,18 +22,37 @@ No additional resolution workflow is implied.
 
 ## 1. Two different events must remain distinct
 
-### Current production changed
+### Planned production transition
 
-This means a machine is now running a different production:
+A machine has a different planned production for the new production date:
 
 ```text
 machine = B1
 
 previous jobon_id
--> current jobon_id
+-> next jobon_id
 ```
 
-This is a change of current production.
+Job On remains the source of the planned production information.
+
+There is **no single global application hour** at which every module must adopt the next production.
+
+Each consuming module owns its own configurable production-activation time.
+
+A transition ping may already exist before that time. The consumer waits until its configured activation time, then reads Job On and resolves the production/context it should use.
+
+Conceptually:
+
+```text
+production-transition awareness
+-> pending for consumer
+
+consumer's configured activation time arrives
+-> consumer reads Job On
+-> consumer adopts the applicable production context
+```
+
+The production transition must not be inferred from midnight and must not depend on a hardcoded example hour such as `07:00`.
 
 ### Job On context changed
 
@@ -47,9 +67,21 @@ jobon_id = unchanged
 old TP/Calote value -> new TP/Calote value
 ```
 
-These events are related operationally but are not the same event and must not be modeled as interchangeable.
+This event is **immediate** for consumers of the changed context.
 
-This document defines **Job On context changed** awareness.
+A consumer must not wait for its configured production-transition activation time before re-reading the Job On after a same-`jobon_id` context change.
+
+Therefore:
+
+```text
+PRODUCTION_TRANSITION
+-> consumer reacts at its configured module time
+
+CONTEXT_CHANGED
+-> consumer reacts immediately
+```
+
+These events may share notification infrastructure, but they must not be modeled as having the same timing behavior.
 
 ---
 
@@ -100,16 +132,24 @@ Machine labels such as B1/B2/C1 must not be reused as fictional component-contex
 
 ```text
 JOB ON CHANGE LOG
-= permanent memory of what changed
+= permanent memory of a real change inside an existing Job On
 
 PING / AWARENESS
-= draws attention to a relevant change
+= draws attention to a relevant event
 
 MODULE ACKNOWLEDGEMENT
 = "seen / taken notice of"
 ```
 
-These three concepts must remain separate.
+These concepts must remain separate.
+
+The awareness signal also preserves which event kind occurred:
+
+```text
+event_kind = production_transition
+or
+event_kind = context_changed
+```
 
 ### Acknowledgement means only "seen"
 
@@ -121,19 +161,19 @@ A module acknowledgement does **not** mean:
 - approved;
 - operationally treated.
 
-It means only that the change was seen/taken notice of.
+It means only that the awareness was seen/taken notice of.
 
 Acknowledgement never deletes or rewrites the Job On change log.
 
-Acknowledgement is scoped to the consuming module. If the same change matters to more than one module, acknowledgement by one module must not clear another module's pending awareness.
+Acknowledgement is scoped to the consuming module. If the same event matters to more than one module, acknowledgement by one module must not clear another module's pending awareness.
 
-If nobody has acknowledged a relevant change for a module, the awareness remains available when that module is opened later. The mechanism must not depend on a transient on-screen event being witnessed at the exact time of the change.
+If nobody has acknowledged a relevant event for a module, the awareness remains available when that module is opened later. The mechanism must not depend on a transient on-screen event being witnessed at the exact time of delivery.
 
 ---
 
 ## 4. Permanent Job On change log
 
-When a relevant Job On fact changes, Job On records the change permanently.
+When a relevant Job On fact changes inside the same production, Job On records the change permanently.
 
 For a BQ replacement the conceptual fact is:
 
@@ -149,16 +189,9 @@ Equivalent context identifiers apply to CM and MF changes.
 
 The log is the durable operational memory. It remains available after acknowledgement.
 
-The user-facing presentation does not need to expose UUIDs. It may show the human information required to understand the change, for example:
+The user-facing presentation does not need to expose UUIDs. It may show the human information required to understand the change.
 
-```text
-Job On 5447T173
-BQ alterada
-Lote anterior: 123
-Novo lote: 147
-```
-
-Human-readable labels are presentation. Canonical IDs remain the identity used by persistence and relationships.
+A planned production transition does not require a duplicated Job On snapshot in the awareness system. At its configured activation time, the consumer re-reads Job On and resolves the applicable production context.
 
 ---
 
@@ -166,22 +199,37 @@ Human-readable labels are presentation. Canonical IDs remain the identity used b
 
 The awareness signal is deliberately small.
 
-Conceptually:
+For a same-Job-On context change:
 
 ```text
+event_kind = context_changed
 jobon_id
 context_changed = BQ
 ```
 
 or the corresponding CM, MF, TP/Calote or other relevant production context.
 
-It does not carry a complete Job On snapshot and does not become a second source of production truth.
+For a planned production transition:
 
-The normal module/backend relationship already knows how to read the current production context it needs.
+```text
+event_kind = production_transition
+machine
+jobon_id
+```
 
-The meaning of the signal is only:
+The signal does not carry a complete Job On snapshot and does not become a second source of production truth.
 
-> Something in the Job On production context that this consumer depends on changed.
+The normal module/backend relationship already knows how to read the Job On context it needs.
+
+The signal tells the consumer **when to revalidate**, according to the event kind:
+
+```text
+production_transition
+-> at the consumer module's configured activation time
+
+context_changed
+-> immediately
+```
 
 ---
 
@@ -207,7 +255,9 @@ context changes
 
 Notification routing must not become a separate source of domain truth.
 
-The exact consumer mapping for CM, MF, BQ, TP/Calote and other production facts is refined with the functional dependency documentation of the consuming modules. That mapping is not invented in this mechanism.
+The exact consumer mapping for CM, MF, BQ, TP/Calote and other production facts is refined with the functional dependency documentation of the consuming modules.
+
+Each consumer that uses planned production transitions owns its own activation-time setting. One module's setting must not silently control another module.
 
 ---
 
@@ -226,13 +276,24 @@ The transverse mechanism does not automatically:
 - mark operational work as treated;
 - rewrite historical records.
 
-The minimal flow remains:
+For an immediate context change the minimal flow is:
 
 ```text
 change
--> awareness
--> human verifies
+-> immediate awareness
+-> consumer re-reads Job On
+-> human verifies where required
 -> acknowledgement when seen
+```
+
+For a planned production transition:
+
+```text
+transition awareness
+-> pending if received early
+-> consumer activation time arrives
+-> consumer re-reads Job On
+-> consumer uses the applicable production context
 ```
 
 A module may still have its own independent domain behavior. For example, Boquilhas may use its own canonical identity rules to associate a pre-production trace to a later BQ production context. That behavior is not performed by the generic Job On awareness mechanism.
@@ -257,17 +318,19 @@ The existing record keeps `<old_cm_id>`.
 
 The awareness mechanism tells relevant consumers that the Job On context changed. It does not move the existing record to the new context.
 
+Likewise, moving a module to the next planned production does not rewrite records created under the previous production.
+
 The same principle applies to BQ repair traces, movement history and other context-bound operational records.
 
 ---
 
 ## 9. Machine changes
 
-A machine change is not currently treated as equivalent to an urgent CM/MF/BQ context-awareness alert.
+A machine reassignment inside planning is not automatically equivalent to an urgent CM/MF/BQ context-change alert.
 
-Machine planning changes may still be recorded as normal Job On changes, but this v1 does not introduce an equivalent red-attention rule for them.
+This is separate from the normal **planned production transition for a machine**, which uses the consumer module's configured activation time.
 
-If a real operational case later requires stronger awareness for machine changes, that behavior may be added explicitly without changing this core mechanism.
+If a real workflow requires a special immediate awareness rule for machine reassignment itself, that behavior must be defined explicitly rather than inferred from the production-transition mechanism.
 
 ---
 
@@ -276,14 +339,16 @@ If a real operational case later requires stronger awareness for machine changes
 The mechanism is conceptually closed at this level:
 
 ```text
-1. a real Job On context change is recorded
-2. the Job On change log is permanent
-3. a lightweight awareness signal identifies jobon_id + changed context
-4. relevant consumers are derived from existing functional dependencies
-5. pending awareness remains visible until that module acknowledges it
-6. acknowledgement means only "seen"
-7. acknowledgement does not remove the log
-8. historical operational records are never rewritten by awareness
+1. awareness distinguishes production_transition from context_changed
+2. a production_transition is handled at the consuming module's configured activation time
+3. a context_changed event is handled immediately
+4. no global midnight/hardcoded-hour rule controls all modules
+5. real same-jobon context changes are permanently logged
+6. awareness remains lightweight and does not duplicate the Job On snapshot
+7. consumers are derived from existing functional dependencies
+8. pending awareness is scoped per consumer module
+9. acknowledgement means only "seen"
+10. historical operational records are never rewritten by awareness
 ```
 
 Still to refine with module dependency documentation:
@@ -296,10 +361,12 @@ TP/Calote -> actual consumers
 other production facts -> actual consumers
 ```
 
-That refinement does not reopen the awareness mechanism itself.
+That refinement does not reopen the awareness timing model itself.
 
-## Core rule
+## Core rules
 
-> **When a Job On production context used by another module changes, the change is permanently logged and a lightweight awareness notification is exposed to the consumers of that context. Acknowledgement means only that the change was seen; it does not resolve, correct, recalculate or rewrite operational history.**
+> **A planned production transition and a change inside the same Job On are different awareness events. Planned transitions are consumed at each module's own configured production-activation time; same-`jobon_id` context changes are surfaced immediately.**
+
+> **Awareness remains lightweight. The consuming module re-reads Job On instead of receiving a duplicated production snapshot.**
 
 > **The consumers of a change are derived from the same production-context dependencies used by the operational workflows; notification routing must not become a separate source of domain truth.**
