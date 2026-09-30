@@ -1,0 +1,11 @@
+# Authority repository ownership
+# Any change to canonical authority requires review by the repository owner.
+
+* @dmo-app
+
+# Explicitly protect the highest-risk authority surfaces.
+AUTHORITY.md @dmo-app
+IDENTITIES.md @dmo-app
+HOW_THE_APP_WORKS.md @dmo-app
+modules/** @dmo-app
+.github/** @dmo-app
