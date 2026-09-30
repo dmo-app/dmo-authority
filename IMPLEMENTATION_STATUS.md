@@ -44,9 +44,9 @@ This is a defect, not intended product behaviour.
 
 The currently inspected schema/application model does not yet persist that identity.
 
-Resumo is currently composed from `jobon_id`; this implementation state must not be interpreted as authority against `controlo_id`.
+Resumo is currently composed from `jobon_id`; this implementation state must not be treated as evidence against `controlo_id`.
 
-The implementation shape of `controlo_id` must follow current authority and must not invent parentage for all Controlo function records.
+The implementation shape of `controlo_id` must follow the current blueprint and must not invent parentage for all Controlo function records.
 
 ### Module availability / routes
 
@@ -66,15 +66,15 @@ This is an integration/test status, not a product rule.
 
 ### Pegamentos
 
-Functional authority exists.
+The functional blueprint is defined.
 
 The current inspected application does not yet contain the production backend/persistence implementation for Pegamentos.
 
-Prototype/browser-only behaviour must not be promoted into backend authority.
+Prototype/browser-only behaviour must not be promoted into backend product rules.
 
 ### Folha
 
-Functional authority exists.
+The functional blueprint is defined.
 
 The persisted Folha evaluation layer is not yet implemented in the inspected application state.
 
@@ -102,22 +102,22 @@ An unconfigured transport must produce the defined typed refusal/outcome rather 
 
 The inspected schema permits multiple simultaneous pending Boquilhas registers for one Tool because the provisional Tool index is non-unique.
 
-Current product authority has not yet established whether that multiplicity is intended.
+The current product blueprint has not yet established whether that multiplicity is intended.
 
 Do not infer the product rule from the current index shape.
 
 
-## Authority additions from 2026-09-29 awaiting implementation verification
+## Blueprint additions from 2026-09-29 awaiting implementation verification
 
-The authority was materially expanded on 2026-09-29.
+The blueprint was materially expanded on 2026-09-29.
 
-Everything in this section must be checked against the chosen current application baseline before being marked implemented. If the application already matches the authority, record that as verified. If it does not, implementation work remains.
+Everything in this section must be checked against the chosen current application baseline before being marked implemented. If the application already matches the blueprint, record that as verified. If it does not, implementation work remains.
 
-The authority itself is the product source. Commit wording, historical code, and previous implementation must not be used to restore superseded behaviour.
+The blueprint itself defines current product behavior. Commit wording, historical code, and previous implementation must not be used to restore outdated behavior.
 
 ### Peso / Tool technical values
 
-Verify the current application against the present authority for:
+Verify the current application against the present blueprint for:
 
 - Peso calculation inputs and their historical stability;
 - Tool-owned technical values consumed by Peso;
@@ -126,7 +126,7 @@ Verify the current application against the present authority for:
 
 ### Job On duplication
 
-Verify the current application against the present Job On duplication authority, including:
+Verify the current application against the present Job On duplication rules, including:
 
 - explicit source selection;
 - creation of a new production identity;
@@ -139,7 +139,7 @@ Only the current Job On capability model is valid during this verification.
 
 ### Boquilhas
 
-Verify the current application against the present Boquilhas authority for:
+Verify the current application against the present Boquilhas blueprint for:
 
 - preservation of existing Boquilhas register data that already represents real operational history;
 - canonical `bq_repair_trace_id` as the single movement trace for one `bq_id` / production BQ context;
@@ -154,7 +154,7 @@ Verify the current application against the present Boquilhas authority for:
 - independent access to old, non-current and pre-production repair traces;
 - preservation of the same repair-trace identity when later associated with production.
 
-Any remaining semantic question must be resolved from current authority/owner confirmation before implementation is changed.
+Any remaining semantic question must be resolved from the current blueprint or owner confirmation before implementation is changed.
 
 ### Admin / external authentication boundary
 
@@ -167,13 +167,13 @@ Verify and implement where required:
 
 ### Controlo canonical context
 
-Verify and implement the canonical Controlo context and `controlo_id` according to current authority.
+Verify and implement the canonical Controlo context and `controlo_id` according to the current blueprint.
 
 This includes identifying the facts that genuinely belong to the Controlo production context without turning `controlo_id` into a generic parent for every Controlo function record.
 
-### Controlo functional authority populated today
+### Controlo functional blueprint documented today
 
-The detailed authority populated today for these areas must be checked against the application baseline and implemented where missing:
+The detailed blueprint content documented today for these areas must be checked against the application baseline and implemented where missing:
 
 - Resumo;
 - Peso;
@@ -183,13 +183,13 @@ The detailed authority populated today for these areas must be checked against t
 - Definições;
 - the current identity relationships shared by those functions.
 
-Verification must use the current authority, not an older implementation as the definition of expected behaviour.
+Verification must use the current blueprint, not an older implementation as the definition of expected behaviour.
 
 ### Access Templates
 
-Authority coverage for Access Templates is still incomplete.
+Blueprint coverage for Access Templates is still incomplete.
 
-Before implementation work relies on Templates, the current product behaviour must first be fully captured in authority. After that, compare the application to that completed authority and implement the missing behaviour.
+Before implementation work relies on Templates, the current product behaviour must first be fully captured in the blueprint. After that, compare the application to that completed blueprint and implement the missing behaviour.
 
 Do not treat demonstration templates, prototype storage, or historical profile concepts as canonical merely because they exist in older material.
 
@@ -197,15 +197,15 @@ Do not treat demonstration templates, prototype storage, or historical profile c
 
 An item leaves this queue only after one of these outcomes is recorded:
 
-- **VERIFIED_IMPLEMENTED** — the selected application baseline already matches current authority;
-- **IMPLEMENTED** — the application was changed and verified to match current authority;
-- **BLOCKED_BY_AUTHORITY_GAP** — current authority is still insufficient to implement safely.
+- **VERIFIED_IMPLEMENTED** — the selected application baseline already matches the current blueprint;
+- **IMPLEMENTED** — the application was changed and verified to match the current blueprint;
+- **BLOCKED_BY_BLUEPRINT_GAP** — the current blueprint is still insufficient to implement safely.
 
 Do not mark an item complete merely because related code exists.
 
 ## Rule for future updates
 
-When a product decision is closed, update the canonical authority where that rule belongs.
+When a product decision is closed, update the canonical blueprint file where that rule belongs.
 
 When an implementation defect, gap, or transitional condition is discovered, update this file.
 

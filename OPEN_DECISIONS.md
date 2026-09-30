@@ -1,8 +1,8 @@
 # Open Decisions
 
-This file contains unresolved authority questions only.
+This file contains unresolved product questions only.
 
-An item here is not canonical until the owner decides it and the resulting durable rule is promoted into the appropriate authority file.
+An item here is not canonical until the owner decides it and the resulting durable rule is written into the appropriate blueprint file.
 
 `bq_repair_trace_id` itself is not an open decision.
 

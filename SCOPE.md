@@ -1,6 +1,6 @@
 # Beta Scope Boundaries
 
-**Definition:** The Beta is a **scope-reduced** DMO product. Capabilities listed as OUT remain outside this Beta unless authority is explicitly changed.
+**Definition:** The Beta is a **scope-reduced** DMO product. Capabilities listed as OUT remain outside this Beta unless the blueprint is explicitly changed.
 
 ## IN SCOPE
 

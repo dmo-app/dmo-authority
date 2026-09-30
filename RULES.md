@@ -1,13 +1,13 @@
 # Rules
 
-## Rule 1: Prototype behavior is not domain authority
+## Rule 1: Prototype behavior does not define domain truth
 
 Prototype and design surfaces may validate presentation and interaction, but they do not define persistence, canonical identities, backend contracts, or industrial calculations.
 
 - A prototype must not mint or derive canonical domain identities.
-- A prototype must not become a second authority for backend-owned calculations or business rules.
-- Prototype storage mechanics are implementation detail and are not authority.
-- When a backend workflow is implemented, its persistence and contracts must be derived from canonical authority, not from demo or prototype mechanics.
+- A prototype must not become a second source of truth for backend-owned calculations or business rules.
+- Prototype storage mechanics are implementation detail and do not define product behavior.
+- When a backend workflow is implemented, its persistence and contracts must be derived from the current blueprint, not from demo or prototype mechanics.
 
 ## Rule 2: Explicit Human Choice
 
@@ -27,7 +27,7 @@ Tolerance warnings, negative balances, stale comparisons and threshold alerts mu
 - Decision commands carry no warning/result input and no code path derives a decision from calculation results.
 - A warning is a gate that a human acknowledgement opens; it is never a hard prohibition and never a stored state.
 
-## Rule 4: Presentation is not Domain Authority
+## Rule 4: Presentation does not define domain truth
 
 The frontend may render, collect input, preserve local draft state and orchestrate published actions.
 
@@ -35,7 +35,7 @@ It must not:
 - Mint canonical IDs.
 - Invent persistence relationships.
 - Infer Tool identity from labels or displayed text.
-- Implement backend-owned formulas as a second authority.
+- Implement backend-owned formulas as a second source of calculation truth.
 - Turn warnings into industrial decisions.
 - Synthesize actor/time/audit facts.
 - Infer permissions from role/profile labels.
@@ -118,9 +118,9 @@ DMO is a fixed-layout desktop operational application, not a responsive public w
 
 ## Rule 13: No Duplication of Truth
 
-- Job On production facts stay Job On truth. Controlo/Resumo outputs may read them but do not become a second authority for them.
+- Job On production facts stay Job On truth. Controlo/Resumo outputs may read them but do not become a second persisted source for them.
 - Tool identity and Tool-owned facts stay Tool truth, except for explicit historical snapshots owned by a real operational record.
-- Do not store Peso status/attribution as a second authority on another record.
+- Do not store Peso status/attribution as a second persisted source on another record.
 - PDF bytes/filename/path are derived output, not stored identity.
 - No convenience column or FK is added merely to make navigation easier when an existing real relation already expresses the domain.
 
@@ -153,7 +153,7 @@ DMO is a fixed-layout desktop operational application, not a responsive public w
 
 ## Rule 16: External Auth owns ADMIN identity creation
 
-- Supabase Auth is the authority for the existence and credentials of the authentication identity used as DMO ADMIN.
+- Supabase Auth owns the existence and credentials of the authentication identity used as DMO ADMIN.
 - DMO may associate an **existing** Supabase Auth user as ADMIN, but DMO must never create that Auth user itself.
 - No setup page, bootstrap, seed, migration, recovery path or convenience endpoint may create the Supabase Auth identity that will become ADMIN.
 - ADMIN must never be assigned merely because someone is the first user, because the database is empty, or because the previous ADMIN no longer resolves.

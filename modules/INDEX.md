@@ -1,4 +1,4 @@
-# Module Authority Index
+# Module Blueprint Index
 
 The fast application map is in `../HOW_THE_APP_WORKS.md`.
 
@@ -43,6 +43,7 @@ Do not load unrelated module detail merely because it exists.
 - `EDITAR.md`
 - `DUPLICAR.md`
 - `SELECIONAR_FERRAMENTAS.md`
+- `CONTEXT_CHANGE_AWARENESS.md`
 
 ## Controlo — shared context
 
@@ -88,7 +89,7 @@ It includes the canonical `controlo_id` functional identity and the still-pendin
 
 The existing Boquilhas register/movement model is the implementation base.
 
-Saldo/discrepancy is an evolution of that movement behavior. A separate `bq_repair_trace_id` is not a current requirement and must not be inferred merely from older authority text.
+The canonical Boquilhas model uses one `bq_repair_trace_id` for each `bq_id` / production BQ context, with many movements inside that trace. A pre-production trace may temporarily exist from canonical `tool_id` with `bq_id` unresolved and later associate to the matching production context according to the Boquilhas rules.
 
 ## Templates
 
@@ -102,10 +103,10 @@ Do not invent a separate Templates product domain merely from the shared word "t
 
 ## File rule
 
-Each detailed file should be self-contained enough to implement or review that area without loading the entire authority repository.
+Each detailed file should be self-contained enough to implement or review that area without loading the entire blueprint repository.
 
 Where another module is involved, include only the minimum cross-module context and link to the owning module for deeper detail.
 
 Do not use historical role titles as current authorization identities.
 
-Do not promote implementation accidents, historical schemas or speculative identities into product authority merely because they appear in older documentation.
+Do not promote implementation accidents, historical schemas or speculative identities into current product rules merely because they appear in older documentation.

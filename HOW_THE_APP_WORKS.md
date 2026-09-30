@@ -106,7 +106,7 @@ Each module owns its own facts. One module consuming another module's context do
 
 DMO does not require the backend to pre-consolidate the complete domain state before the UI can operate.
 
-The frontend carries the operational context of the current action, but the backend remains authoritative for validating identities, relationships, authorization and persisted truth.
+The frontend carries the operational context of the current action, but the backend remains responsible for validating identities, relationships, authorization and persisted truth.
 
 The frontend knows the context it is currently using, such as:
 
@@ -588,7 +588,7 @@ A persisted operational record, a read model and a generated PDF are different t
 record ≠ read projection ≠ PDF ≠ filesystem path
 ```
 
-Generated documents are derived artifacts. They do not become the authority for the underlying structured record.
+Generated documents are derived artifacts. They do not replace the underlying structured record as the persisted product fact.
 
 Document behavior is documented under Controlo Create → Documents / PDFs.
 
@@ -596,7 +596,7 @@ Document configuration such as the base directory and recipient routing is docum
 
 ---
 
-## 12. Detailed authority
+## 12. Detailed blueprint
 
 For detailed behavior, use the module documents.
 
