@@ -217,6 +217,36 @@ This does not require a persisted `resumo_id`, nor does it require every Control
 
 > Resumo is a composition of the relevant persisted facts for that production.
 
+
+### Access and interaction rules
+
+Visible destinations and actions follow the effective module permissions resolved by the backend. Labels such as `Operador` or `Responsável`, template names, hidden buttons or the current URL do not grant access.
+
+Controlo Create and Controlo Approve may share the visible Controlo destination while remaining distinct permissions and workflows.
+
+Choices that change operational context must remain explicit. This includes Tool selection, Job On production/source selection, repairer selection where applicable, and approval/rejection decisions.
+
+Even when a Tool search returns exactly one valid result, the system must not silently associate it. The user must explicitly select or confirm that Tool.
+
+A production lookup may order results for convenience, but it must not silently change the active production context.
+
+The normal flow is:
+
+```text
+frontend establishes active context
+→ sends the relevant identity/context
+→ backend validates it
+→ backend traverses truthful persisted relations
+→ workflow receives a purpose-specific read model
+→ user enters only facts that are new now
+```
+
+Information already available from the active context should not be manually re-entered just because another screen needs it.
+
+The frontend must not mint canonical IDs, invent persistence relationships, infer Tool identity from labels, duplicate backend-owned industrial formulas, turn warnings into decisions, synthesize audit facts, infer permissions from role labels, or invent backend behavior from prototype/demo data.
+
+When a workflow temporarily leaves a form to select or create a Tool or resolve missing context, preserve the values already entered. Cancel returns unchanged. A successful return applies only the explicitly selected or created result.
+
 ---
 
 ## 5. Hot path vs history
