@@ -41,9 +41,9 @@ submitted
 
 Save may happen repeatedly so work is not lost before submission.
 
-## Previous-production difference is part of normal Peso
+## Historical difference is part of normal Peso
 
-The normal Peso workflow compares the current production against the previous eligible production so the operator can see the difference.
+The normal Peso workflow lets the operator compare the current production against an eligible historical Peso so the difference can be seen.
 
 This is part of Peso itself. It is **not** the separate `Comparação` workflow and it does not create a `comparacao_id`.
 
@@ -53,8 +53,8 @@ Conceptually:
 current Peso / current CM context
 → current cm_id
 → tool_id
-→ previous eligible production context(s) for that same canonical CM Tool
-→ previous Peso
+→ eligible historical production contexts for that same canonical CM Tool
+→ user explicitly selects one historical Peso
 → compare the valid corresponding CM measurements
 → show the difference in the normal Peso flow
 ```
@@ -74,11 +74,18 @@ compatible machines = B1, C1
 202603 → B1  ← current production
 ```
 
-For `202603`, the previous production for the normal Peso difference is `202602 / C1`.
+For `202603`, both earlier productions remain valid historical candidates:
 
-The system must not filter history to `B1` merely because the current production is on B1 and therefore skip back to `202601 / B1`.
+```text
+202602 / C1
+202601 / B1
+```
 
-Machine remains useful context/display information, but current-machine equality is not the rule that determines the previous production.
+They may be presented in descending production/date order so the nearest history appears first.
+
+The system must not filter history to `B1` merely because the current production is on B1, and it must not automatically associate `202602 / C1` merely because it is the nearest candidate.
+
+Machine remains useful context/display information, but current-machine equality is not the rule that determines historical eligibility.
 
 The number of Peso measurement rows does **not** have to be equal between the current and previous productions.
 
@@ -115,7 +122,17 @@ Unmatched rows are excluded rather than fabricated or used to block the operatio
 
 The operation is refused only when no valid CM counterpart exists to compare.
 
-The normal Peso flow resolves the immediately previous eligible production for that canonical CM Tool across its compatible machines. This is not a free historical-selection workflow.
+The normal Peso flow presents the eligible historical Peso candidates for that canonical CM Tool across its compatible machines.
+
+The user explicitly selects which historical Peso to compare. Sorting by nearest/latest date is presentation assistance only.
+
+```text
+candidate order
+!=
+automatic association
+```
+
+Even when only one eligible historical Peso remains, the system must not silently associate it; the user confirms the selection.
 
 ## Identity and lifecycle
 

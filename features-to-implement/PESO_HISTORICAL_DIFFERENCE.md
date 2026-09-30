@@ -1,4 +1,4 @@
-# Peso — Previous-Production Difference
+# Peso — Historical Difference
 
 **Status:** FUNCTIONALLY DEFINED — IMPLEMENTATION SLICE
 
@@ -6,7 +6,7 @@
 
 ## Objective
 
-The normal Peso workflow must show the difference between the current production and the previous eligible production.
+The normal Peso workflow must let the operator select an eligible historical Peso and show the difference against the current production.
 
 This is normal Peso behavior.
 
@@ -20,12 +20,13 @@ The read begins from the current Peso / CM production context and follows truthf
 current peso_id / cm_id
 → current CM tool_id
 → historical CM contexts for that same tool_id
-→ previous eligible Job On / Peso
+→ eligible historical Job On / Peso candidates
+→ explicit user selection of one historical Peso
 → valid corresponding CM measurements
 → historical difference read model
 ```
 
-The frontend carries the current persisted context. The backend resolves the previous eligible Peso through the real relations and returns only the historical comparison packet needed by the Peso surface.
+The frontend carries the current persisted context. The backend resolves the eligible historical Peso candidates through the real relations and returns only the candidate/history packet needed by the Peso surface. After explicit user selection, the selected persisted Peso identity anchors the comparison read.
 
 ## Historical lookup rules
 
@@ -46,11 +47,20 @@ compatible machines = B1, C1
 202603 → B1  ← current
 ```
 
-The previous eligible production for `202603` is `202602 / C1`.
+For `202603`, the eligible history includes both `202602 / C1` and `202601 / B1`.
 
-The backend therefore resolves the immediately previous eligible production for the same canonical `tool_id` across its compatible machines. It must not skip `202602` simply because that production ran on C1 and the current production runs on B1.
+The backend must return the eligible candidates across the Tool's compatible machines. The UI may order them by production/date descending so the nearest history is shown first.
 
-This is deterministic previous-production resolution inside normal Peso, not a UI for freely choosing among arbitrary historical Pesos.
+The ordering is not selection.
+
+```text
+eligible candidates
+→ ordered newest/nearest first
+→ user explicitly selects one
+→ selected historical peso_id becomes the comparison context
+```
+
+The application must never auto-associate a historical Peso merely because it is the nearest, first, or only candidate.
 
 ## Unequal Peso measurement counts
 
@@ -91,9 +101,9 @@ The operation is refused only when there are no valid CM counterparts to compare
 Do not implement this slice through `modules/controlo-create/COMPARACAO.md`.
 
 ```text
-Peso previous-production difference
+Peso historical difference
 = normal Peso read/support behavior
-= current production vs previous eligible production
+= current production vs explicitly selected eligible historical Peso
 = no comparacao_id
 
 Comparação
@@ -108,12 +118,14 @@ The two workflows may both display calculated differences, but they do not share
 
 Tests must prove that:
 
-- a Tool compatible with B1 and C1 can resolve its immediately previous eligible production across either machine;
-- with `202601/B1 → 202602/C1 → 202603/B1`, the previous production for `202603` is `202602/C1`;
+- a Tool compatible with B1 and C1 exposes eligible historical Pesos from both machines;
+- with `202601/B1 → 202602/C1 → 202603/B1`, both `202602/C1` and `202601/B1` remain selectable for `202603`;
+- candidates may be ordered newest/nearest first without being auto-selected;
 - current-machine equality is not a hidden history filter;
 - 4 current measurements can be compared against 5, 6 or 3 previous measurements without a same-count validation error;
 - only valid corresponding CMs contribute to the displayed difference/average;
 - unmatched CMs are excluded;
 - no valid counterpart produces an explicit refusal;
 - no `comparacao_id` is created by this normal Peso behavior;
-- the flow resolves the immediately previous eligible production rather than asking the user to choose an arbitrary historical Peso.
+- the user explicitly selects the historical Peso;
+- no candidate is automatically associated, including when only one candidate remains.

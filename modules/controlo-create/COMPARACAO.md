@@ -12,7 +12,7 @@ It allows one or more CM subjects from the same production context to be re-meas
 
 Comparação complements the original Peso. It does not replace, revise or rewrite it.
 
-This workflow is distinct from the **previous-production difference shown in the normal Peso flow**. The normal Peso historical difference compares the current Peso/CM results with the previous eligible production for display/support; it does not create a `comparacao_id` and is not this workflow.
+This workflow is distinct from the **historical difference shown in the normal Peso flow**. The normal Peso historical difference lets the user explicitly select an eligible historical Peso for display/support; it does not create a `comparacao_id` and is not this workflow.
 
 ## Flow
 
