@@ -57,7 +57,7 @@ The user must still be able to go to Registo, find BQ-X / its existing repair tr
 
 The fact that BQ-X is no longer visible as the current machine card must not block or redirect the movement to BQ-Y.
 
-For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and create/preserve the future production trace with `bq_id = null`. When Job On later creates a `bq_id` that references the same canonical `tool_id`, that same pending trace is associated automatically when the match is unambiguous. The association does not create a replacement trace or move its existing movements. While `bq_id` is unresolved, Registo shows a persistent Job On association warning derived from that missing association.
+For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and create/preserve the future production trace with `bq_id = null`. For the same `tool_id`, Registo must not create a second simultaneous trace with `bq_id = null`; if one already exists, that pending trace is the applicable pre-production trace. When Job On later creates a `bq_id` that references the same canonical `tool_id`, that same pending trace is associated automatically. The association does not create a replacement trace or move its existing movements. While `bq_id` is unresolved, Registo shows a persistent Job On association warning derived from that missing association.
 
 Therefore the module has two valid entry patterns:
 
@@ -141,6 +141,8 @@ The implementation must preserve these distinct concepts:
     → one trace for one bq_id / production context
     → groups all movement cycles of that production
     → may temporarily exist from tool_id with bq_id unresolved before Job On
+    → at most one unresolved trace may exist at a time for the same tool_id
+    → has no open/closed lifecycle; association to bq_id resolves the pre-production state
 
     Movement facts
     → belong to their repair trace regardless of which BQ is currently shown on the machine card

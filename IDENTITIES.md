@@ -62,7 +62,11 @@ The exact technical representation may be designed during implementation, but th
 - `tool_id` is the canonical Tool identity referenced by `bq_id` and is the stable identity used to correlate a pre-production repair trace with the later BQ production context.
 - This correlation does not make `tool_id` and `bq_id` interchangeable. `tool_id` identifies the canonical Tool; `bq_id` identifies its use in one specific production context.
 - A trace may therefore be created before Job On and initially reference only the canonical BQ `tool_id`, with `bq_id` unresolved.
-- When Job On later creates the corresponding `bq_id` for that same `tool_id`, the same pending trace is associated to that `bq_id` automatically when the match is unambiguous.
+- For one canonical BQ `tool_id`, at most one pre-production `bq_repair_trace_id` may exist with `bq_id` unresolved at the same time.
+- The same `tool_id` may have many repair traces across time because each production receives its own `bq_id` and trace; the one-pending rule applies only to traces whose `bq_id` is still unresolved.
+- There is no open/closed lifecycle for a trace. A pre-production trace is simply unresolved until it is associated to its production `bq_id`.
+- When Job On later creates the corresponding `bq_id` for that same `tool_id`, the existing pending trace is associated to that `bq_id` automatically.
+- If no pre-production trace exists when the production context is created, that production uses its own new trace.
 - If the trace starts after the production `bq_id` already exists, it is associated to that `bq_id` immediately.
 - Association does not create a replacement trace, recreate movements, or reset trace history.
 - A new production creates a new `bq_id` and therefore a new production trace, even when the canonical physical BQ `tool_id` is the same as in a previous production.
@@ -71,7 +75,7 @@ The exact technical representation may be designed during implementation, but th
 
 The existing `boquilhas_id`-based implementation is a valid implementation base and its real records/history must be preserved. The implementation must reconcile that persistence with this canonical trace relationship without destructive loss.
 
-The unresolved cardinality of simultaneous pending pre-production traces for the same `tool_id`, and therefore the ambiguity rule when more than one candidate exists, remains in `OPEN_DECISIONS.md`.
+The implementation must never persist two simultaneous pre-production traces with `bq_id` unresolved for the same canonical `tool_id`.
 
 ## 8. `movement_id` — Boquilhas movement
 

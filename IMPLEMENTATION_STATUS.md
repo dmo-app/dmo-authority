@@ -96,17 +96,6 @@ SMTP transport support exists but may be unconfigured in the runtime environment
 
 An unconfigured transport must produce the defined typed refusal/outcome rather than becoming a functional product rule.
 
-## Known implementation-sensitive area still requiring confirmation
-
-### Boquilhas pending trace multiplicity
-
-The inspected schema permits multiple simultaneous pending Boquilhas registers for one Tool because the provisional Tool index is non-unique.
-
-The current product blueprint has not yet established whether that multiplicity is intended.
-
-Do not infer the product rule from the current index shape.
-
-
 ## Blueprint additions from 2026-09-29 awaiting implementation verification
 
 The blueprint was materially expanded on 2026-09-29.
@@ -145,6 +134,7 @@ Verify the current application against the present Boquilhas blueprint for:
 - canonical `bq_repair_trace_id` as the single movement trace for one `bq_id` / production BQ context;
 - movements belonging to the repair trace rather than being attached as one flat lifetime movement list directly to `bq_id`;
 - pre-production traces anchored to canonical BQ `tool_id` where applicable, with `bq_id` initially unresolved;
+- enforcement that the same `tool_id` never has more than one simultaneous unresolved pre-production trace;
 - automatic later association of the same pending trace to the matching `bq_id` through their shared canonical `tool_id` when that match is unambiguous, without replacing the trace or moving existing movements;
 - multiple repair movement cycles belonging to the same production trace rather than creating one trace per repair trip;
 - a new production/BQ context using a new trace even when it references the same physical BQ `tool_id`;
@@ -209,4 +199,4 @@ When a product decision is closed, update the canonical blueprint file where tha
 
 When an implementation defect, gap, or transitional condition is discovered, update this file.
 
-Do not leave a closed product decision in `OPEN_DECISIONS.md`.
+Do not keep unresolved product-question queues inside the canonical blueprint. Once the owner decides a product rule, write it directly into the owning blueprint file.

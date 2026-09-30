@@ -27,10 +27,9 @@ Historical repositories may be used as evidence when recovering information, but
 - `IDENTITIES.md` — canonical identities and identity boundaries.
 - `RULES.md` — cross-cutting product and architecture rules.
 - `SCOPE.md` — Beta scope.
-- `OPEN_DECISIONS.md` — genuinely unresolved product decisions only.
 - `IMPLEMENTATION_STATUS.md` — current Beta implementation state, transitional conditions and known gaps; not product canon.
 - `modules/` — detailed functional blueprint organized by module.
 
-If a product decision is unresolved, it belongs in `OPEN_DECISIONS.md` and must not be inferred as canon.
+The blueprint contains decided product behavior only. Unresolved product questions stay outside the canonical blueprint until the owner decides them; once decided, the rule is written directly into the owning module or cross-cutting file.
 
 The detailed functional rule belongs in the file owned by the relevant module or cross-cutting concern. Git history preserves how the blueprint evolved; historical curation records do not define a second product source.

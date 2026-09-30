@@ -48,7 +48,21 @@ bq_id = null
 
 The trace keeps that identity.
 
-When Job On later creates the corresponding `bq_id`, both the pending trace and the new `bq_id` reference the same canonical `tool_id`. When that match is unambiguous, the trace is associated automatically:
+For one canonical BQ `tool_id`, there may be **at most one** pre-production trace with `bq_id = null` at a time.
+
+This does not mean one trace per Tool. The same `tool_id` may accumulate many traces historically because each production has its own `bq_id` and trace. The restriction applies only while a trace is still waiting for its production association.
+
+There is no trace `open` / `closed` lifecycle. The relevant distinction is only:
+
+```text
+pre-production trace
+→ bq_id = null
+
+associated production trace
+→ bq_id = <production_bq_id>
+```
+
+When Job On later creates the corresponding `bq_id`, both the pending trace and the new `bq_id` reference the same canonical `tool_id`. Because only one unresolved trace can exist for that `tool_id`, the trace is associated automatically:
 
 ```text
 pending trace.tool_id
@@ -62,7 +76,7 @@ new bq_id.tool_id
 
 While `bq_id` remains unresolved, the UI exposes a persistent Job On association warning derived from the missing association.
 
-If a trace starts after the production `bq_id` already exists, it is associated immediately to that production context.
+If no pending trace exists when the production `bq_id` is created, that production uses a new trace. If a trace starts after the production `bq_id` already exists, it is associated immediately to that production context.
 
 ## Late returns
 

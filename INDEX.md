@@ -10,17 +10,18 @@ Read it to understand how the application must behave before changing product be
 - `IDENTITIES.md` — canonical identities and identity boundaries.
 - `RULES.md` — cross-cutting product and architecture rules.
 - `SCOPE.md` — Beta scope.
-- `OPEN_DECISIONS.md` — genuinely unresolved decisions only.
 - `IMPLEMENTATION_STATUS.md` — current Beta implementation state, bugs, transitional conditions, and known gaps; not product canon.
 - `README.md` — repository entry point.
 
 There is no separate governance/definition file outside this map that an agent must discover before using the blueprint.
 
+The blueprint contains decided product behavior only. Unresolved product questions are not kept as a canonical "open decisions" queue; once the owner decides them, the resulting rule is written directly into the file that owns that behavior.
+
 ## Features to implement
 
 Planned or confirmed work that is not yet implemented is documented under `features-to-implement/`.
 
-Each file states its own status and separates confirmed functional behavior from open implementation decisions.
+Each file states its own status and separates confirmed functional behavior from implementation work that is still pending.
 
 A feature file is planning/review input. Its existence does **not** mean the feature already exists in `dmo-app-beta`.
 
