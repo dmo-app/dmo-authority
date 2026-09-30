@@ -50,20 +50,24 @@ The exact technical representation may be designed during implementation, but th
 - Comparação reuses existing `cm_id`; it does not create a new CM.
 - It does not alter the original Peso and does not create `previous_peso_id`.
 
-## 7. `bq_repair_trace_id` — Boquilhas repair process
+## 7. `bq_repair_trace_id` — Boquilhas trace for one production BQ context
 
-- Identifies one concrete Boquilhas repair process / movement trace.
-- It exists so movements belonging to one repair process are grouped under their own durable identity instead of being attached as one flat lifetime movement list directly to `bq_id`.
-- Before a production association exists, a repair trace may be anchored to the canonical BQ `tool_id`.
-- When the production context becomes known, the same `bq_repair_trace_id` is explicitly associated with the applicable `bq_id`.
-- Associating the trace to `bq_id` does not create a replacement trace, move its existing movements, or reset its discrepancy/history.
-- A trace may continue to receive movements after the machine has moved to another production; late returns remain on the trace where that repair process originated.
-- `bq_id` remains the BQ Tool-in-production context. It is not the identity of a repair process and must not become the direct parent for the complete Boquilhas movement history.
-- `movement_id` identifies an individual event inside a repair trace.
+- Identifies the durable Boquilhas movement trace for one BQ context in one production.
+- Normal relationship: one `bq_id` has one `bq_repair_trace_id`, and that trace contains many `movement_id` events.
+- The trace is **not** the identity of each individual repair trip/cycle. Several `saida` / `entrada` / `entrada_sem_reparacao` cycles may occur inside the same trace.
+- `bq_id` remains the BQ Tool-in-production context. The movements belong to the trace, so `bq_id` does not become a direct undifferentiated lifetime container for Boquilhas movements.
+- `bq_id` and `tool_id` are different identities. The `bq_id` references the canonical BQ `tool_id`; that shared `tool_id` is the stable correlation key used when a trace starts before its production context exists.
+- A trace may therefore be created before Job On and initially reference only the canonical BQ `tool_id`, with `bq_id` unresolved.
+- When Job On later creates the corresponding `bq_id` for that same `tool_id`, the same pending trace is associated to that `bq_id` automatically when the match is unambiguous.
+- If the trace starts after the production `bq_id` already exists, it is associated to that `bq_id` immediately.
+- Association does not create a replacement trace, recreate movements, or reset trace history.
+- A new production creates a new `bq_id` and therefore a new production trace, even when the canonical physical BQ `tool_id` is the same as in a previous production.
+- Late returns remain movements of the original production trace where their repair activity originated; a later current production never steals or reassigns them.
+- While a pre-production trace still has no `bq_id`, the UI exposes a persistent Job On association warning derived from the missing association rather than from a separate lifecycle state.
 
-The existing `boquilhas_id`-based implementation is a valid implementation base and its existing records must be preserved. Introducing the canonical repair-trace identity does not by itself require a destructive rename or loss of existing register data. Implementation must reconcile the existing register persistence with the repair-trace lifecycle while preserving the real operational history.
+The existing `boquilhas_id`-based implementation is a valid implementation base and its real records/history must be preserved. The implementation must reconcile that persistence with this canonical trace relationship without destructive loss.
 
-The unresolved cardinality question for multiple simultaneous pre-production traces of the same `tool_id` is tracked separately in `OPEN_DECISIONS.md`.
+The unresolved cardinality of simultaneous pending pre-production traces for the same `tool_id`, and therefore the ambiguity rule when more than one candidate exists, remains in `OPEN_DECISIONS.md`.
 
 ## 8. `movement_id` — Boquilhas movement
 

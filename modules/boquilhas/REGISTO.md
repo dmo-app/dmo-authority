@@ -57,7 +57,7 @@ The user must still be able to go to Registo, find BQ-X / its existing repair tr
 
 The fact that BQ-X is no longer visible as the current machine card must not block or redirect the movement to BQ-Y.
 
-For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and create/preserve a `bq_repair_trace_id`. When the production context later becomes known, that same trace is explicitly associated with `bq_id`; the association does not create a replacement trace or move its existing movements.
+For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and create/preserve the future production trace with `bq_id = null`. When Job On later creates a `bq_id` that references the same canonical `tool_id`, that same pending trace is associated automatically when the match is unambiguous. The association does not create a replacement trace or move its existing movements. While `bq_id` is unresolved, Registo shows a persistent Job On association warning derived from that missing association.
 
 Therefore the module has two valid entry patterns:
 
@@ -65,13 +65,13 @@ Therefore the module has two valid entry patterns:
     machine card double-click
     → current Job On/BQ association
     → correct tool_id already selected
-    → create/open the applicable repair trace
+    → open the trace for that bq_id / production
     → register movement
 
     GENERAL / NON-CURRENT
     Registo tab
     → search/select canonical BQ Tool or existing register/trace
-    → create/open repair trace
+    → create/open the applicable production trace
     → register movement
 
 Both paths reach the same Boquilhas registration semantics. The machine-card path is only faster because the context is already known.
@@ -138,14 +138,14 @@ The implementation must preserve these distinct concepts:
     → durable operational access / existing persistence base
 
     bq_repair_trace_id
-    → identity of one repair process
-    → groups the movement facts of that process
-    → may be associated to bq_id when production context exists
+    → one trace for one bq_id / production context
+    → groups all movement cycles of that production
+    → may temporarily exist from tool_id with bq_id unresolved before Job On
 
     Movement facts
     → belong to their repair trace regardless of which BQ is currently shown on the machine card
 
-The side panel must never alter repair-trace history merely because the current machine assignment changed. `bq_id` must not be used as a replacement container for the complete movement history.
+The side panel must never alter repair-trace history merely because the current machine assignment changed. Each new production has its own `bq_id` and trace; late movements remain on the earlier trace where they originated.
 
 ## 8. Explicitly forbidden interpretations
 

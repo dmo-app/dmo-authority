@@ -13,7 +13,7 @@
    - **Comparação** — optional child workflow of an existing Peso.
    - **Pegamentos** — in Beta scope; backend still not implemented.
    - **Approve** — review and explicit human decision over submitted Peso records.
-5. **Boquilhas** — BQ repair traces grouped by `bq_repair_trace_id`, with pre-JobOn anchoring to `tool_id` where applicable, later association to `bq_id`, three movement kinds, derived outstanding quantity/discrepancy and module-local history.
+5. **Boquilhas** — one `bq_repair_trace_id` per BQ production context (`bq_id`), many movements per trace, pre-JobOn trace creation from canonical `tool_id` where applicable, automatic later association when unambiguous, late-return continuity, derived quantities/discrepancy and module-local history.
 
 ## OUT OF SCOPE
 

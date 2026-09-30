@@ -3,17 +3,17 @@
 This file is authoritative for the movement discrepancy behavior of the Boquilhas module.
 
 
-## Implementation boundary — preserve the existing register, add the canonical repair-process boundary
+## Implementation boundary — one movement trace per BQ production context
 
 This rule evolves the Boquilhas movement behavior already implemented in the application.
 
 The existing `boquilhas_id`-based register/persistence is a valid implementation base and its real operational history must be preserved.
 
-The canonical process boundary for movements is `bq_repair_trace_id`.
+The canonical movement boundary is `bq_repair_trace_id`.
 
-A repair trace groups the movements of one repair process so that `bq_id` does not become the direct parent of every Boquilhas movement across its lifetime.
+One `bq_id` / production context has one repair trace, and that trace groups all Boquilhas movement cycles for that production. A new `saida` does not create another trace.
 
-A trace may begin before Job On from the canonical BQ `tool_id`. When production context becomes known, the same trace is explicitly associated with the applicable `bq_id`; that association does not replace the trace, move its existing movements, or reset its discrepancy.
+A trace may begin before Job On from the canonical BQ `tool_id`, with `bq_id` unresolved. When Job On later creates the matching `bq_id` referencing the same canonical `tool_id`, the same pending trace is associated automatically when the match is unambiguous. That association does not replace the trace, move its existing movements, or reset its history.
 
 Implementation should adapt/reconcile the existing register model rather than destroy valid data merely to rename persistence.
 
@@ -114,7 +114,7 @@ where normal movements contribute no discrepancy and are visually blank in the S
 
 The accumulated discrepancy belongs to one repair trace identified by `bq_repair_trace_id`.
 
-It is not a lifetime balance of `bq_id` and it is not reset merely because the machine starts another production.
+It is scoped to the trace of one `bq_id` / production and is not a lifetime balance of the physical BQ `tool_id`.
 
 A repair trace may:
 
@@ -127,7 +127,7 @@ begin from tool_id before Job On
 
 Association to production does not reset the trace.
 
-A **new repair process** starts a new trace with:
+A **new BQ production context** uses a new trace with:
 
 ```text
 trace_discrepancy = 0
@@ -135,7 +135,7 @@ trace_discrepancy = 0
 
 Previous traces retain their historical discrepancy unchanged.
 
-A production change by itself must not migrate old movements or discrepancies into another trace.
+A new production has its own `bq_id` and trace. That change must never migrate old movements or discrepancies out of the previous trace.
 
 ## 6. Required implementation behavior
 
@@ -219,7 +219,7 @@ Trace discrepancy: -8
 
 None of the four historical discrepancies is cancelled by another movement.
 
-### New repair process
+### New production trace
 
 Previous repair trace:
 
@@ -235,7 +235,7 @@ Trace discrepancy: 0
 
 The previous `-8` remains historical evidence on the previous `bq_repair_trace_id`.
 
-A machine or production change does not by itself rewrite, transfer or reset the previous trace.
+A new production uses a different trace, but it does not rewrite, transfer or reset the previous trace; late returns remain on the previous trace.
 
 ## 9. Editing boundary
 

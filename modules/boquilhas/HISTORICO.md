@@ -4,13 +4,13 @@ Boquilhas history is composed from durable repair traces and the real movement f
 
 ## Repair-trace history
 
-`bq_repair_trace_id` identifies one repair process.
+`bq_repair_trace_id` identifies the movement trace of one BQ production context (`bq_id`). It may contain several repair cycles.
 
 Its movements remain grouped under that trace before and after association to production.
 
-A later association to `bq_id`, or a later machine/production change, must not move those historical movements onto another context.
+A pre-production trace keeps the same identity when later associated to its `bq_id`. A later machine/production change must not move those historical movements onto the new production trace.
 
-`bq_id` identifies the BQ-in-production context; it is not the direct lifetime container for all Boquilhas movements.
+`bq_id` identifies the BQ-in-production context and has one production trace. The canonical `tool_id` may repeat across productions, while each production receives a different `bq_id` and trace.
 
 ## Movement history
 

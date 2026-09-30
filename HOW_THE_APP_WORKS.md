@@ -509,9 +509,20 @@ See `modules/controlo-approve/`.
 
 ### Boquilhas
 
-Boquilhas preserves the existing register/movement implementation as a valid base while giving each repair process its own canonical `bq_repair_trace_id`.
+Boquilhas preserves the existing register/movement implementation as a valid base while using one canonical `bq_repair_trace_id` for each BQ production context.
 
-The repair trace groups the movements of that process. It may begin from a canonical BQ `tool_id` before production association, later be explicitly associated with `bq_id`, and continue after a machine/production change without moving its history onto another BQ context. `bq_id` identifies the BQ-in-production context; it is not the direct lifetime parent of all repair movements.
+The normal chain is:
+
+```text
+jobon_id
+→ bq_id
+→ bq_repair_trace_id
+→ movement_id*
+```
+
+A trace contains all Boquilhas movement cycles for that BQ in that production; it is not recreated for each repair trip. A pre-production trace may start from the canonical BQ `tool_id` before `bq_id` exists. Because the later `bq_id` references that same canonical `tool_id`, Job On can associate the same pending trace automatically when the match is unambiguous. The trace keeps its identity and movements.
+
+A new production creates a new `bq_id` and a new production trace even if it uses the same physical BQ `tool_id`. Late returns remain on the trace of the earlier production where they originated.
 
 The current evolution also includes the movement-derived quantity and discrepancy behavior defined by the Boquilhas module files.
 
