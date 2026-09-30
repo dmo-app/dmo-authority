@@ -1,94 +1,155 @@
-# Features to Implement
+# Implementation Slices
 
-This folder captures DMO features and implementation-enabling changes that are sufficiently understood to preserve for later Planning, Architect, Reviewer and Developer work, but are **not yet implemented**, must be reintroduced during recovery, or still require explicit verification against the selected implementation baseline.
+This directory is a **fresh-start implementation backlog** derived from the current DMO blueprint.
 
-A file existing here does **not** mean the behavior exists in the application baseline being used for recovery/development.
+Each file represents one bounded slice of the product that must be built so the new application reaches the canonical behavior described in the owning module documents.
 
-Each file must state its own status and distinguish:
-
-- confirmed functional behavior;
-- implementation work still required;
-- recovery-baseline gaps;
-- verification-only work where code may already match;
-- technical choices that remain open;
-- explicit non-goals and boundaries;
-- reviewer checks that must hold when the feature is planned or implemented.
-
-## Purpose
-
-The folder prevents confirmed work from being lost between conversations, planning passes, recovery work or development phases.
-
-It is not a replacement for `IMPLEMENTATION_STATUS.md`.
-
-The current Beta and an older backup may contain different subsets of the target behavior. Planning must always name the selected implementation/recovery baseline before deciding whether an item is already present, missing or requires migration.
-
-The blueprint remains the definition of intended product behavior. A backup does not become product truth merely because recovery starts from it.
-
-## Current entries
-
-### Cross-cutting / setup / prototype
-
-- `JOB_ON_CONTEXT_CHANGE_AWARENESS.md` — lightweight awareness when a Job On production context changes.
-- `SETUP_MODE_PROVIDER_CONNECTION.md` — Blank/Setup Mode that configures infrastructure through the application, beginning with Supabase.
-- `PROTOTYPE_FAKE_BACKEND_REWORK.md` — redesign of the GitHub Pages prototype fake backend so it cannot be mistaken for real backend architecture.
-- `FOUNDATION_RUNTIME_GAPS.md` — login redirect, module availability/routes, live-auth verification, document configuration and SMTP runtime gaps.
-
-### Ferramentas
-
-- `TOOL_TECHNICAL_VALUES_IMPLEMENTATION.md` — add the canonical optional Tool technical-values extension when recovering from the older backup, preserving existing `tool_id` identities and never inventing missing values.
-
-### Boquilhas
-
-- `BOQUILHAS_TRACE_IMPLEMENTATION.md` — reconcile the existing Boquilhas implementation with the canonical one-trace-per-BQ-production-context model.
-
-### Controlo
-
-- `CONTROLO_CONTEXT_IMPLEMENTATION.md` — add the canonical shared `controlo_id` context to the recovery baseline without inventing generic parentage or blanket snapshots.
-- `CONTROLO_PESO_COMPARACAO_KNOWN_BUGS.md` — the two explicitly recorded open historical-comparison defects from `dmo-app-beta/docs/KNOWN_FUNCTIONAL_ISSUES.md`.
-- `PESO_TECHNICAL_VALUES_ALIGNMENT.md` — align recovered Peso behavior with Tool technical-value ownership and historical-stability rules.
-- `COMPARACAO_UI_COMPLETION.md` — complete the unfinished Comparação user-facing flow against the existing domain path.
-- `PEGAMENTOS_BACKEND_IMPLEMENTATION.md` — implement production backend/persistence for Pegamentos.
-- `FOLHA_PERSISTENCE_IMPLEMENTATION.md` — implement the persisted Folha evaluation layer and integrate it with the shared Controlo context correctly.
-
-### Job On / access
-
-- `JOB_ON_DUPLICATION_ALIGNMENT.md` — verify/align Job On duplication against current identity rules.
-- `ACCESS_TEMPLATES_BLUEPRINT_COMPLETION.md` — align Admin Users, Access Templates, legacy User title migration and centralized App Definições with the confirmed canonical model.
-
-## Recovery rule
-
-When recovery starts from an older application backup:
+The files in this directory must be written as:
 
 ```text
-backup
-!= blueprint
+what the new application must support
+→ what the slice receives
+→ what it creates
+→ what it reads
+→ what it persists
+→ what it derives
+→ which owning contracts it depends on
+→ what it must not invent
+→ how completion is proven
 ```
 
-The backup is implementation material to preserve where still valid.
+They must **not** be written as repair notes for an older application.
 
-Missing canonical structures must be reintroduced from the current blueprint rather than removed from the blueprint to make the backup easier to restore.
+## Source-of-truth boundary
 
-Likewise, old implementation structures must not be promoted into current product rules merely because they already exist in the backup.
+```text
+modules/ + cross-cutting blueprint
+= product truth
 
-## Source backlog
+this directory
+= implementation slices derived from that truth
 
-The main sources used to populate this folder are:
+IMPLEMENTATION_STATUS.md
+= implementation-state evidence only
+```
 
-- `IMPLEMENTATION_STATUS.md` in this repository;
-- current detailed module blueprint files;
-- `dmo-app/dmo-app-beta/docs/KNOWN_FUNCTIONAL_ISSUES.md` for the explicitly recorded Controlo/Peso comparison defects;
-- owner-confirmed recovery-baseline gaps and features captured during current blueprint work.
+A slice never overrides its owning canonical module document.
 
-If another pending item is discovered, add it here rather than relying on chat memory.
+If a slice and the canonical blueprint disagree, the canonical blueprint wins and the slice must be corrected.
+
+## Fresh-start rule
+
+Do not frame a slice as:
+
+- "the old app already has...";
+- "the backup is missing...";
+- "recover/migrate the previous schema...";
+- "align the current endpoint/service...";
+- "preserve migration X...";
+- "complete the existing implementation...".
+
+Those may be useful historical facts elsewhere, but they are not the contract for constructing the new application.
+
+Frame the slice instead as:
+
+```text
+What must exist in the application we want to build?
+```
+
+The Developer must be able to implement the slice without needing to know that an older DMO application existed.
+
+## Required slice content
+
+Before a slice is given to a Developer, it should answer as much as the current blueprint safely allows:
+
+- objective / user-visible result;
+- owning domain/capability/workflow;
+- operation anchor(s);
+- canonical IDs received;
+- canonical IDs created;
+- user-supplied facts;
+- backend-resolved facts/context;
+- reads and their owning contracts;
+- persisted facts and ownership;
+- derived/read-model values that must not become duplicate truth;
+- concurrency requirements where the operation mutates durable state;
+- expected refusals/error cases;
+- frontend states relevant to the operation;
+- dependencies on other domains/capabilities;
+- explicit out-of-scope behavior;
+- regression boundaries;
+- acceptance evidence / reviewer checks.
+
+Do not add fields merely to make this template look complete. Only document facts that are actually known.
+
+## Readiness gate
+
+Every slice is either:
+
+```text
+READY
+→ all functional decisions required by this slice are available
+→ backend/frontend contracts can be completed
+→ implementation may proceed
+
+BLOCKED
+→ a required functional decision is missing
+→ record the exact missing question
+→ update the owning canonical blueprint when decided
+→ then return to the slice
+```
+
+A Developer must never resolve a BLOCKED product question by architectural preference or implementation convenience.
+
+A larger feature may be split so that decided sub-slices can proceed while only the ambiguous sub-slice remains blocked.
+
+## Cross-domain dependency rule
+
+When a slice needs information owned elsewhere:
+
+```text
+consumer needs X
+→ identify owner of X
+→ use the owner's explicit contract/relation
+
+if the existing contract is insufficient
+→ expand the owning contract deliberately
+→ verify the owner regression boundary
+→ then consume it
+```
+
+Do not copy another domain's truth into the consumer merely for convenience.
+
+Do not read foreign implementation internals simply because they are technically reachable.
+
+## Identity rule
+
+Search attributes, labels and filters never become derived identities.
+
+```text
+filters reduce candidates
+!=
+filters determine identity
+```
+
+Clients may send canonical IDs already issued by an owning backend workflow, but they never mint, derive or guess new canonical IDs.
 
 ## File lifecycle
 
-When one of these features reaches implementation:
+1. A functional rule is decided in its owning canonical blueprint document.
+2. A bounded implementation slice is written from that rule.
+3. Backend/frontend contract questions are closed for that slice.
+4. Planning/Architect prepares a small but complete Developer package.
+5. Developer implements only that slice.
+6. Review verifies the implementation against the slice and canonical blueprint.
+7. Once completed, the durable product rule remains only in the canonical blueprint. The slice may be marked complete or retired; it must not become a second permanent copy of product behavior.
 
-1. Planning names the exact implementation/recovery baseline being used.
-2. Planning and Architect use the relevant file as functional input together with the current blueprint and that baseline's actual code/schema.
-3. Reviewers verify that the implementation respects the confirmed behavior and boundaries in the file.
-4. Once implementation is complete and the durable behavior belongs in an owning module/cross-cutting blueprint document, that rule remains there as product canon.
-5. The feature file may then be marked implemented, reduced to a pointer, or retired so this folder remains a useful list of work still to do.
+## Current migration of this directory
 
-Do not infer missing behavior. Open technical or functional questions must remain explicit.
+Some existing files in this directory were originally written as recovery/alignment notes against older application baselines.
+
+They are being rewritten **one by one** into fresh-start slices.
+
+Until a file has been rewritten, treat recovery/baseline wording inside it as historical drafting material, not as the desired framing for the new implementation.
+
+Do not use an unreconciled file as a Developer contract without first converting it to the fresh-start structure above.
