@@ -22,6 +22,10 @@ The automated guard may enforce objective process requirements, such as:
 - commits carry the required self-contained rationale;
 - required status checks complete successfully.
 
+It may also surface **non-blocking review notices** when a change touches drift-sensitive areas such as identities, legacy role wording, persistence relations, lifecycle decisions, Tool/lot semantics, or document boundaries.
+
+These notices exist to focus the reviewer. They are not verdicts and never fail the workflow by themselves.
+
 It must not decide whether a product/domain change is semantically correct.
 
 A legitimate new owner decision may intentionally change existing authority. Automation must not force that change back into an older rule simply because the older rule was previously canonical.
@@ -30,7 +34,7 @@ A legitimate new owner decision may intentionally change existing authority. Aut
 
 Changes to authority remain pending until an authorized reviewer or CODEOWNER explicitly approves them.
 
-The reviewer decides whether the proposed change:
+The reviewer uses the notices as a review aid, then decides whether the proposed change:
 
 - contradicts current authority intentionally or accidentally;
 - represents a valid new owner decision;
