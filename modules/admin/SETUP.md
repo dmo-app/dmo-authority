@@ -34,6 +34,8 @@ After the infrastructure connection is valid, Setup associates the DMO ADMIN.
 
 The selected identity must already exist in Supabase Auth.
 
+The ADMIN operator-facing login identifier is that Auth user's **email**. Setup therefore associates the DMO ADMIN with an existing provider Auth identity identified for login by email.
+
 The flow is:
 
 ```text
@@ -112,6 +114,7 @@ An implementation must not:
 ```text
 Supabase Auth
 = owns existence and credentials of the ADMIN authentication identity
+= ADMIN login identifier is email
 
 DMO
 = owns the association of that already-existing identity with the ADMIN function

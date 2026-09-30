@@ -58,6 +58,8 @@ Supabase Auth owns creation of the authentication identity.
 
 DMO may associate an already-existing Auth user as ADMIN, but Setup Mode must not create the Supabase Auth identity that becomes DMO ADMIN.
 
+The ADMIN login identifier is the email of that existing Auth identity. This email-based ADMIN login is intentional and distinct from the operator / BA Glass ID login used by normal Users.
+
 ADMIN must not be assigned merely because:
 
 - the user is first;

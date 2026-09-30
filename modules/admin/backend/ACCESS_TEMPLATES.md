@@ -47,9 +47,10 @@ The User administration surface must align with the confirmed User facts:
 
 - name;
 - operator number / BA Glass identification of at most four digits;
-- login email;
 - current Access Template, if any;
 - account availability such as active / stand-by.
+
+For normal Users, operator / BA Glass ID is the operator-facing login identifier. Login email is not a normal-User product field. ADMIN is a separate authentication case and logs in by email.
 
 The User detail also exposes:
 
@@ -156,4 +157,5 @@ Reject an implementation that:
 - duplicates module settings into an Admin-owned copy;
 - adds a visible `Definições` destination to every operational module just to edit rare settings;
 - lets stand-by or deletion erase historical actor attribution;
-- stores passwords as DMO-owned application data.
+- stores passwords as DMO-owned application data;
+- applies the normal-User "no login email" rule to ADMIN; ADMIN intentionally logs in using email.

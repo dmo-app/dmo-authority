@@ -33,9 +33,11 @@ User
 └── Account availability
 ```
 
-The operator / BA Glass ID is the login identifier known by the operator.
+The operator / BA Glass ID is the login identifier known by the normal User.
 
-DMO keeps its own User identity and the configured authentication provider keeps the technical authentication identity. Provider-specific attributes required under the hood must not become extra operator-facing login requirements.
+This is intentionally different from ADMIN, whose operator-facing login identifier is email.
+
+DMO keeps its own User identity and the configured authentication provider keeps the technical authentication identity. Provider-specific attributes required under the hood must not become extra operator-facing login requirements for normal Users.
 
 The User detail must not maintain a second role/profile label independent from the Template.
 
@@ -164,7 +166,7 @@ An implementation must not:
 - delete historical records when a User is put in stand-by or removed;
 - maintain separate User→Template and Template→User assignment systems;
 - treat the operator/BA Glass identification as an arithmetic quantity;
-- require login email as an operator-facing product credential;
+- require login email as an operator-facing product credential for a normal User; this prohibition does not apply to ADMIN, which logs in by email;
 - allow temporary-password authentication to enter the operational application before password change;
 - persist temporary or definitive passwords as DMO-owned User data;
 - expose an existing password during reset.

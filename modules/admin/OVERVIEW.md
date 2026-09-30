@@ -138,7 +138,22 @@ The owning module remains the canonical source for what the setting means and ho
 
 ## 7. Authentication boundary
 
+ADMIN and normal USERS deliberately use different operator-facing login identifiers.
+
+```text
+ADMIN
+→ login identifier = email
+→ Auth identity already exists in the configured provider
+→ DMO associates that existing identity with ADMIN
+
+normal USER
+→ login identifier = operator / BA Glass ID
+→ DMO may provision the provider-side technical identity for that User
+```
+
 The ADMIN authentication identity follows the special setup rule: it must already exist outside DMO and DMO only associates it with the ADMIN function.
+
+The ADMIN email is therefore an intentional operator-facing login field for ADMIN. The rule that normal Users do not require an operator-facing login email does **not** apply to ADMIN.
 
 Normal USERS follow a different provisioning flow.
 
