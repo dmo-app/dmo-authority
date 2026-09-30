@@ -13,7 +13,7 @@ Prototype and design surfaces may validate presentation and interaction, but the
 
 The system must never silently infer industrial decisions.
 
-- If there are multiple valid Tools, Job Ons, or previous Pesos, the UI must force the user to click and select one.
+- If there are multiple valid Tools, Job Ons, or historical Peso candidates in the normal Peso previous-production lookup, the UI must force the user to click and select one.
 - **Even if a search returns only one result, explicit selection is required.** Auto-selection of a single candidate is forbidden.
 - Pre-population is assistance only: known context (reference, machine, expected type) may pre-fill search criteria, but unknown Tool facts are never invented.
 - Reference, optional MF-reference association, machine/line compatibility and lot are candidate-discovery attributes. They do not form a derived Tool identity key.

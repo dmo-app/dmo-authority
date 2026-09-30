@@ -41,6 +41,45 @@ submitted
 
 Save may happen repeatedly so work is not lost before submission.
 
+## Previous-production difference is part of normal Peso
+
+The normal Peso workflow compares the current production against the previous eligible production so the operator can see the difference.
+
+This is part of Peso itself. It is **not** the separate `Comparação` workflow and it does not create a `comparacao_id`.
+
+Conceptually:
+
+```text
+current Peso / current CM context
+→ current cm_id
+→ tool_id
+→ previous eligible production context(s) for that same canonical CM Tool
+→ previous Peso
+→ compare the valid corresponding CM measurements
+→ show the difference in the normal Peso flow
+```
+
+Historical lookup follows the canonical CM Tool identity. The current machine is context/display information and must not be used as a hidden equality filter that excludes a valid previous production from another compatible machine.
+
+If current and previous productions contain different numbers of CM measurements, the difference view remains valid:
+
+```text
+current:    CM1 CM2 CM3 CM4
+previous:   CM1 CM2 CM3 CM4 CM5
+
+CM1 ↔ CM1
+CM2 ↔ CM2
+CM3 ↔ CM3
+CM4 ↔ CM4
+CM5 → no current counterpart → excluded
+```
+
+Only valid corresponding CMs participate in the historical difference and its average. Unmatched rows are excluded rather than fabricated or used to block the operation.
+
+The operation is refused only when no valid CM counterpart exists to compare.
+
+Where more than one valid historical Peso candidate exists, the existing explicit-human-selection rule applies; the application must not silently choose between ambiguous candidates.
+
 ## Identity and lifecycle
 
 - `peso_id` is the durable Peso identity.
