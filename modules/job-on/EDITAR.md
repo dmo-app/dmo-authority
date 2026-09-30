@@ -33,6 +33,24 @@ The previous `cm_id`, `mf_id` or `bq_id` remains attached to the Tool it origina
 
 The replacement receives a new context identity so records that already reference the previous context remain historically truthful.
 
+A lot change is a common example of this rule because a different lot is a different canonical Tool:
+
+```text
+same jobon_id
+
+old cm_id
+→ tool_id A / lot 001
+
+operator selects Tool for lot 002
+
+new cm_id
+→ tool_id B / lot 002
+
+old cm_id remains historical
+```
+
+The implementation must not edit `tool_id A` so that lot 001 becomes lot 002, and it must not retarget the old `cm_id` to `tool_id B`.
+
 ### Context-change awareness
 
 A relevant production-context edit also follows the lightweight awareness rule:

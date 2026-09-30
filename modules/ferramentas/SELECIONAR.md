@@ -14,6 +14,25 @@ Search, filters, ordering, or a single remaining candidate must never silently c
 
 The selected value passed back to the originating workflow is the canonical `tool_id`.
 
+Candidate discovery and identity must remain separate:
+
+```text
+reference
+machine / line compatibility
+lot
+optional MF-reference association
+
+= search / identification attributes
+
+filters reduce candidates
+!=
+filters determine identity
+```
+
+Even if filtering leaves exactly one candidate, the user still explicitly selects that Tool before its existing canonical `tool_id` is accepted by the originating workflow.
+
+The application must never calculate or infer a `tool_id` from a combination such as reference + machine + lot.
+
 ## Selection surface
 
 The Ferramentas surface used from Job On may support:

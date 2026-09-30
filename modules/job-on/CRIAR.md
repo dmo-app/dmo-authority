@@ -48,15 +48,21 @@ This is valid and must not be treated as a mismatch merely because the reference
 
 The production reference therefore must not be reconstructed from CM or from an assumption that CM and MF references are equal.
 
+The composition rule explains the production reference; it does not force the operator to begin the workflow by selecting MF or BQ.
+
+In normal work, the operator may already know the production reference. Job On may use that known reference as search assistance to narrow relevant Tool candidates before the exact canonical Tools are selected.
+
+The reference may therefore help find candidates, but it never determines `tool_id`.
+
 ## Flow
 
-1. Identify the production:
+1. Identify the production using the information already known by the operator:
    - production number;
-   - production reference composed from the selected MF and BQ Tools;
+   - production reference;
    - machine;
    - production start date.
 
-2. Select the relevant CM, MF and BQ Tools from Ferramentas.
+2. Select the relevant CM, MF and BQ Tools from Ferramentas, using the known reference and compatibility information to narrow candidates where applicable.
 
 3. Create the production context:
    - new `jobon_id`;

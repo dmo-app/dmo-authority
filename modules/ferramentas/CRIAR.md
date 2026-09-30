@@ -12,6 +12,31 @@ Creating a Tool creates a new canonical `tool_id`.
 
 Lot is Tool metadata and part of the Tool's real-world distinction. A different lot represents a different Tool and therefore receives a different `tool_id`.
 
+The searchable attributes of a Tool do not form a derived identity key. The new canonical identity is the backend-issued `tool_id`.
+
+## Optional CM → MF-reference association
+
+Most CM Tools require no extra association beyond their own canonical reference.
+
+When a CM's real reference differs from the MF/production reference under which operators normally need to find it, Tool create/edit may expose an explicit optional action to associate that CM with the relevant MF reference.
+
+For example:
+
+```text
+CM canonical reference = 5809
+optional MF-reference association = 5810
+```
+
+This does not make `5810` a second CM reference. The CM remains reference `5809`.
+
+The association is optional:
+- it must not be required for every newly created CM;
+- it may be registered during creation when already known;
+- it may be added or corrected later from the Tool detail/edit flow;
+- absence of an association does not create a replacement identity or alter the CM's canonical reference.
+
+Its only purpose is to help consuming workflows discover relevant CM candidates.
+
 ## Contextual creation
 
 A workflow such as Job On or Boquilhas may enter Ferramentas because the required Tool does not yet exist.

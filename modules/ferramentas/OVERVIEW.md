@@ -28,6 +28,38 @@ new lot
 
 A lot change is never an in-place update of an existing Tool identity.
 
+Reference, compatible machine/line, lot and other visible Tool facts help a person find and distinguish candidates, but they do not form a derived Tool identity key.
+
+For CM Tools, an exceptional compatibility case may be recorded through one or more optional MF-reference associations. These associations exist only to help candidate discovery when the CM's real reference differs from the relevant MF/production reference.
+
+An MF-reference association:
+- does not replace the CM's canonical reference;
+- does not create another Tool identity;
+- is optional and may be added later;
+- must not be displayed as though it were the real CM reference;
+- is search/compatibility metadata only.
+
+Conceptually:
+
+```text
+SEARCH
+→ reference / optional MF-reference association / machine / lot
+
+SELECTION
+→ explicit human choice of an existing canonical Tool
+
+IDENTITY
+→ persisted tool_id
+```
+
+Therefore:
+
+```text
+filters reduce candidates
+!=
+filters determine identity
+```
+
 ## Main surface
 
 The Ferramentas surface must allow the user to consult the existing Tool park and narrow it using operational metadata that belongs to the current application scope.

@@ -16,7 +16,9 @@ The system must never silently infer industrial decisions.
 - If there are multiple valid Tools, Job Ons, or previous Pesos, the UI must force the user to click and select one.
 - **Even if a search returns only one result, explicit selection is required.** Auto-selection of a single candidate is forbidden.
 - Pre-population is assistance only: known context (reference, machine, expected type) may pre-fill search criteria, but unknown Tool facts are never invented.
-- The frontend must never infer Tool identity from reference + lot + machine labels.
+- Reference, optional MF-reference association, machine/line compatibility and lot are candidate-discovery attributes. They do not form a derived Tool identity key.
+- Filters reduce candidates; they never determine identity. The canonical identity is the persisted `tool_id` of the Tool explicitly selected by the user.
+- The frontend must never infer Tool identity from reference + lot + machine labels, even when those filters leave exactly one candidate.
 
 ## Rule 3: Warnings are not Decisions
 
