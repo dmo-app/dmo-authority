@@ -134,7 +134,7 @@ Verify the current application against the present Boquilhas blueprint for:
 - canonical `bq_repair_trace_id` as the single movement trace for one `bq_id` / production BQ context;
 - movements belonging to the repair trace rather than being attached as one flat lifetime movement list directly to `bq_id`;
 - pre-production traces anchored to canonical BQ `tool_id` where applicable, with `bq_id` initially unresolved;
-- enforcement that the same `tool_id` never has more than one simultaneous unresolved pre-production trace;
+- no enforcement of unresolved pre-production trace cardinality until the owning product rule is explicitly decided; implementation must not derive that rule from schema/index convenience;
 - automatic later association of the same pending trace to the matching `bq_id` through their shared canonical `tool_id` when that match is unambiguous, without replacing the trace or moving existing movements;
 - multiple repair movement cycles belonging to the same production trace rather than creating one trace per repair trip;
 - a new production/BQ context using a new trace even when it references the same physical BQ `tool_id`;
