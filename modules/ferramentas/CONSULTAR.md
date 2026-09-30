@@ -19,6 +19,8 @@ The list exposes enough information to distinguish candidates, including:
 
 The user may filter the list by those dimensions.
 
+For process, the current values are `NNPB` and `PS`.
+
 Filters only narrow the candidate set. They never infer or auto-select the correct Tool, including when only one candidate remains.
 
 Selection is always an explicit human action.

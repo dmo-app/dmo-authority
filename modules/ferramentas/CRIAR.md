@@ -14,6 +14,32 @@ Lot is Tool metadata and part of the Tool's real-world distinction. A different 
 
 The searchable attributes of a Tool do not form a derived identity key. The new canonical identity is the backend-issued `tool_id`.
 
+## Registry-first creation surface
+
+Opening Ferramentas shows the existing registered Tools in a table.
+
+From that same registry surface, the user can invoke **Create Tool** when the required Tool is missing.
+
+The creation flow captures the Tool facts already defined by the Ferramentas registry, including the applicable:
+
+- Tool type;
+- canonical reference;
+- lot;
+- compatible machine/line;
+- process;
+- state;
+- optional CM → MF-reference association where applicable.
+
+The current selectable Tool process values are:
+
+```text
+NNPB
+PS
+```
+
+The selected process is persisted as a Tool fact and can later be used for consultation/filtering. It does not determine or derive `tool_id`.
+
+Specialized `tool_technical_values` remain the optional Tool-owned extension defined in `VALORES_TECNICOS.md`; their existence must not make the normal registry table heavy.
 
 ## Beta access
 

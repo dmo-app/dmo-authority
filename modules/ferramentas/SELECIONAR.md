@@ -20,6 +20,7 @@ Candidate discovery and identity must remain separate:
 reference
 machine / line compatibility
 lot
+process (NNPB / PS)
 optional MF-reference association
 
 = search / identification attributes

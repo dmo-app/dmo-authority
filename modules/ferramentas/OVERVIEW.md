@@ -4,7 +4,7 @@
 
 Ferramentas is the canonical registry and consultation surface for the physical Tools known to DMO.
 
-The primary surface is the **list of existing Tools**, not a create/edit form. Creating or editing a Tool is an action available from that registry.
+Opening Ferramentas presents the **registry of existing Tools in a table**. Creation is an action available from that same registry surface; the user can inspect what already exists and create a missing Tool without treating creation as a separate product area.
 
 ## Canonical identity
 
@@ -71,6 +71,13 @@ The relevant filtering dimensions include:
 - lot;
 - compatible machine/line;
 - process.
+
+The current Tool process values are:
+
+- `NNPB`;
+- `PS`.
+
+Process is a Tool fact used for display/filtering and candidate assistance. It is not part of a derived identity key.
 
 Filtering narrows the visible candidates. It never selects a Tool automatically.
 
