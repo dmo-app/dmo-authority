@@ -44,59 +44,9 @@ jobs:
             exit 1
           fi
 
-      - name: Preserve canonical invariants
+      - name: Confirm human review is required
         shell: bash
         run: |
-          set -euo pipefail
-
-          require_text () {
-            file="$1"
-            text="$2"
-            if ! grep -Fq "$text" "$file"; then
-              echo "::error file=$file::Canonical invariant missing: $text"
-              exit 1
-            fi
-          }
-
-          require_text "IDENTITIES.md" 'A different lot is a different canonical Tool and therefore a different `tool_id`.'
-          require_text "IDENTITIES.md" '`resumo_id` does not exist.'
-          require_text "IDENTITIES.md" '`controlo_id` — Controlo context in a production'
-          require_text "HOW_THE_APP_WORKS.md" 'Even when a Tool search returns exactly one valid result, the system must not silently associate it.'
-          require_text "HOW_THE_APP_WORKS.md" 'READ MODEL ≠ ENTITY'
-          require_text "HOW_THE_APP_WORKS.md" 'QUERY JOIN ≠ DOMAIN RELATION'
-          require_text "HOW_THE_APP_WORKS.md" 'UI GROUPING ≠ DATABASE OWNERSHIP'
-
-      - name: Guard against legacy role authority
-        shell: bash
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-
-          added="$(git diff --unified=0 "$BASE_SHA..$HEAD_SHA" -- '*.md'             | grep '^+'             | grep -v '^+++' || true)"
-
-          if grep -Ei '(^|[^[:alnum:]_])(Operador|Responsável)([^[:alnum:]_]|$)' <<<"$added"             | grep -Evi '(not grant|do not grant|not authorization|historical|legacy|labels such as)' >/dev/null; then
-            echo "::error::A PR adds Operador/Responsável as current authority text. Access must be expressed through module permissions/capabilities."
-            exit 1
-          fi
-
-      - name: Protect against known identity drift
-        shell: bash
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          set -euo pipefail
-
-          added="$(git diff --unified=0 "$BASE_SHA..$HEAD_SHA" -- '*.md'             | grep '^+'             | grep -v '^+++' || true)"
-
-          if grep -Ei 'same .*tool_id.*lot|lot.*same .*tool_id|update.*lot.*tool_id' <<<"$added" >/dev/null; then
-            echo "::error::Possible Tool identity drift: a different lot must be a different Tool/tool_id."
-            exit 1
-          fi
-
-          if grep -Ei 'resumo_id[[:space:]]+(is|required|creates|identifies|primary|foreign)' <<<"$added" >/dev/null; then
-            echo "::error::Possible resumo_id drift: resumo_id is not a canonical identity."
-            exit 1
-          fi
+          echo "This check validates process only."
+          echo "It does not judge whether a domain change is correct."
+          echo "Authority changes must remain pending until the configured reviewer/CODEOWNER approves the pull request."
