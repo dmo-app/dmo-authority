@@ -32,12 +32,6 @@ trace
 
 A new production creates a new `bq_id` and a new trace, even if both the previous and new `bq_id` reference the same physical BQ `tool_id`.
 
-## Physical exclusivity
-
-A canonical physical BQ Tool cannot be simultaneously in use in two different machine/production contexts at the same real production moment.
-
-This limits valid production use of the Tool, but it does **not** decide how many unresolved pre-production repair traces may exist before a production association is known.
-
 ## Pre-production trace
 
 A repair movement may need to be recorded before the relevant Job On exists.
@@ -56,7 +50,7 @@ The trace keeps that identity.
 
 The same `tool_id` may accumulate many traces historically because each production has its own `bq_id` and trace.
 
-The allowed number of simultaneous pre-production traces with `bq_id = null` for the same `tool_id` is **not yet decided**. Physical Tool exclusivity does not, by itself, answer this persistence/cardinality question.
+The allowed number of simultaneous pre-production traces with `bq_id = null` for the same `tool_id` is **not yet decided**.
 
 There is no trace `open` / `closed` lifecycle. The relevant distinction is only:
 
