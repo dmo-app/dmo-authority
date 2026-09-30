@@ -106,6 +106,8 @@ In the complete functional model:
 
 These are distinct, independently assignable access functions inside the same module.
 
+**Job On Create subsumes Job On View functionality, but Job On View remains a separately assignable capability in the complete access model.**
+
 They are not cumulative grants.
 
 A user with **Job On Create** does not also need to be assigned **Job On View**, because Create already includes the consultation capability required for that work.
