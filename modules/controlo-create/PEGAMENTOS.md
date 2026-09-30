@@ -22,3 +22,14 @@ Pegamentos uses the real production component identities:
 - `bq_id`.
 
 Known technical inputs are resolved from the relevant context and canonical Tool data. The frontend must not invent them or become a second calculation authority.
+
+## Implementation during testing
+
+Consider an assisted-entry behavior for Tool throat diameters:
+
+- when one CM/BQ/MF diameter is entered first, suggest the related expected diameters using the configured dimensional difference;
+- apply the same relation regardless of which of the three components is entered first;
+- treat the generated values as suggestions only;
+- never overwrite an already registered canonical Tool technical value automatically.
+
+This is a testing-stage usability enhancement, not a requirement for the initial development path.
