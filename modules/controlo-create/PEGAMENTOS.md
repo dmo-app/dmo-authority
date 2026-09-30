@@ -11,16 +11,19 @@ It has no separate approval capability or workflow and may legitimately be absen
 - Ovalização = Costura - Contra costura.
 - Média = (Costura + Contra costura) / 2 when both axes are measurable.
 - Tolerance = nominal ± 0.20 unless the configured tolerance value is changed.
+- Dimensional values are expressed in millimetres (mm).
+- Entered measurements, nominal values, tolerance bounds and derived dimensional results use two decimal places.
 
-Tolerance is evaluated against the measurement value used for that component.
+Tolerance is evaluated per measurement row against the measurement value applicable to that row.
 
 For the normal two-axis case:
 
 - Costura and Contra costura are the source measurements;
-- Ovalização is derived and preserves its positive/negative sign;
-- Média is the value compared against the component nominal/tolerance corridor;
+- Ovalização is derived, uses two decimal places and preserves its positive/negative/zero sign;
+- each row's Média is the value compared against the component nominal/tolerance corridor;
 - reaching either tolerance boundary already raises an alert;
-- going outside either boundary also raises an alert.
+- going outside either boundary also raises an alert;
+- component-level averages may be shown as summary information, but a valid overall average does not cancel an alert produced by an individual measurement row.
 
 Tolerance alerts are informative and non-blocking. They do not decide, approve, reject or stop production automatically.
 
@@ -36,7 +39,8 @@ In that case:
 - Contra costura is treated as not applicable / not measurable, not as an error;
 - Ovalização is not calculated;
 - Média = Costura, because it is the only measurable value available for that CM;
-- tolerance evaluation uses that single measurable value.
+- tolerance evaluation uses that single measurable value for that row;
+- the same millimetre and two-decimal representation rules apply.
 
 The workflow must not require a fabricated second-axis value merely to complete the record.
 
