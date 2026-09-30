@@ -56,7 +56,8 @@ The exact technical representation may be designed during implementation, but th
 - Normal relationship: one `bq_id` has one `bq_repair_trace_id`, and that trace contains many `movement_id` events.
 - The trace is **not** the identity of each individual repair trip/cycle. Several `saida` / `entrada` / `entrada_sem_reparacao` cycles may occur inside the same trace.
 - `bq_id` remains the BQ Tool-in-production context. The movements belong to the trace, so `bq_id` does not become a direct undifferentiated lifetime container for Boquilhas movements.
-- `bq_id` and `tool_id` are different identities. The `bq_id` references the canonical BQ `tool_id`; that shared `tool_id` is the stable correlation key used when a trace starts before its production context exists.
+- `tool_id` is the canonical Tool identity referenced by `bq_id` and is the stable identity used to correlate a pre-production repair trace with the later BQ production context.
+- This correlation does not make `tool_id` and `bq_id` interchangeable. `tool_id` identifies the canonical Tool; `bq_id` identifies its use in one specific production context.
 - A trace may therefore be created before Job On and initially reference only the canonical BQ `tool_id`, with `bq_id` unresolved.
 - When Job On later creates the corresponding `bq_id` for that same `tool_id`, the same pending trace is associated to that `bq_id` automatically when the match is unambiguous.
 - If the trace starts after the production `bq_id` already exists, it is associated to that `bq_id` immediately.
