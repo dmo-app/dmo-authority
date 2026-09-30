@@ -59,7 +59,26 @@ current Peso / current CM context
 → show the difference in the normal Peso flow
 ```
 
-Historical lookup follows the canonical CM Tool identity. The current machine is context/display information and must not be used as a hidden equality filter that excludes a valid previous production from another compatible machine.
+Historical lookup follows the canonical CM Tool identity and the machines on which that Tool is allowed to work.
+
+The comparison filter must **not** be limited to the machine of the current production. It must consider the previous use of the same canonical `tool_id` across the Tool's compatible machines.
+
+Example:
+
+```text
+tool_id = X
+compatible machines = B1, C1
+
+202601 → B1
+202602 → C1
+202603 → B1  ← current production
+```
+
+For `202603`, the previous production for the normal Peso difference is `202602 / C1`.
+
+The system must not filter history to `B1` merely because the current production is on B1 and therefore skip back to `202601 / B1`.
+
+Machine remains useful context/display information, but current-machine equality is not the rule that determines the previous production.
 
 If current and previous productions contain different numbers of CM measurements, the difference view remains valid:
 
@@ -78,7 +97,7 @@ Only valid corresponding CMs participate in the historical difference and its av
 
 The operation is refused only when no valid CM counterpart exists to compare.
 
-Where more than one valid historical Peso candidate exists, the existing explicit-human-selection rule applies; the application must not silently choose between ambiguous candidates.
+The normal Peso flow resolves the immediately previous eligible production for that canonical CM Tool across its compatible machines. This is not a free historical-selection workflow.
 
 ## Identity and lifecycle
 

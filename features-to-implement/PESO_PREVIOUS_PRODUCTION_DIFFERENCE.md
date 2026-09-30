@@ -31,9 +31,26 @@ The frontend carries the current persisted context. The backend resolves the pre
 
 The canonical CM `tool_id` is the history anchor.
 
-Machine is useful context and display information, but machine equality must not exclude a valid previous production when the same canonical CM Tool was used on another compatible machine.
+The lookup must consider the machines on which the canonical CM Tool is allowed to work.
 
-If more than one valid historical Peso candidate exists, the user explicitly selects the intended one. The frontend must not silently choose between ambiguous candidates.
+It must **not** constrain history to `historical.machine == current.machine`.
+
+Example:
+
+```text
+tool_id = X
+compatible machines = B1, C1
+
+202601 → B1
+202602 → C1
+202603 → B1  ← current
+```
+
+The previous eligible production for `202603` is `202602 / C1`.
+
+The backend therefore resolves the immediately previous eligible production for the same canonical `tool_id` across its compatible machines. It must not skip `202602` simply because that production ran on C1 and the current production runs on B1.
+
+This is deterministic previous-production resolution inside normal Peso, not a UI for freely choosing among arbitrary historical Pesos.
 
 ## Unequal CM counts
 
@@ -86,11 +103,12 @@ The two workflows may both display calculated differences, but they do not share
 
 Tests must prove that:
 
-- a valid previous Peso from another compatible machine remains eligible when the canonical CM `tool_id` matches;
-- machine equality is not a hidden history filter;
+- a Tool compatible with B1 and C1 can resolve its immediately previous eligible production across either machine;
+- with `202601/B1 → 202602/C1 → 202603/B1`, the previous production for `202603` is `202602/C1`;
+- current-machine equality is not a hidden history filter;
 - unequal CM counts do not block the historical difference;
 - only valid corresponding CMs contribute to the displayed difference/average;
 - unmatched CMs are excluded;
 - no valid counterpart produces an explicit refusal;
 - no `comparacao_id` is created by this normal Peso behavior;
-- multiple valid historical candidates require explicit selection.
+- the flow resolves the immediately previous eligible production rather than asking the user to choose an arbitrary historical Peso.
