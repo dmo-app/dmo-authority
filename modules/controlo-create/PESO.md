@@ -13,6 +13,34 @@ The user may:
 
 Approval actions do not belong to this surface.
 
+## Save and submit are different operations
+
+Peso may be saved before it is submitted for approval.
+
+```text
+Save
+→ persists the current Peso work
+→ remains editable in Controlo Create
+→ does not place the Peso in Controlo Approve
+
+Submit
+→ marks the Peso as por_aprovar
+→ makes it available to Controlo Approve
+→ prevents normal Create-side editing while it is awaiting a decision
+```
+
+A saved Peso that has never been submitted is not a separate `draft` status. It is simply a persisted Peso that has not yet entered the approval decision cycle.
+
+Therefore:
+
+```text
+saved
+!=
+submitted
+```
+
+Save may happen repeatedly so work is not lost before submission.
+
 ## Identity and lifecycle
 
 - `peso_id` is the durable Peso identity.

@@ -71,8 +71,9 @@ This rule binds every remaining and future Beta backend work.
 No Job On-wide status, stage, phase or state machine exists.
 
 - Specifically absent: `rascunho`, `planeado`, `em fabrico`, `fechado`, `cancelado`, `active`, `locked`, `approved` as Job On lifecycle states.
-- Peso status vocabulary is exactly three values: `pendente` / `aprovado` / `nao_aprovado`.
-- Peso status transitions happen only through explicit human decision actions.
+- Peso approval-status vocabulary is exactly three values: `por_aprovar` / `aprovado` / `nao_aprovado`.
+- Saving a Peso before first submission does not create a separate `draft` status and does not place it in the approval queue.
+- Explicit Submit places the Peso in `por_aprovar`; approve/reject are explicit human decisions; reopen returns it to editable work until it is submitted again.
 - Warnings stay warnings; they never become stored lifecycle states.
 
 ## Rule 8: Backend owns canonical-ID allocation and attribution
