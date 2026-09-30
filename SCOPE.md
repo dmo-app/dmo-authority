@@ -6,7 +6,7 @@
 
 1. **Identity & Access / Admin** — Users, Access Templates and App Definições. Users are associated with one current Access Template or none; Templates define module/capability access; App Definições centralizes selected module-owned administrative settings without creating a standalone Modules tab.
 2. **Ferramentas / Tools** — canonical `tool_id` registry for CM, MF and BQ; consultation/filtering is the primary surface and creation is an action inside the registry. Selection is explicit and Ferramentas remains contextual to consuming workflows.
-3. **Job On (Light)** — production planning and production-context creation: `jobon_id`, `cm_id`, `mf_id`, `bq_id`.
+3. **Job On (Light)** — production planning and production-context creation: `jobon_id`, `cm_id`, `mf_id`, `bq_id`. The current Beta requires only the **Job On Create** capability for its Job On operational user; Create already includes consultation. **Job On View** remains a valid independent read-only capability in the complete access model and does not need to be assigned alongside Create.
 4. **Controlo**
    - **Resumo** — tab/function inside Controlo; the consolidated output is a product of Controlo, not the production-level node itself.
    - **Peso** — measurement, calculation and submission.
