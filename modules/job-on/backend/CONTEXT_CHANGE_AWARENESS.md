@@ -57,7 +57,7 @@ The implementation must provide:
 - module-owned production-activation configuration for consumers that use planned transitions;
 - re-reading of Job On when the consumer must react;
 - preservation of historical records on their original CM/MF/BQ/other production contexts;
-- consumer routing derived from the real production-context dependencies rather than a second independent notification map.
+- delivery of context-change awareness to the application functions that actually use the changed Job On context, without a separate routing table or consumer catalogue.
 
 For a planned transition, any `jobon_id` stored/carried with the awareness must not be treated as the final production truth at activation time. The consumer re-reads Job On and uses the then-applicable plan.
 
@@ -92,19 +92,18 @@ Planning/Architect may choose the technical representation for:
 
 The blueprint does not require an event bus, message bus, polling implementation or a particular scheduler.
 
-## Dependency work still required
+## Functional delivery rule
 
-Before implementation is considered complete, the real consumer map must be confirmed from the owning workflows for:
+The implementation follows the functions that consume each Job On context.
 
 ```text
-CM -> actual consumers
-MF -> actual consumers
-BQ -> actual consumers
-TP/Calote -> actual consumers
-other production facts -> actual consumers
+function consumes context
+→ context changes
+→ function receives awareness
+→ function re-reads Job On
 ```
 
-Do not create a separate routing truth merely for awareness.
+Do not create a separate CM/MF/BQ/TP routing table or consumer catalogue. The existing application functions are the relevant delivery boundary.
 
 ## Acceptance / reviewer checks
 
@@ -121,7 +120,7 @@ Reject an implementation that:
 - deletes the permanent same-Job-On change fact when awareness is acknowledged;
 - interprets acknowledgement as correction, recalculation, approval or resolution;
 - duplicates a full Job On snapshot into the awareness system without a separately justified need;
-- introduces a notification-routing map that can disagree with the actual operational dependency model.
+- introduces a separate notification-routing table/catalogue instead of following the application functions that use the changed context.
 
 ## Completion rule
 

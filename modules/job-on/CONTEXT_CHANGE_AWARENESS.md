@@ -273,31 +273,22 @@ context_changed
 
 ---
 
-## 6. Consumers come from functional dependencies
+## 6. Pings follow the functions that use the context
 
-DMO must not create a separate notification-routing model that duplicates the operational dependency model.
-
-The question is:
-
-> Which Job On production context does this module/function already depend on?
-
-That same dependency determines whether a context change should be exposed to that consumer.
-
-Conceptually:
+A Job On context-change ping follows the actual application functions that consume that context.
 
 ```text
-production-context dependency
--> consumer
-
-context changes
--> same consumer receives awareness
+function uses a Job On context
+→ that context changes
+→ that function receives the ping
+→ the function re-reads Job On
 ```
 
-Notification routing must not become a separate source of domain truth.
+There is no separate product concept, table or manually maintained routing map for CM, MF, BQ, TP/Calote or other Job On facts.
 
-The exact consumer mapping for CM, MF, BQ, TP/Calote and other production facts is refined with the functional dependency documentation of the consuming modules.
+The functions themselves define where the awareness is relevant. The ping mechanism follows those existing functional relationships; it does not create another domain relationship alongside them.
 
-Each consumer that uses planned production transitions owns its own activation-time setting. One module's setting must not silently control another module.
+Each function/module that uses a planned production transition still follows its own transition timing where such timing exists. One function's transition rule must not silently control another.
 
 ---
 
@@ -390,22 +381,11 @@ The mechanism is conceptually closed at this level:
 7. no global midnight/hardcoded-hour rule controls all modules
 8. real same-jobon context changes are permanently logged
 9. awareness remains lightweight and does not duplicate the Job On snapshot
-10. consumers are derived from existing functional dependencies
-11. acknowledgement means only "seen" where that consumer exposes acknowledgement
-12. historical operational records are never rewritten by awareness
+10. context-change pings follow the application functions that already use the changed Job On context
+11. no separate CM/MF/BQ/TP consumer-routing catalogue is required
+12. acknowledgement means only "seen" where that consumer exposes acknowledgement
+13. historical operational records are never rewritten by awareness
 ```
-
-Still to refine with module dependency documentation:
-
-```text
-CM -> actual consumers
-MF -> actual consumers
-BQ -> actual consumers
-TP/Calote -> actual consumers
-other production facts -> actual consumers
-```
-
-That refinement does not reopen the awareness timing model itself.
 
 ## Core rules
 
@@ -415,4 +395,4 @@ That refinement does not reopen the awareness timing model itself.
 
 > **Awareness remains lightweight. The consuming module re-reads Job On instead of receiving a duplicated production snapshot.**
 
-> **The consumers of a change are derived from the same production-context dependencies used by the operational workflows; notification routing must not become a separate source of domain truth.**
+> **A context-change ping follows the application functions that use the changed Job On context. No separate routing model or consumer catalogue is required.**
