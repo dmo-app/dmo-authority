@@ -16,6 +16,16 @@ Read it to understand how the application must behave before changing product be
 
 There is no separate governance/definition file outside this map that an agent must discover before using the blueprint.
 
+## Features to implement
+
+Planned or confirmed work that is not yet implemented is documented under `features-to-implement/`.
+
+Each file states its own status and separates confirmed functional behavior from open implementation decisions.
+
+A feature file is planning/review input. Its existence does **not** mean the feature already exists in `dmo-app-beta`.
+
+See `features-to-implement/README.md` for the reading and lifecycle rules.
+
 ## Detailed module blueprint
 
 Module detail is organized under `modules/`.
@@ -35,6 +45,8 @@ See `modules/INDEX.md` for the task-level map.
 Start with `HOW_THE_APP_WORKS.md` for the global model.
 
 Then read the relevant module folder. A module file should contain the complete detail needed for that task: frontend behavior, backend behavior, identities, relations, inputs, writes, reads, validations, history, integrations, and implementation status where relevant.
+
+If the task concerns a planned feature that is not yet implemented, also read the corresponding file under `features-to-implement/`.
 
 Do not infer missing behavior.
 
