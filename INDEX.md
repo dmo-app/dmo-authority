@@ -17,15 +17,15 @@ There is no separate governance/definition file outside this map that an agent m
 
 The blueprint contains decided product behavior only. Unresolved product questions are not kept as a canonical "open decisions" queue; once the owner decides them, the resulting rule is written directly into the file that owns that behavior.
 
-## Features to implement
+## Implementation slices
 
-Planned or confirmed work that is not yet implemented is documented under `features-to-implement/`.
+Fresh-start construction work derived from the canonical blueprint is documented under `features-to-implement/`.
 
-Each file states its own status and separates confirmed functional behavior from implementation work that is still pending.
+Each reconciled file is an implementation slice: a bounded package describing what the new application must support, not a repair note against an older application.
 
-A feature file is planning/review input. Its existence does **not** mean the feature already exists in `dmo-app-beta`.
+Some files are still being converted from historical recovery wording. Their status must be checked against `features-to-implement/README.md` before they are used as Developer contracts.
 
-See `features-to-implement/README.md` for the reading and lifecycle rules.
+See `features-to-implement/README.md` for the readiness, reading and lifecycle rules.
 
 ## Detailed module blueprint
 

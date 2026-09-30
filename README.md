@@ -6,10 +6,12 @@ It defines the **business rules**, **scope**, **canonical identities**, **relati
 
 ## Ecosystem
 
-- **`dmo-app/dmo-blueprint`** — product and functional blueprint: what DMO means and how it must behave.
-- **`dmo-app/dmo-app-beta`** — implementation reality: code, schema, migrations, routes, tests and runtime wiring.
-- **`dmo-app/dmo-design`** — visual and interaction design source: UI prototypes and presentation decisions.
+- **this repository (`dmo-app/dmo-recovery`)** — current canonical product and functional blueprint while the fresh-start blueprint is being consolidated;
+- **`dmo-app/blueprint`** — fresh-start target/scaffold; it is not a competing source of product truth until the consolidated blueprint is deliberately promoted there;
+- **`dmo-app/dmo-design`** — visual and interaction design source: UI prototypes and presentation decisions;
 - **`dmo-app/development-dmo`** — development workflow, phase process and role responsibilities.
+
+Older implementation repositories and backups may be consulted only as historical evidence. They are not product authority for the fresh-start application.
 
 Implementation or design may reveal a conflict or missing decision, but they do not silently redefine the product blueprint.
 

@@ -75,8 +75,8 @@ When reviewing the prototype:
 
 - review intentionally prototyped frontend/interaction behavior;
 - do not use fake backend structure as evidence of production persistence or backend architecture;
-- compare any domain behavior against `dmo-blueprint`;
-- compare real implementation claims against `dmo-app-beta`.
+- compare any domain behavior against the current canonical blueprint in this repository;
+- do not use an older implementation repository as product authority.
 
 If the prototype contains a behavior that appears to create a new identity, ownership rule or backend contract not present in the blueprint, that behavior is prototype behavior only until explicitly defined elsewhere.
 
