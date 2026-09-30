@@ -46,7 +46,11 @@ The exact technical representation may be designed during implementation, but th
 - It persists through create, submit, approval, rejection and reopen lifecycle.
 - There is no approval copy.
 - It is not a production identity, Tool identity, Job On identity, CM identity or revision.
-- The normal production path anchors Peso through `cm_id`.
+- The normal production path anchors Peso through one production `cm_id` context.
+- That `cm_id` identifies the CM Tool/context used for the production; it does **not** identify each individual CM unit/position observed during the Peso measurement.
+- One `peso_id` may therefore contain several measurement rows while remaining associated with the same production `cm_id`.
+- A Peso measurement row does not create another `cm_id`, another `tool_id`, or another canonical CM entity merely because an individual CM position/unit was measured.
+- Any visible CM number/position recorded on a Peso measurement row is measurement data inside that `peso_id`, not a canonical Tool-in-production identity.
 
 ## 6. `comparacao_id` — Peso Comparação event
 

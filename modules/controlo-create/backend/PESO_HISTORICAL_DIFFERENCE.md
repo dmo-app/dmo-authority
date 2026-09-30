@@ -69,7 +69,11 @@ previous Peso = 6 measurements  → valid
 previous Peso = 3 measurements  → valid
 ```
 
-Only valid corresponding measurement rows/CMs participate.
+Only valid corresponding Peso measurement rows participate.
+
+The `cm_id` values of the current and historical productions are production-context identities and are not expected to be equal. Historical matching therefore must not be implemented as `current cm_id == historical cm_id`.
+
+A measurement row may carry the operational CM number/position needed by the Peso workflow, but that value remains row data inside `peso_id`; it does not create another canonical CM identity.
 
 Example:
 
@@ -81,13 +85,13 @@ CM4 ↔ CM4
 CM5 → unmatched → excluded
 ```
 
-Unmatched CM rows:
+Unmatched measurement rows:
 
 - do not block the normal Peso flow merely because the counts differ;
 - are not fabricated into missing counterparts;
 - are excluded from the historical difference average.
 
-The operation is refused only when there are no valid CM counterparts to compare, with an explicit reason.
+The operation is refused only when there are no valid measurement-row counterparts to compare, with an explicit reason.
 
 ## Boundary with Comparação
 
@@ -117,9 +121,10 @@ Tests must prove that:
 - candidates may be ordered by recency inside the presentation assistance without being auto-selected or preselected;
 - machine equality and Tool equality are not hidden eligibility filters;
 - 4 current measurements can be compared against 5, 6 or 3 previous measurements without a same-count validation error;
-- only valid corresponding CMs contribute to the displayed difference/average;
-- unmatched CMs are excluded;
-- no valid counterpart produces an explicit refusal;
+- only valid corresponding Peso measurement rows contribute to the displayed difference/average;
+- matching is not based on equality of `cm_id` across productions;
+- unmatched measurement rows are excluded;
+- no valid measurement-row counterpart produces an explicit refusal;
 - no `comparacao_id` is created by this normal Peso behavior;
 - the user explicitly selects the historical Peso;
 - no candidate is automatically associated, including when only one candidate remains.

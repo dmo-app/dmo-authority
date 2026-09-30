@@ -99,7 +99,9 @@ previous Peso = 6 measurements  → valid
 previous Peso = 3 measurements  → valid
 ```
 
-Only the measurement rows/CMs that have a valid counterpart participate in the difference.
+Only measurement rows that have a valid historical counterpart participate in the difference.
+
+This correspondence is between Peso measurement rows, not between `cm_id` identities from different productions.
 
 Example:
 
@@ -118,7 +120,7 @@ The same principle applies when the previous Peso has fewer rows: only the valid
 
 Unmatched rows are excluded rather than fabricated or used to block the operation. The historical difference average uses only the participating matched rows.
 
-The operation is refused only when no valid CM counterpart exists to compare.
+The operation is refused only when no valid measurement-row counterpart exists to compare.
 
 The normal Peso flow presents historical Peso candidates for the same production reference.
 
@@ -132,13 +134,42 @@ automatic association
 
 Even when only one eligible historical Peso remains, the system must not silently associate it; the user confirms the selection.
 
-## Identity and lifecycle
+## Identity, CM context and measurement rows
 
 - `peso_id` is the durable Peso identity.
 - The same `peso_id` persists through the later decision lifecycle.
 - Approval does not create a copy.
-- Peso is normally anchored through the production `cm_id`.
+- Peso is anchored through the production `cm_id`.
+- That `cm_id` represents the CM Tool/context selected for the production, not each individual CM unit observed during weighing.
+- A single Peso may contain several measurement rows for that same production CM context.
+- Those rows are facts of the `peso_id`; they do not create additional `cm_id`, `tool_id`, or canonical CM records.
+- A visible CM number/position on a measurement row is an operational measurement identifier/label, not a canonical `cm_id`.
 - Peso may consume production/context facts without taking ownership of them.
+
+Conceptually:
+
+```text
+jobon_id
+→ cm_id
+→ tool_id
+
+peso_id
+→ cm_id
+→ measurement row 1
+→ measurement row 2
+→ measurement row 3
+→ ...
+```
+
+Therefore:
+
+```text
+number of Peso measurement rows
+!=
+number of cm_id records
+```
+
+The application must not model every physically observed CM during a Peso control as a separate Tool-in-production context when the real process does not require that identity.
 
 ## Physical measurement vs technical calculation
 
