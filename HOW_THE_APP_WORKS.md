@@ -11,7 +11,13 @@ HOW_THE_APP_WORKS.md
 → understand the application and its main relations
 
 modules/<module>/
-→ understand the detailed behavior of the area being worked on
+→ understand the functional behavior of the area being worked on
+
+modules/<module>/backend/
+→ load deeper backend detail when implementing/reviewing backend work
+
+modules/<module>/frontend/
+→ load deeper frontend detail when implementing/reviewing frontend work
 ```
 
 Do not use this file as a substitute for the detailed module documents.
@@ -313,7 +319,7 @@ If a fact is already truthfully reachable through an existing relation, do not d
 
 ---
 
-## 6. How new features should fit
+## 6. How new app behavior should fit
 
 Before introducing a new fact, relation, identity or persistence object, follow this reasoning sequence.
 
@@ -632,88 +638,7 @@ Document configuration such as the base directory and recipient routing remains 
 
 ---
 
-
----
-
-## 13. Implementation context
-
-The application context includes not only the canonical product behavior above, but also the bounded implementation work required to build that behavior.
-
-For implementation tasks, use this reading order:
-
-```text
-HOW_THE_APP_WORKS.md
-→ understand the global application
-
-modules/<relevant-area>/
-→ load the canonical product rules for that area
-
-features-to-implement/<associated-slice>.md
-→ load the bounded implementation work for that behavior
-
-IMPLEMENTATION_STATUS.md
-→ consult only when current runtime/baseline evidence is relevant
-```
-
-This is one application context with different responsibilities:
-
-```text
-canonical module
-= what the product must do
-
-implementation slice
-= what must be built to achieve it
-
-implementation status
-= what currently exists / is missing / is unverified
-```
-
-The implementation folder is therefore not an optional historical annex. It is the construction backlog connected to the app's current modules.
-
-### Current module-to-implementation map
-
-```text
-Admin
-→ Access Templates / Users / App Definições
-→ Setup provider connection
-
-Ferramentas
-→ Tool technical values
-
-Job On
-→ duplication
-→ context-change awareness
-→ creation-time Controlo context
-
-Controlo shared
-→ controlo_id shared context
-→ Folha shared persistence/evaluation
-
-Controlo Create
-→ Peso historical difference
-→ Peso consumption of Tool technical values
-→ Comparação UI/workflow integration
-→ Pegamentos backend/persistence
-→ Folha persistence/evaluation
-
-Boquilhas
-→ repair-trace implementation
-→ Job On context-change consumption
-
-Prototype / development support
-→ fake-backend rework
-
-Runtime verification
-→ foundation/runtime gaps
-```
-
-The detailed file association map and readiness rules live in `features-to-implement/README.md`.
-
-A Developer must not implement a slice from its filename alone. The owning canonical module must be loaded first, and a BLOCKED slice must not be completed by inventing the missing product decision.
-
----
-
-## 14. Detailed blueprint
+## 12. Detailed blueprint
 
 For detailed behavior, use the module documents.
 
@@ -721,4 +646,8 @@ Start at:
 
 - `modules/INDEX.md`
 
-The module documents are the canonical detailed explanation of each area. This file remains intentionally compact so a person or AI can understand the application quickly before loading only the module relevant to the current task.
+The module documents are the canonical detailed explanation of each area. Functional/product documents live directly in the module; deeper technical backend and frontend detail lives in that module's `backend/` and `frontend/` subfolders.
+
+There is no separate `features-to-implement` product area. If part of DMO is not coded yet, it still belongs to its real module; `IMPLEMENTATION_STATUS.md` records implementation state separately.
+
+This file remains intentionally compact so a person or AI can understand the application quickly before loading only the module relevant to the current task.

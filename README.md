@@ -30,31 +30,33 @@ Historical repositories may be used as evidence when recovering information, but
 - `RULES.md` — cross-cutting product and architecture rules.
 - `SCOPE.md` — Beta scope.
 - `IMPLEMENTATION_STATUS.md` — current Beta implementation state, transitional conditions and known gaps; not product canon.
-- `modules/` — detailed functional blueprint organized by module.
-- `features-to-implement/` — implementation work packages connected to those same modules; part of normal implementation context, but never a competing source of product truth.
+- `modules/` — the DMO application organized by module.
+  - files directly in a module describe functional/product behavior;
+  - `backend/` inside a module contains deeper backend contracts, persistence, reads/writes and technical behavior for that same module;
+  - `frontend/` inside a module contains deeper frontend states, interactions and integration behavior for that same module.
+- `backend/` — cross-cutting backend/runtime technical information that does not belong to only one module.
+- `prototype/` — prototype-only technical support, clearly separated from production backend authority.
 
 The blueprint contains decided product behavior only. Unresolved product questions stay outside the canonical blueprint until the owner decides them; once decided, the rule is written directly into the owning module or cross-cutting file.
 
 The detailed functional rule belongs in the file owned by the relevant module or cross-cutting concern. Git history preserves how the blueprint evolved; historical curation records do not define a second product source.
 
 
-## Normal implementation context
+## Application documentation structure
 
-A Developer should not treat `features-to-implement/` as a detached backlog that must be discovered separately.
+There is no separate product area called `features-to-implement`.
 
-For implementation work, the normal context chain is:
+If a behavior belongs to DMO, it belongs to its real module even when code for it is not finished yet.
 
 ```text
-HOW_THE_APP_WORKS.md
-→ relevant canonical module file(s)
-→ associated features-to-implement slice(s)
-→ IMPLEMENTATION_STATUS.md when current runtime/baseline evidence matters
+modules/<module>/
+├── functional files
+├── backend/
+│   └── technical backend detail for that module
+└── frontend/
+    └── technical frontend detail for that module
 ```
 
-The module documents answer **what DMO must do**.
+Implementation state is tracked by `IMPLEMENTATION_STATUS.md`; it does not determine where the app behavior belongs.
 
-The implementation slices answer **what bounded work must be built to reach that behavior**.
-
-`IMPLEMENTATION_STATUS.md` answers **what is currently implemented, missing, defective or unverified**.
-
-These three layers must remain distinct. A slice may organize implementation work, but it may not redefine a product rule owned by the canonical module.
+This keeps product behavior and technical implementation detail close to the same module without mixing backend and frontend concerns in one file.

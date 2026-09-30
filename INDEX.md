@@ -17,15 +17,24 @@ There is no separate governance/definition file outside this map that an agent m
 
 The blueprint contains decided product behavior only. Unresolved product questions are not kept as a canonical "open decisions" queue; once the owner decides them, the resulting rule is written directly into the file that owns that behavior.
 
-## Implementation slices
+## Module technical structure
 
-Fresh-start construction work derived from the canonical blueprint is documented under `features-to-implement/`.
+DMO behavior stays inside the module it belongs to.
 
-Each reconciled file is an implementation slice: a bounded package describing what the new application must support, not a repair note against an older application.
+A module may contain:
 
-Some files are still being converted from historical recovery wording. Their status must be checked against `features-to-implement/README.md` before they are used as Developer contracts.
+```text
+modules/<module>/
+├── functional/product documents
+├── backend/
+│   └── backend contracts and technical implementation detail
+└── frontend/
+    └── frontend states, interaction and integration detail
+```
 
-See `features-to-implement/README.md` for the readiness, reading and lifecycle rules.
+A behavior does not move to a separate "to implement" area merely because its code is unfinished.
+
+Cross-cutting backend/runtime technical material lives under `backend/`. Prototype-only backend support lives under `prototype/backend/`.
 
 ## Detailed module blueprint
 
@@ -45,20 +54,11 @@ See `modules/INDEX.md` for the task-level map.
 
 Start with `HOW_THE_APP_WORKS.md` for the global model.
 
-Then read the relevant module folder. A module file should contain the complete detail needed for that task: frontend behavior, backend behavior, identities, relations, inputs, writes, reads, validations, history, integrations, and implementation status where relevant.
+Then read the relevant module folder.
 
-For implementation work, also read the implementation slice(s) associated with that module under `features-to-implement/`, not only when someone already knows the feature is missing.
+Start with the functional files directly in the module. For implementation work, read the relevant `backend/` and/or `frontend/` documents inside that same module.
 
-The normal implementation path is:
-
-```text
-HOW_THE_APP_WORKS.md
-→ canonical module
-→ associated implementation slice(s)
-→ IMPLEMENTATION_STATUS.md when current implementation evidence matters
-```
-
-This makes the implementation backlog part of normal app context rather than a detached folder. Canonical module behavior still wins over any slice wording.
+Use `IMPLEMENTATION_STATUS.md` only to understand what code currently exists, is missing, defective or unverified; it does not redefine the module.
 
 Do not infer missing behavior.
 
