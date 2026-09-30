@@ -13,8 +13,9 @@ This setting determines when Boquilhas adopts the next planned Job On production
 Conceptually:
 
 ```text
-planned production-transition awareness
--> may already be pending
+future Job On
+-> may already exist as planning information
+-> does not change Boquilhas operational context
 
 Boquilhas production-activation time arrives
 -> Boquilhas reads Job On

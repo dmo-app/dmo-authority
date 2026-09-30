@@ -33,6 +33,33 @@ Examples include:
 
 UI grouping under Controlo does not, by itself, make all of these children of one generic parent.
 
+## Future Job On preparation context
+
+A successfully saved future Job On is immediately available to Controlo as a selectable preparation context.
+
+Controlo does not need to wait for that production to become the current machine production before the operator can inspect or prepare its Resumo context.
+
+```text
+Job On saved
+→ future jobon_id exists
+→ Controlo Resumo production selector can list it
+→ user explicitly selects it
+→ backend reads that jobon_id context
+→ preparation may begin where the owning Controlo workflow allows it
+```
+
+This is an explicit read/context selection, not automatic activation.
+
+```text
+future jobon_id selectable in Controlo
+!=
+machine production already changed
+```
+
+Controlo receives no duplicated production snapshot. Its selection points to the persisted `jobon_id`, and the backend resolves the required current Job On context through the normal focused-read rules.
+
+This early preparation behavior is Controlo-specific. It must not be generalized so that Boquilhas or another operational module adopts a future Job On before its own real transition rule applies.
+
 ## Shared state surfaces — Folha and Resumo
 
 Folha and Resumo are shared Controlo surfaces over the same production/control state.

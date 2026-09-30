@@ -39,21 +39,22 @@ There is **no single global application hour** at which every module must adopt 
 
 Each consuming module owns its own configurable production-activation time.
 
-The planned-production awareness/ping is created when the future Job On is successfully created. It therefore exists before that production becomes active.
+Saving a future Job On makes that production available as planning information immediately, but **planning availability is not a generic production-transition awareness event**.
 
-The consumer may discover or prepare that future production in advance, but it does not adopt the Job On as its active production context merely because the awareness exists. The consumer waits until its configured activation time, then re-reads Job On and resolves the production/context it should use.
+Controlo may explicitly select a future saved `jobon_id` from its Resumo/context selection in order to prepare work in advance.
 
-Conceptually:
+Operational modules that should change only when production actually changes do not adopt or receive the future production as their current operational context at Job On creation.
+
+For a consumer such as Boquilhas:
 
 ```text
-Job On is created
--> production-transition awareness is created immediately
--> awareness is available to the relevant consumer
--> future production may be inspected/prepared
+future Job On exists
+-> remains planning information only
 
-consumer's configured activation time arrives
+consumer's configured production-activation time arrives
 -> consumer re-reads Job On
--> consumer adopts the applicable production context
+-> resolves the production/context that now applies
+-> operational context changes
 ```
 
 The production transition must not be inferred from midnight and must not depend on a hardcoded example hour such as `07:00`.
@@ -181,15 +182,13 @@ For `PRODUCTION_TRANSITION`, seeing or acknowledging the awareness before the co
 Conceptually:
 
 ```text
-transition awareness arrives
--> human/module may acknowledge that it was seen
-
-configured activation time has not arrived
--> transition is still operationally pending
+future Job On may already be visible as planning information
+-> no operational transition has happened yet
 
 configured activation time arrives
 -> consumer re-reads Job On
 -> consumer resolves and applies the production/context that is applicable then
+-> transition awareness/acknowledgement applies only if that consumer workflow exposes it
 ```
 
 Therefore:
@@ -242,13 +241,14 @@ context_changed = BQ
 
 or the corresponding CM, MF, TP/Calote or other relevant production context.
 
-For a planned production transition, the awareness is produced when the Job On is created:
+For a planned production transition, the lightweight transition fact belongs to the point where that consumer actually transitions to the next production context.
+
+A saved future Job On may already be discoverable through planning/selection reads before this event exists.
 
 ```text
 event_kind = production_transition
 machine
 jobon_id
-planned production date
 ```
 
 The signal does not carry a complete Job On snapshot and does not become a second source of production truth.
@@ -329,12 +329,13 @@ change
 For a planned production transition:
 
 ```text
-transition awareness
--> pending if received early
--> may be acknowledged as seen without completing the transition
--> consumer activation time arrives
+future Job On
+-> may already be visible in planning/Controlo preparation reads
+
+consumer activation time arrives
 -> consumer re-reads Job On
 -> consumer uses the production/context applicable at that moment
+-> any transition awareness is scoped to the consumer's actual transition behavior
 ```
 
 A module may still have its own independent domain behavior. For example, Boquilhas may use its own canonical identity rules to associate a pre-production trace to a later BQ production context. That behavior is not performed by the generic Job On awareness mechanism.
@@ -380,19 +381,18 @@ If a real workflow requires a special immediate awareness rule for machine reass
 The mechanism is conceptually closed at this level:
 
 ```text
-1. awareness distinguishes production_transition from context_changed
-2. production_transition awareness is created when the future Job On is successfully created
-3. a production_transition is handled at the consuming module's configured activation time
-4. acknowledging a production_transition does not mark that transition as applied
-5. at activation time the consumer re-reads Job On and uses the then-applicable production/context
-6. a context_changed event is handled immediately
+1. Job On creation makes the future production immediately discoverable as planning data
+2. Controlo may select that future jobon_id in Resumo for advance preparation
+3. planning availability is not a generic production_transition awareness event
+4. each operational consumer adopts the next production only when its own transition rule says the change actually applies
+5. at transition time the consumer re-reads Job On and uses the then-applicable production/context
+6. a context_changed event inside the same jobon_id is handled immediately
 7. no global midnight/hardcoded-hour rule controls all modules
 8. real same-jobon context changes are permanently logged
 9. awareness remains lightweight and does not duplicate the Job On snapshot
 10. consumers are derived from existing functional dependencies
-11. pending awareness/acknowledgement is scoped per consumer module
-12. acknowledgement means only "seen"
-13. historical operational records are never rewritten by awareness
+11. acknowledgement means only "seen" where that consumer exposes acknowledgement
+12. historical operational records are never rewritten by awareness
 ```
 
 Still to refine with module dependency documentation:
@@ -409,7 +409,7 @@ That refinement does not reopen the awareness timing model itself.
 
 ## Core rules
 
-> **A planned production transition and a change inside the same Job On are different awareness events. The planned-production awareness is created when the Job On is created, while actual adoption of that future production still happens only at each consumer's configured production-activation time. Same-`jobon_id` context changes are surfaced immediately.**
+> **A future Job On becoming available for planning is not the same thing as an operational production transition. Controlo may select the future `jobon_id` for preparation as soon as it is saved; a module such as Boquilhas changes operational context only when its own production-transition rule says the production has actually changed. Same-`jobon_id` context changes are surfaced immediately.**
 
 > **Acknowledging a planned production-transition awareness means only that it was seen. The transition remains operationally pending until the consumer reaches its configured activation time, re-reads Job On and applies the production/context that is applicable then.**
 

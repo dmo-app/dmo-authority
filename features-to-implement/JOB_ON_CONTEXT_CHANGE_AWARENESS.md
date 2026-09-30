@@ -24,12 +24,15 @@ If wording here and the canonical Job On document ever differ, the module bluepr
 Implement one awareness capability that preserves two distinct event semantics:
 
 ```text
+PLANNING AVAILABILITY
+-> future Job On becomes queryable as soon as it is successfully created
+-> Controlo may explicitly select its jobon_id in Resumo for advance preparation
+-> this is not a generic downstream transition event
+
 PRODUCTION_TRANSITION
--> awareness is created when the future Job On is successfully created
--> may therefore be known/prepared before activation
--> consumer reacts at its own configured production-activation time
+-> operational consumer changes only when its own transition rule says the production now applies
 -> consumer re-reads Job On at that time
--> acknowledgement before activation does not complete/cancel the scheduled transition
+-> Boquilhas must not transition merely because the future Job On was created
 
 CONTEXT_CHANGED
 -> same jobon_id
@@ -47,7 +50,9 @@ The implementation must provide:
 - permanent Job On change history for real same-`jobon_id` context changes;
 - lightweight awareness rather than a duplicated Job On snapshot;
 - an event-kind distinction equivalent to `PRODUCTION_TRANSITION` vs `CONTEXT_CHANGED`;
-- creation of planned-production awareness when the future Job On is successfully created;
+- immediate planning/read availability of a successfully created future Job On;
+- Controlo-specific future-`jobon_id` selection for Resumo/preparation;
+- no generic downstream production-transition event solely from Job On creation;
 - per-consumer pending/acknowledgement state where acknowledgement is used;
 - module-owned production-activation configuration for consumers that use planned transitions;
 - re-reading of Job On when the consumer must react;
@@ -66,9 +71,9 @@ awareness acknowledged
 production transition applied
 ```
 
-A user/module may see or acknowledge a future `PRODUCTION_TRANSITION` before the configured activation time.
+A future Job On may be visible in planning reads before the configured activation time without creating an early operational transition.
 
-That must not remove or cancel the consumer's obligation to perform the scheduled Job On re-read when its activation time arrives.
+Where a consumer exposes transition acknowledgement, acknowledgement remains distinct from applying/changing the production context.
 
 For `CONTEXT_CHANGED`, acknowledgement still means only that the immediate change awareness was seen. It does not mean corrected, recalculated, approved or operationally resolved.
 
@@ -122,9 +127,10 @@ Reject an implementation that:
 
 This feature may be marked implemented only when:
 
-1. planned-production awareness is produced at successful Job On creation and the selected app implementation preserves both event timings correctly;
-2. the consuming modules that need planned transitions own/configure their own activation times;
-3. immediate context-change consumers revalidate without waiting for those scheduled times;
-4. acknowledgement and scheduled application are separate states/concerns;
-5. historical identities and records remain truthful;
-6. tests cover both event kinds and the acknowledgement-vs-activation distinction.
+1. a successfully created future Job On becomes available immediately to the planning reads that need it, including Controlo Resumo selection;
+2. Job On creation does not by itself transition Boquilhas or other operational consumers;
+3. the consuming modules that need planned transitions own/configure their own activation times;
+4. immediate context-change consumers revalidate without waiting for those scheduled times;
+5. acknowledgement and scheduled application are separate states/concerns where acknowledgement exists;
+6. historical identities and records remain truthful;
+7. tests cover planning availability, actual production transition and immediate same-jobon context change.

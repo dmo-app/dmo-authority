@@ -98,7 +98,9 @@ The BQ shown on a machine card follows the Job On production plan, but Boquilhas
 
 Boquilhas owns a configurable production-activation time in `DEFINICOES.md`.
 
-A production-transition awareness may be available before that configured time. Boquilhas keeps that awareness pending and, when its configured activation time arrives, reads Job On to resolve the production/BQ context that now applies to the machine.
+A future Job On may already exist in planning, but that does not enter Boquilhas as the current operational BQ context.
+
+Boquilhas changes to the next planned production only when its configured activation time says the production transition actually applies. At that moment it reads Job On to resolve the production/BQ context that now applies to the machine.
 
 Example:
 
@@ -111,8 +113,9 @@ Example:
     → production activation time = <configured time>
 
     before configured time
-    → transition awareness may already be pending
+    → future Job On may exist as planning information
     → current Boquilhas machine context remains unchanged
+    → no early repair/Boquilhas transition is caused by Job On creation
 
     at configured time
     → Boquilhas reads Job On

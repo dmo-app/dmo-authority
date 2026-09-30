@@ -61,6 +61,10 @@ calendar marker
 
 A Job On becomes visible in this planning surface as soon as it is successfully created.
 
+This creation-time visibility is planning/discovery information. It does **not** mean every downstream module receives or adopts the future production immediately.
+
+In the current model, Controlo may use the saved future `jobon_id` immediately as an explicit preparation/Resumo selection. Operational modules such as Boquilhas keep their current production context until their own real transition rule says the production has changed.
+
 ## Production context
 
 A Job On selects canonical Tools from Ferramentas.
