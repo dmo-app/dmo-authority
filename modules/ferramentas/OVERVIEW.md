@@ -28,7 +28,7 @@ new lot
 
 A lot change is never an in-place update of an existing Tool identity.
 
-Reference, compatible machine/line, lot and other visible Tool facts help a person find and distinguish candidates, but they do not form a derived Tool identity key.
+Reference, compatible machines/lines, lot and other visible Tool facts help a person find and distinguish candidates, but they do not form a derived Tool identity key.
 
 For CM Tools, an exceptional compatibility case may be recorded through one or more optional MF-reference associations. These associations exist only to help candidate discovery when the CM's real reference differs from the relevant MF/production reference.
 
@@ -69,7 +69,7 @@ The relevant filtering dimensions include:
 - Tool type;
 - reference;
 - lot;
-- compatible machine/line;
+- compatible machines/lines;
 - process.
 
 The current Tool process values are:

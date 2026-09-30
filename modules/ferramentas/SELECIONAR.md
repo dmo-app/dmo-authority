@@ -18,7 +18,7 @@ Candidate discovery and identity must remain separate:
 
 ```text
 reference
-machine / line compatibility
+machines / lines compatibility
 lot
 process (NNPB / PS)
 optional MF-reference association

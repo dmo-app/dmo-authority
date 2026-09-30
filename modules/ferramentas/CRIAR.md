@@ -25,7 +25,7 @@ The creation flow captures the Tool facts already defined by the Ferramentas reg
 - Tool type;
 - canonical reference;
 - lot;
-- compatible machine/line;
+- compatible machines/lines;
 - process;
 - state;
 - optional CM → MF-reference association where applicable.

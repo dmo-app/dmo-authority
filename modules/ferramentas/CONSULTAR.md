@@ -13,7 +13,7 @@ The list exposes enough information to distinguish candidates, including:
 - type;
 - reference;
 - lot;
-- compatible machine/line;
+- compatible machines/lines;
 - process;
 - state.
 

@@ -49,7 +49,7 @@ Candidate discovery follows three conceptual levels:
    - OR explicit MF-reference association where applicable
 
 2. COMPATIBILITY FILTERING
-   - machine / line compatibility
+   - machines / lines compatibility
 
 3. TOOL DISTINCTION
    - lot
@@ -78,7 +78,7 @@ If CM 5809 is selected, Job On still displays and stores the selected Tool as CM
 
 ## Selection principle
 
-Humans find and distinguish Tools through visible operational information such as reference, lot, type, machine/line compatibility and other relevant display metadata.
+Humans find and distinguish Tools through visible operational information such as reference, lot, type, machines/lines compatibility and other relevant display metadata.
 
 These values are candidate-discovery attributes. They do not form a derived Tool identity key.
 
