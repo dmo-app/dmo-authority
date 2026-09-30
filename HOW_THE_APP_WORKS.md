@@ -508,7 +508,7 @@ See:
 
 `modules/controlo/` contains the rules and context shared by Controlo Create and Controlo Approve.
 
-`controlo_id` is a canonical functional identity for the shared Controlo production context; its exact technical representation is still pending. It must not be spread through the model as a universal parent merely because Controlo groups several functions.
+`controlo_id` is the canonical functional identity for the shared Controlo production context. Its technical contract must preserve that boundary and must not spread it through the model as a universal parent merely because Controlo groups several functions.
 
 See:
 
@@ -535,7 +535,7 @@ See `modules/controlo-approve/`.
 
 ### Boquilhas
 
-Boquilhas preserves the existing register/movement implementation as a valid base while using one canonical `bq_repair_trace_id` for each BQ production context.
+Boquilhas uses one canonical `bq_repair_trace_id` for each BQ production context.
 
 The normal chain is:
 

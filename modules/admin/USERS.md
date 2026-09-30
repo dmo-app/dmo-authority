@@ -37,15 +37,9 @@ User
 
 The User detail must not maintain a second role/profile label independent from the Template.
 
-If an older implementation contains a `title` field such as:
+DMO has no separate editable User title/profile field acting as a second access source beside the Access Template.
 
-- Operador;
-- Reparador;
-- Chefe;
-
-that field is no longer the canonical profile/access label.
-
-The visible profile/access label comes from the name of the associated Access Template.
+Human-facing profile/access labels such as `Operador`, `Reparador` or `Chefe` come from the name of the associated Access Template. The label itself is not an authorization rule.
 
 ## 3. User ↔ Template association
 
@@ -118,7 +112,7 @@ Deletion is distinct from temporary stand-by and must not happen automatically m
 
 An implementation must not:
 
-- use a legacy User `title` as a second access/profile authority beside the Template;
+- use a separate User title/profile field as a second access/profile authority beside the Template;
 - derive permissions by comparing labels such as `Operador`, `Reparador` or `Chefe`;
 - allow a stand-by User to retain normal operational access;
 - delete historical records when a User is put in stand-by or removed;

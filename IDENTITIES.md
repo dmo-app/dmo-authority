@@ -35,7 +35,7 @@ This file defines domain identities. A database table, read model, UI tab or doc
 - It is not a generic god-parent for every Controlo record.
 - UI grouping under Controlo does not imply persistence ownership under `controlo_id`.
 
-The exact technical representation may be designed during implementation, but the functional identity itself is canonical.
+The functional identity is canonical. Its technical representation must preserve the ownership and identity boundaries defined here.
 
 ## 5. `peso_id` — Peso record
 
@@ -62,10 +62,9 @@ The exact technical representation may be designed during implementation, but th
 - `tool_id` is the canonical Tool identity referenced by `bq_id` and is the stable identity used to correlate a pre-production repair trace with the later BQ production context.
 - This correlation does not make `tool_id` and `bq_id` interchangeable. `tool_id` identifies the canonical Tool; `bq_id` identifies its use in one specific production context.
 - A trace may therefore be created before Job On and initially reference only the canonical BQ `tool_id`, with `bq_id` unresolved.
-- For one canonical BQ `tool_id`, at most one pre-production `bq_repair_trace_id` may exist with `bq_id` unresolved at the same time.
-- The same `tool_id` may have many repair traces across time because each production receives its own `bq_id` and trace; the one-pending rule applies only to traces whose `bq_id` is still unresolved.
+- The same `tool_id` may have many repair traces across time because each production receives its own `bq_id` and trace.
 - There is no open/closed lifecycle for a trace. A pre-production trace is simply unresolved until it is associated to its production `bq_id`.
-- When Job On later creates the corresponding `bq_id` for that same `tool_id`, the existing pending trace is associated to that `bq_id` automatically.
+- When Job On later creates the corresponding `bq_id` for that same `tool_id`, the same pending trace is associated automatically only when the match is unambiguous.
 - If no pre-production trace exists when the production context is created, that production uses its own new trace.
 - If the trace starts after the production `bq_id` already exists, it is associated to that `bq_id` immediately.
 - Association does not create a replacement trace, recreate movements, or reset trace history.
@@ -73,9 +72,11 @@ The exact technical representation may be designed during implementation, but th
 - Late returns remain movements of the original production trace where their repair activity originated; a later current production never steals or reassigns them.
 - While a pre-production trace still has no `bq_id`, the UI exposes a persistent Job On association warning derived from the missing association rather than from a separate lifecycle state.
 
-The existing `boquilhas_id`-based implementation is a valid implementation base and its real records/history must be preserved. The implementation must reconcile that persistence with this canonical trace relationship without destructive loss.
+### Unresolved pre-production cardinality
 
-The implementation must never persist two simultaneous pre-production traces with `bq_id` unresolved for the same canonical `tool_id`.
+The blueprint does not yet define whether one canonical BQ `tool_id` may have more than one simultaneous unresolved `bq_repair_trace_id`.
+
+Until that product rule is decided, automatic association is valid only when the pending match is unambiguous. No implementation may guess between multiple candidate traces or silently impose a cardinality rule as product truth.
 
 ## 8. `movement_id` — Boquilhas movement
 

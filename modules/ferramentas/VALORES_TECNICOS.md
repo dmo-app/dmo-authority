@@ -69,14 +69,3 @@ It must not become storage for:
 - unrelated historical events.
 
 The exact field set grows only when a real current-scope workflow requires another reusable Tool-owned technical fact.
-
-## Current implementation association
-
-`dmo-app/dmo-app-beta` currently implements this through:
-
-- `src/DMO.Application/Tools/ToolTechnicalValuesReadModel.cs`
-- `src/DMO.Infrastructure/Persistence/ToolJobOn/DmoToolTechnicalValuesRead.cs`
-- `src/DMO.Infrastructure/Persistence/ToolJobOn/Entities/ToolTechnicalValuesEntity.cs`
-- migration `20260927114825_011_ToolTechnicalValues`
-
-This implementation association is descriptive. The rules above are the canonical behavior.

@@ -1,56 +1,48 @@
 # DMO Blueprint — Index
 
-This repository is the canonical functional blueprint for DMO.
+This repository is the canonical DMO blueprint.
 
-Read it to understand how the application must behave before changing product behavior, architecture, backend, frontend, persistence, identities, flows, or module behavior.
+It describes the required application independently of whether any particular implementation already exists.
 
-## Global blueprint map
+## Global map
 
-- `HOW_THE_APP_WORKS.md` — global end-to-end explanation of the application.
+- `README.md` — repository purpose and documentation layers.
+- `HOW_THE_APP_WORKS.md` — global end-to-end model.
 - `IDENTITIES.md` — canonical identities and identity boundaries.
 - `RULES.md` — cross-cutting product and architecture rules.
-- `SCOPE.md` — Beta scope.
-- `IMPLEMENTATION_STATUS.md` — current Beta implementation state, bugs, transitional conditions, and known gaps; not product canon.
-- `README.md` — repository entry point.
+- `SCOPE.md` — current product scope.
+- `TECHNICAL_CONTRACT_STANDARD.md` — shared backend/frontend contract standard.
+- `modules/INDEX.md` — module-level map.
 
-There is no separate governance/definition file outside this map that an agent must discover before using the blueprint.
+There is no implementation-status or features-to-implement layer inside this fresh-start blueprint.
 
-The blueprint contains decided product behavior only. Unresolved product questions are not kept as a canonical "open decisions" queue; once the owner decides them, the resulting rule is written directly into the file that owns that behavior.
+## Module layers
 
-## Features to implement
+Each module/area is documented in three distinct layers:
 
-Planned or confirmed work that is not yet implemented is documented under `features-to-implement/`.
+```text
+modules/<area>/*.md
+= functional truth
 
-Each file states its own status and separates confirmed functional behavior from implementation work that is still pending.
+modules/<area>/backend/README.md
+= server/application contract
 
-A feature file is planning/review input. Its existence does **not** mean the feature already exists in `dmo-app-beta`.
+modules/<area>/frontend/README.md
+= interface contract
+```
 
-See `features-to-implement/README.md` for the reading and lifecycle rules.
+Functional files own business meaning, ownership, identity, lifecycle and allowed behavior.
 
-## Detailed module blueprint
+Backend/frontend contracts make that truth precise enough to implement while remaining independent of a specific framework or codebase.
 
-Module detail is organized under `modules/`.
-
-- `modules/job-on/`
-- `modules/ferramentas/`
-- `modules/controlo/`
-- `modules/controlo-create/`
-- `modules/controlo-approve/`
-- `modules/boquilhas/`
-- `modules/admin/`
-
-See `modules/INDEX.md` for the task-level map.
+If technical-contract work exposes a missing functional decision, resolve it in the owning functional file before continuing.
 
 ## Reading rule
 
-Start with `HOW_THE_APP_WORKS.md` for the global model.
+Start with `HOW_THE_APP_WORKS.md` for the global model, then load only the relevant module and its backend/frontend contract.
 
-Then read the relevant module folder. A module file should contain the complete detail needed for that task: frontend behavior, backend behavior, identities, relations, inputs, writes, reads, validations, history, integrations, and implementation status where relevant.
+Do not infer missing behavior from filenames, historical repositories, prototypes, design mocks or implementation code.
 
-If the task concerns a planned feature that is not yet implemented, also read the corresponding file under `features-to-implement/`.
+Historical labels such as Operador, Responsável and Controlador are not authorization identities. Authorization follows the current capability/access model defined by the blueprint.
 
-Do not infer missing behavior.
-
-Historical labels such as Operador, Responsável, and Controlador are not current authorization identities. Preserve the underlying functional action, but express current behavior through the current module/capability model.
-
-The detailed module files are populated from verified current knowledge. Empty or placeholder task files must not be treated as defined product behavior until populated.
+Implementation progress, bugs in an old baseline, migrations and recovery work belong in development/implementation tracking rather than in this blueprint.

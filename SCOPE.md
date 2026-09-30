@@ -11,7 +11,7 @@
    - **Resumo** — tab/function inside Controlo; the consolidated output is a product of Controlo, not the production-level node itself.
    - **Peso** — measurement, calculation and submission.
    - **Comparação** — optional child workflow of an existing Peso.
-   - **Pegamentos** — in Beta scope; backend still not implemented.
+   - **Pegamentos** — measurement workflow within Controlo Create.
    - **Approve** — review and explicit human decision over submitted Peso records.
 5. **Boquilhas** — one `bq_repair_trace_id` per BQ production context (`bq_id`), many movements per trace, pre-JobOn trace creation from canonical `tool_id` where applicable, automatic later association when unambiguous, late-return continuity, derived quantities/discrepancy and module-local history.
 

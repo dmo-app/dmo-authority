@@ -87,15 +87,13 @@ Create and Approve may expose different controls around that read because their 
 
 A Create-side change that affects the composed control state must be visible when Approve reads Resumo.
 
-## `controlo_id` — canonical functional identity, technical implementation pending
+## `controlo_id` — canonical shared Controlo identity
 
-`controlo_id` is the canonical functional identity of the shared Controlo production context where durable Controlo-level facts belong.
+`controlo_id` identifies the durable shared Controlo production context where facts genuinely owned by Controlo at production level belong.
 
-Its exact technical representation and migration into the implementation remain pending.
+It is not permission to rewrite every other Controlo relation or to make every record a child of one generic parent.
 
-It is not permission to rewrite every existing Controlo relation.
-
-When introduced, it must represent the Controlo context for a production and provide a truthful home for facts that belong to Controlo as a shared production context rather than to:
+The technical contract for `controlo_id` must provide a truthful home for facts that belong to the shared Controlo production context rather than to:
 
 - Job On;
 - a canonical Tool;
@@ -104,9 +102,7 @@ When introduced, it must represent the Controlo context for a production and pro
 - Comparação;
 - another individual Controlo function.
 
-Its exact implementation and migration boundary must be designed against the existing working model before schema changes are made.
-
-Until that implementation is performed, documentation must not pretend that all current records already use `controlo_id`.
+Its technical representation must be the minimum representation that preserves this identity and ownership boundary. Existing truthful relation chains remain valid and are not duplicated merely to route them through `controlo_id`.
 
 ## What `controlo_id` must not become
 

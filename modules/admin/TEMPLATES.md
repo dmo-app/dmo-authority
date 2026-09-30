@@ -53,17 +53,11 @@ They must not create two lists that can disagree.
 
 The current model gives a User one current Access Template, or none. Template stacking/multiple simultaneous access templates are not implied by this model.
 
-## 4. Legacy User title is replaced by Template label
+## 4. Template name is the visible profile/access label
 
-Older User data may contain a separate title/profile field such as:
+DMO has no separate editable User title/profile field acting as a parallel access source.
 
-- Operador;
-- Reparador;
-- Chefe.
-
-That field must not continue as a parallel access/profile source.
-
-The User's visible access/profile label comes from the actual associated Template name.
+The User's visible profile/access label comes from the actual associated Template name.
 
 Example:
 
@@ -107,6 +101,6 @@ An implementation must not:
 
 - treat an Access Template as an email template;
 - grant permissions by matching a Template name as free text;
-- keep the old User title as a second editable role/access source;
+- create a separate User title/profile field as a second editable role/access source;
 - create an independent Template→User list that can disagree with User→Template;
 - invent a standalone Modules admin destination merely because modules are selectable inside a Template.

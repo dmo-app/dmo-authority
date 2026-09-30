@@ -20,13 +20,33 @@ The implementation must not pretend that an ADMIN identity already exists during
 
 ## 2. Graphical infrastructure setup
 
-Setup is intentionally available through the application UI so initial installation does not depend on terminal-only configuration.
+Setup is available through the application UI so initial installation does not depend on terminal-only configuration.
 
-The setup surface may collect the normal connection information/keys required to connect to the intended Supabase/database infrastructure and validate that connection.
+For Supabase, the target interaction is provider-assisted:
 
-The exact secret/key types are deployment details. The durable rule is:
+```text
+Blank / Setup Mode
+→ Connect Supabase
+→ authenticate/authorize through the supported provider flow
+→ show available projects
+→ explicitly select the intended project
+→ retrieve the configuration values Supabase can safely expose
+→ validate the selected infrastructure
+→ associate an existing Supabase Auth user as DMO ADMIN
+→ finish setup
+```
 
-> Setup connects DMO to an explicitly supplied existing infrastructure; it does not silently choose or create one.
+DMO should obtain required provider configuration programmatically wherever the provider safely exposes it.
+
+If a required value cannot be obtained through the provider's supported management/authentication capabilities, Setup may request that specific value manually. Manual key copying is a fallback for a real provider limitation, not the default installation model.
+
+Provider-management authorization used during Setup is an installation concern. Normal DMO runtime must not depend on continuously re-running provider-management discovery or keeping the provider-management session alive merely because it was used during Setup.
+
+The first supported provider path may be Supabase-specific. This does not require a large universal cloud abstraction. A future provider may use a different setup mechanism while preserving the boundary between provider-specific setup and normal DMO runtime.
+
+The durable rule is:
+
+> Setup connects DMO to an explicitly selected existing infrastructure; it does not silently choose or create one.
 
 ## 3. ADMIN association during setup
 

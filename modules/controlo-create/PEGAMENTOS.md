@@ -53,7 +53,7 @@ The component Tools are already established by the active Job On context. Pegame
 
 The relevant throat-diameter nominal values are Tool technical values resolved through the applicable component context.
 
-## Implementation during testing
+## Testing-stage assisted entry
 
 Consider an assisted-entry behavior for Tool throat diameters:
 
@@ -62,4 +62,4 @@ Consider an assisted-entry behavior for Tool throat diameters:
 - treat the generated values as suggestions only;
 - never overwrite an already registered canonical Tool technical value automatically.
 
-This is a testing-stage usability enhancement, not a requirement for the initial development path.
+This is an optional testing-stage usability exploration. It is not part of the required core Pegamentos behavior unless later adopted explicitly.

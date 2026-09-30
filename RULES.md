@@ -7,7 +7,7 @@ Prototype and design surfaces may validate presentation and interaction, but the
 - A prototype must not mint or derive canonical domain identities.
 - A prototype must not become a second source of truth for backend-owned calculations or business rules.
 - Prototype storage mechanics are implementation detail and do not define product behavior.
-- When a backend workflow is implemented, its persistence and contracts must be derived from the current blueprint, not from demo or prototype mechanics.
+- Backend persistence and contracts are derived from the current blueprint, not from demo or prototype mechanics.
 
 ## Rule 2: Explicit Human Choice
 
@@ -62,7 +62,7 @@ Queries and read models must be context-specific and carry only the data the sur
 - Backend reads are built per query contract with the smallest packet that satisfies the surface.
 - History is only loaded when the operator explicitly asks for it.
 
-This rule binds every remaining and future Beta backend work.
+This rule applies to every backend query and read model.
 
 ## Rule 7: No Job On Lifecycle State Machine
 
@@ -78,7 +78,7 @@ No Job On-wide status, stage, phase or state machine exists.
 - New canonical IDs are allocated only by the owning backend workflow/transaction.
 - A client may carry or return an **existing** canonical ID that the backend already issued (for example an explicitly selected `tool_id` or an existing record route ID), but it must never mint, guess or derive a new canonical ID.
 - This applies to canonical identities including `tool_id`, `jobon_id`, `cm_id`, `mf_id`, `bq_id`, `peso_id`, `comparacao_id`, `bq_repair_trace_id` and `movement_id`.
-- The same rule applies to `controlo_id` when that canonical identity is implemented.
+- Any persisted `controlo_id` follows the same backend-owned allocation rule; clients never mint it.
 - Actor/time are backend facts (`ICurrentAccountContext`, backend clock) — never client-created audit facts.
 - Audit trail never invents actor/time.
 
@@ -92,7 +92,7 @@ No Job On-wide status, stage, phase or state machine exists.
 
 ## Rule 10: Module Boundaries
 
-- **Controlo Create and Controlo Approve remain distinct modules.** No generic architecture may force their workflows/pages to be identical.
+- **Controlo Create and Controlo Approve remain distinct operational capabilities/surfaces within the Controlo domain.** No generic architecture may force their workflows/pages to be identical.
 - A module owns its own workflow, rules and module-specific persistence.
 - Modules must not reach directly into another module's internal tables or implementation.
 - Preferred direction: `Controlo → shared contract / context provider → backend`.
@@ -127,7 +127,7 @@ DMO is a fixed-layout desktop operational application, not a responsive public w
 ## Rule 14: Ferramentas is Contextual
 
 - Ferramentas is the canonical Tool registry and consultation flow for the Beta, but it is not exposed as a top-level operational destination merely for convenience.
-- Its primary surface is the existing Tool list/search/filter view; Tool creation is an action inside that registry.
+- Its primary surface is the Tool list/search/filter view; Tool creation is an action inside that registry.
 - Search and filters narrow candidates but never auto-select a Tool.
 - The origin module never becomes Tool owner: neither Job On nor Controlo nor Boquilhas creates private Tool identities or writes a private Tool registry.
 - Tool create returns the canonical `tool_id` to the consuming workflow.
