@@ -44,9 +44,65 @@ jobs:
             exit 1
           fi
 
+      - name: Surface review notices
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          changed_files="$(git diff --name-only "$BASE_SHA..$HEAD_SHA")"
+          added_lines="$(git diff --unified=0 "$BASE_SHA..$HEAD_SHA" -- '*.md'             | grep '^+'             | grep -v '^+++' || true)"
+
+          {
+            echo "## Authority review notices"
+            echo
+            echo "These are review hints only. They never decide whether the proposed change is correct."
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          notice_file () {
+            pattern="$1"
+            label="$2"
+            if grep -Eq "$pattern" <<<"$changed_files"; then
+              echo "::notice::$label"
+              echo "- $label" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          }
+
+          notice_text () {
+            pattern="$1"
+            label="$2"
+            if grep -Eiq "$pattern" <<<"$added_lines"; then
+              echo "::warning::$label"
+              echo "- ⚠️ $label" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          }
+
+          notice_file '(^|/)IDENTITIES\.md$' 'IDENTITIES.md changed — review identity/lifecycle implications.'
+          notice_file '(^|/)AUTHORITY\.md$' 'AUTHORITY.md changed — review repository-level authority semantics.'
+          notice_file '(^|/)HOW_THE_APP_WORKS\.md$' 'HOW_THE_APP_WORKS.md changed — review cross-module effects.'
+          notice_file '^modules/' 'Module authority changed — review the owning module and any cross-module assumptions.'
+          notice_file '^\.github/' 'Repository guard configuration changed — review protection behavior separately from domain content.'
+
+          notice_text '(^|[^[:alnum:]_])(Operador|Responsável)([^[:alnum:]_]|$)' 'Legacy role wording detected in added text — verify it is historical/explanatory and not being restored as access authority.'
+          notice_text 'resumo_id' 'resumo_id mentioned in added text — verify whether this is an intentional authority change or explanatory reference.'
+          notice_text 'controlo_id' 'controlo_id mentioned in added text — review shared-context identity implications.'
+          notice_text 'tool_id' 'tool_id mentioned in added text — review Tool identity implications.'
+          notice_text '(^|[^[:alnum:]_])lot(e)?([^[:alnum:]_]|$)' 'Lot wording detected — review whether Tool identity semantics are affected.'
+          notice_text 'foreign key|\bFK\b|relationship|relation|parent' 'Persistence relationship wording detected — review whether a real domain relation is being added or changed.'
+          notice_text 'new identity|canonical identity|new UUID|identity' 'Identity wording detected — review whether the change creates, removes, or redefines a durable identity.'
+          notice_text 'approval|approve|reject|reopen' 'Decision/lifecycle wording detected — review capability and record-lifecycle implications.'
+          notice_text 'PDF|filesystem|path|document' 'Document/storage wording detected — review record vs derived artifact vs path boundaries.'
+
+          echo >> "$GITHUB_STEP_SUMMARY"
+          echo "A notice is not a rejection. The pull request remains pending for reviewer/CODEOWNER judgement." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Confirm human review is required
         shell: bash
         run: |
           echo "This check validates process only."
-          echo "It does not judge whether a domain change is correct."
+          echo "Review notices are advisory only and do not fail the workflow."
+          echo "The workflow does not judge whether a domain change is correct."
           echo "Authority changes must remain pending until the configured reviewer/CODEOWNER approves the pull request."
