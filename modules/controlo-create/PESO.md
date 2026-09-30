@@ -201,3 +201,9 @@ cm_id
 ```
 
 The Tool remains the canonical owner of those technical values. Missing values must not be invented.
+
+## Peso PDF
+
+The final production PDF for an approved Peso follows the dedicated field/source contract in [PESO_PDF.md](./PESO_PDF.md).
+
+The PDF is generated from backend-resolved facts and calculated results. The frontend/document renderer does not independently reconstruct production context, Tool technical values, historical-control choice or the Peso formula.

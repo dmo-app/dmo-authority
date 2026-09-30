@@ -66,7 +66,9 @@ If an existing generated artifact would be replaced, the workflow must make that
 
 The Peso PDF has a specific operational rule:
 
-- the Peso must already have a completed decision/approval before its production PDF is generated for use in production.
+- the Peso must already have a completed decision/approval before its production PDF is generated for use in production;
+- its detailed field/data-provenance contract is defined in [PESO_PDF.md](./PESO_PDF.md);
+- after reopen/correction/resubmission and a new approval, the same peso_id may explicitly regenerate/replace its production PDF from the newly approved state.
 
 This requirement is specific to Peso because the Peso document is sent to production as an operational reference.
 

@@ -33,6 +33,15 @@ The confirmed reusable technical values currently include:
 - `volume_puncao`;
 - `diametro_gargalo`.
 
+For Peso presentation, the product-facing PDF labels are:
+
+```text
+volume_marisa → Volume BQ
+volume_puncao → Volume PU
+```
+
+These labels do not create new stored fields or duplicate the underlying Tool technical values.
+
 These values are Tool-owned technical facts.
 
 When entered, stored and shown as numeric Tool technical values, they use **two decimal places**.
