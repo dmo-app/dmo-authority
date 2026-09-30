@@ -199,10 +199,13 @@ At minimum, close:
 1. canonical unit for `volume_marisa`;
 2. canonical unit for `volume_puncao`;
 3. canonical unit for `diametro_gargalo`;
-4. required numeric precision/accepted input precision for each value;
-5. whether zero/negative values are valid or must be refused;
-6. whether any of these values are Tool-type-specific rather than applicable to every Tool type;
-7. which Ferramentas capability is allowed to edit these values, once the access catalogue is closed.
+4. accepted numeric domain for each Tool technical input, including whether zero or negative stored master values are valid;
+5. whether any of these values are Tool-type-specific rather than applicable to every Tool type;
+6. which Ferramentas capability is allowed to edit these values, once the access catalogue is closed.
+
+Numeric precision is already decided: Tool technical values use **two decimal places**.
+
+Do not infer Tool-master input validation from downstream calculated results. A consuming workflow may legitimately produce signed/negative derived results without making negative Tool technical master values valid by implication.
 
 If any of these are already defined elsewhere, point this slice to that canonical source rather than duplicating the rule here.
 
