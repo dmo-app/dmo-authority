@@ -71,7 +71,11 @@ The reference may therefore help find candidates, but it never determines `tool_
 
 4. Record TP/Tampão/Calote and only the other production-specific values required by the current Beta workflows.
 
-5. Continue into the downstream operational modules using the saved Job On context.
+5. Persist the Job On:
+   - the new `jobon_id` becomes discoverable immediately in the Job On planning calendar for its planned production date/machine;
+   - planned-production awareness/ping for relevant consumers is produced when the Job On is successfully created, not only when the future production becomes active.
+
+6. Continue into the downstream operational modules using the saved Job On context.
 
 ## TP / Tampão / Calote
 
@@ -102,3 +106,20 @@ Production-specific values must not be pushed into Ferramentas merely because th
 Tool selection is explicit.
 
 Filtering and relevance assistance may help the user find valid Tools, but the system must not silently choose the Tool that the user intended.
+
+
+## Creation-time planning visibility
+
+Successful Job On creation immediately establishes the future production as planned information.
+
+```text
+Job On created
+→ jobon_id persisted
+→ machine + planned production date available
+→ planning calendar can project it now
+→ planned-production awareness can be exposed now
+```
+
+This does not activate the production early.
+
+The calendar projection and awareness signal both point back to Job On truth; neither duplicates the production record or replaces `jobon_id`.

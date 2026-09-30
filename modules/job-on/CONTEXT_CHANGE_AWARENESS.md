@@ -39,16 +39,20 @@ There is **no single global application hour** at which every module must adopt 
 
 Each consuming module owns its own configurable production-activation time.
 
-A transition ping may already exist before that time. The consumer waits until its configured activation time, then reads Job On and resolves the production/context it should use.
+The planned-production awareness/ping is created when the future Job On is successfully created. It therefore exists before that production becomes active.
+
+The consumer may discover or prepare that future production in advance, but it does not adopt the Job On as its active production context merely because the awareness exists. The consumer waits until its configured activation time, then re-reads Job On and resolves the production/context it should use.
 
 Conceptually:
 
 ```text
-production-transition awareness
--> pending for consumer
+Job On is created
+-> production-transition awareness is created immediately
+-> awareness is available to the relevant consumer
+-> future production may be inspected/prepared
 
 consumer's configured activation time arrives
--> consumer reads Job On
+-> consumer re-reads Job On
 -> consumer adopts the applicable production context
 ```
 
@@ -238,12 +242,13 @@ context_changed = BQ
 
 or the corresponding CM, MF, TP/Calote or other relevant production context.
 
-For a planned production transition:
+For a planned production transition, the awareness is produced when the Job On is created:
 
 ```text
 event_kind = production_transition
 machine
 jobon_id
+planned production date
 ```
 
 The signal does not carry a complete Job On snapshot and does not become a second source of production truth.
@@ -376,17 +381,18 @@ The mechanism is conceptually closed at this level:
 
 ```text
 1. awareness distinguishes production_transition from context_changed
-2. a production_transition is handled at the consuming module's configured activation time
-3. acknowledging a production_transition does not mark that transition as applied
-4. at activation time the consumer re-reads Job On and uses the then-applicable production/context
-5. a context_changed event is handled immediately
-6. no global midnight/hardcoded-hour rule controls all modules
-7. real same-jobon context changes are permanently logged
-8. awareness remains lightweight and does not duplicate the Job On snapshot
-9. consumers are derived from existing functional dependencies
-10. pending awareness/acknowledgement is scoped per consumer module
-11. acknowledgement means only "seen"
-12. historical operational records are never rewritten by awareness
+2. production_transition awareness is created when the future Job On is successfully created
+3. a production_transition is handled at the consuming module's configured activation time
+4. acknowledging a production_transition does not mark that transition as applied
+5. at activation time the consumer re-reads Job On and uses the then-applicable production/context
+6. a context_changed event is handled immediately
+7. no global midnight/hardcoded-hour rule controls all modules
+8. real same-jobon context changes are permanently logged
+9. awareness remains lightweight and does not duplicate the Job On snapshot
+10. consumers are derived from existing functional dependencies
+11. pending awareness/acknowledgement is scoped per consumer module
+12. acknowledgement means only "seen"
+13. historical operational records are never rewritten by awareness
 ```
 
 Still to refine with module dependency documentation:
@@ -403,7 +409,7 @@ That refinement does not reopen the awareness timing model itself.
 
 ## Core rules
 
-> **A planned production transition and a change inside the same Job On are different awareness events. Planned transitions are consumed at each module's own configured production-activation time; same-`jobon_id` context changes are surfaced immediately.**
+> **A planned production transition and a change inside the same Job On are different awareness events. The planned-production awareness is created when the Job On is created, while actual adoption of that future production still happens only at each consumer's configured production-activation time. Same-`jobon_id` context changes are surfaced immediately.**
 
 > **Acknowledging a planned production-transition awareness means only that it was seen. The transition remains operationally pending until the consumer reaches its configured activation time, re-reads Job On and applies the production/context that is applicable then.**
 

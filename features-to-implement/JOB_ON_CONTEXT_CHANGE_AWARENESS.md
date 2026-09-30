@@ -25,7 +25,8 @@ Implement one awareness capability that preserves two distinct event semantics:
 
 ```text
 PRODUCTION_TRANSITION
--> may be known before activation
+-> awareness is created when the future Job On is successfully created
+-> may therefore be known/prepared before activation
 -> consumer reacts at its own configured production-activation time
 -> consumer re-reads Job On at that time
 -> acknowledgement before activation does not complete/cancel the scheduled transition
@@ -46,6 +47,7 @@ The implementation must provide:
 - permanent Job On change history for real same-`jobon_id` context changes;
 - lightweight awareness rather than a duplicated Job On snapshot;
 - an event-kind distinction equivalent to `PRODUCTION_TRANSITION` vs `CONTEXT_CHANGED`;
+- creation of planned-production awareness when the future Job On is successfully created;
 - per-consumer pending/acknowledgement state where acknowledgement is used;
 - module-owned production-activation configuration for consumers that use planned transitions;
 - re-reading of Job On when the consumer must react;
@@ -120,7 +122,7 @@ Reject an implementation that:
 
 This feature may be marked implemented only when:
 
-1. the selected app baseline implements both event timings correctly;
+1. planned-production awareness is produced at successful Job On creation and the selected app implementation preserves both event timings correctly;
 2. the consuming modules that need planned transitions own/configure their own activation times;
 3. immediate context-change consumers revalidate without waiting for those scheduled times;
 4. acknowledgement and scheduled application are separate states/concerns;

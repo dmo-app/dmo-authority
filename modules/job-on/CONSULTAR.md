@@ -4,6 +4,27 @@ Job On View is the consultation surface for saved production occurrences.
 
 It allows the user to inspect the production facts and the Tool contexts attached to that production without editing them.
 
+## Planning-calendar discovery
+
+The normal Job On consultation entry point is the planning calendar.
+
+The calendar reads planned Job Ons by date/machine and returns only the information needed to identify the planned production(s) for the selected day.
+
+Clicking a day does not make a Job On active automatically.
+
+```text
+calendar day selected
+→ read planned Job On candidates for that day
+→ show candidate production(s)
+→ user explicitly selects one
+→ use persisted jobon_id
+→ open consultation
+```
+
+Even when only one planned Job On is returned, the calendar remains a discovery surface rather than a new source of production identity.
+
+The persisted `jobon_id` is the context anchor used to open the saved Job On.
+
 ## Expected context
 
 A saved Job On can expose, as applicable:

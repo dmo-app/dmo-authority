@@ -80,6 +80,9 @@ Ferramentas
 → register/select canonical Tools
 
 Job On
+→ planning calendar is the landing/discovery surface
+→ clicking a day shows the production(s) planned to enter that day
+→ explicit selection opens the persisted jobon_id
 → create or consult a production
 → select CM / MF / BQ
 → establish production context

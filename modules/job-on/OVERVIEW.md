@@ -23,6 +23,44 @@ The current Beta may intentionally require only Job On Create for its Job On ope
 
 Inside Job On Create, an existing Job On normally opens in a safe View state and requires an explicit switch to Edit before editable values are changed. This UI state is not a separate permission.
 
+## Planning landing page
+
+The Job On landing page is the production-planning calendar.
+
+It is a read/discovery surface over saved Job Ons, organized by their planned production date and machine.
+
+```text
+saved Job On
+→ planned production date
+→ machine
+→ calendar marker
+```
+
+Clicking a day shows the Job On production(s) planned to enter on that day.
+
+If more than one Job On is planned for the selected day, all relevant candidates are shown and the user explicitly selects which one to open.
+
+```text
+day
+→ planned Job On(s)
+→ explicit selection
+→ jobon_id
+→ open saved Job On context
+```
+
+The calendar is not a second production source and does not create a calendar identity.
+
+```text
+calendar marker
+!= duplicated production data
+
+calendar marker
+→ projection/read model from Job On
+→ points back to jobon_id
+```
+
+A Job On becomes visible in this planning surface as soon as it is successfully created.
+
 ## Production context
 
 A Job On selects canonical Tools from Ferramentas.
