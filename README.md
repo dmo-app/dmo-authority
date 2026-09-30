@@ -28,7 +28,7 @@ Historical repositories may be used as evidence when recovering information, but
 - `RULES.md` — cross-cutting product and architecture rules.
 - `SCOPE.md` — Beta scope.
 - `IMPLEMENTATION_STATUS.md` — current Beta implementation state, transitional conditions and known gaps; not product canon.
-- `modules/` — detailed functional blueprint organized by module.
+- `modules/` — detailed module blueprint: functional rules plus explicit `backend/` and `frontend/` technical contracts prepared before implementation.
 
 The blueprint contains decided product behavior only. Unresolved product questions stay outside the canonical blueprint until the owner decides them; once decided, the rule is written directly into the owning module or cross-cutting file.
 
