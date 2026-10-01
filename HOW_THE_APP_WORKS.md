@@ -197,13 +197,17 @@ peso_id
 → jobon_id
 ```
 
-When Tool-owned technical values are required, the query follows the separate real relation:
+When Tool-owned technical values are required, the query follows the actual owner Tool for each value:
 
 ```text
-cm_id
-→ tool_id
-→ required Tool technical values
+volume_puncao / peso_nominal
+peso_id → cm_id → CM tool_id → Tool technical values
+
+volume_marisa
+peso_id → jobon_id → bq_id → BQ tool_id → Tool technical values
 ```
+
+If a required Tool value is missing, the user completes it in Ferramentas and Peso re-reads the Tool; Peso does not invent or privately re-enter it.
 
 When the Peso view requires TP/Calote, the backend reads that production value from the Job On context.
 
@@ -567,11 +571,17 @@ jobon_id
 → movement_id*
 ```
 
-A trace contains all Boquilhas movement cycles for that BQ in that production; it is not recreated for each repair trip. A pre-production trace may start from the canonical BQ `tool_id` before `bq_id` exists. Because the later `bq_id` references that same canonical `tool_id`, Job On can associate the same pending trace automatically when the match is unambiguous. The trace keeps its identity and movements.
+A trace contains all Boquilhas movement cycles for that BQ in that production; it is not recreated for each repair trip. A pre-production trace may start from the canonical BQ `tool_id` before `bq_id` exists.
+
+For one BQ `tool_id`, there is at most one unresolved pre-production trace at a time. Later movements reuse it.
+
+When the operator explicitly selects that BQ Tool in Job On, the same pending trace associates to the created/resolved `bq_id` automatically. That Tool selection is already the association decision. The trace keeps its identity and movements and clears its temporary direct `tool_id` anchor; the Tool remains reachable through `bq_id → tool_id`.
 
 A new production creates a new `bq_id` and a new production trace even if it uses the same physical BQ `tool_id`. Late returns remain on the trace of the earlier production where they originated.
 
-The current evolution also includes the movement-derived quantity and discrepancy behavior defined by the Boquilhas module files.
+The current evolution also includes the fixed BQ Tool quantity as the lot base, automatic repairer resolution from the Tool-associated machine through Boquilhas Definições, exceptional Saída/Entrada preservation, Entrada-only discrepancy/Saldo, and ordered correction rules defined by the Boquilhas module files.
+
+Boquilhas history is module-local in the Beta. Users with the BQ module assigned consult it directly; no BQ PDF/email artifact or duplicate Job On movement-history surface is required.
 
 See:
 
