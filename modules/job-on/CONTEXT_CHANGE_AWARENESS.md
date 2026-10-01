@@ -61,7 +61,11 @@ The production transition must not be inferred from midnight and must not depend
 
 ### Job On context changed
 
-This means the same production occurrence remains identified by the same `jobon_id`, but a relevant fact inside that production was replaced:
+This event applies when the same production occurrence remains identified by the same `jobon_id` **and the changed context is already operationally relevant to a consumer**.
+
+A future/planning-only Tool selection may be edited before operational use without creating an urgent `CONTEXT_CHANGED` event. Planning readers simply see the updated Job On truth.
+
+Once the context has been operationally consumed, a relevant replacement is represented with a new component-context identity and produces immediate awareness:
 
 ```text
 jobon_id = unchanged
@@ -93,6 +97,19 @@ These events may share notification infrastructure, but they must not be modeled
 ## 2. Production identity and replacement contexts
 
 A substitution inside the same production does not create a replacement `jobon_id`.
+
+The component-context identity rule is temporal:
+
+```text
+before operational use
+→ planning-only Tool replacement may keep the same cm_id / mf_id / bq_id
+
+after operational use
+→ replacement Tool gets a new cm_id / mf_id / bq_id
+→ old context remains historical
+```
+
+The awareness mechanism must not turn a planning-only edit into a fake operational-history event.
 
 For Tool-backed production contexts, the old context identity is never mutated so that it points to another physical Tool.
 
