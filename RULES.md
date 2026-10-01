@@ -182,6 +182,6 @@ When a production context used by another module changes while the `jobon_id` re
 - Acknowledgement is scoped per consuming module; acknowledgement by one module must not clear another module's pending awareness.
 - Notification routing is derived from the same functional production-context dependencies used by the operational workflows. It must not become a separate source of domain truth.
 - This mechanism does not automatically decide impact, create work, recalculate downstream records or rewrite historical records.
-- If a selected CM, MF or BQ Tool is replaced inside the same Job On, the replacement uses a new production-context identity. An existing `cm_id`, `mf_id` or `bq_id` is never retargeted to a different `tool_id`.
+- Tool replacement follows the operational-use boundary: before operational use, a planning-only replacement may keep the same `cm_id`, `mf_id` or `bq_id`; after operational use, replacement creates a new production-context identity and preserves the old context for historical records.
 
 Detailed behavior lives in `modules/job-on/CONTEXT_CHANGE_AWARENESS.md`.
