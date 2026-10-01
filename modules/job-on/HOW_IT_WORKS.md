@@ -188,7 +188,18 @@ Editing a Job On must not silently rewrite:
 
 Changes to Tool selection must preserve truthful history.
 
-If a selected CM, MF or BQ Tool is replaced while the same `jobon_id` remains valid, the existing component-context identity is not retargeted. A new `cm_id`, `mf_id` or `bq_id` is created for the replacement Tool and the previous context remains referencable by records that already used it.
+If a selected CM, MF or BQ Tool is replaced while the same `jobon_id` remains valid, the identity behavior depends on operational use:
+
+```text
+planning-only / not yet consumed
+→ same component-context ID may be updated to the newly selected Tool
+
+already consumed by operational history
+→ create new cm_id / mf_id / bq_id
+→ preserve old context on its original Tool
+```
+
+Historical records are never retargeted to the replacement context.
 
 Relevant production-context changes are also permanently logged and exposed through the lightweight awareness mechanism defined in `CONTEXT_CHANGE_AWARENESS.md`.
 
@@ -365,5 +376,5 @@ The module that creates an operational fact remains responsible for that fact.
 - The current Beta requires only Job On Create; this does not remove Job On View from the complete model.
 - UI View/Edit modes must not be confused with access capabilities.
 - Job On provides production context to downstream modules but does not take ownership of their operational facts.
-- Replacing a selected CM, MF or BQ inside an existing Job On creates a new applicable production-context identity; an existing context identity is never retargeted to a different `tool_id`.
+- Replacing a selected CM, MF or BQ before operational use may keep the same component-context identity; after operational use, replacement creates a new context identity and preserves the old one for history.
 - Relevant Job On context changes are permanently logged and surfaced as awareness to their functional consumers; acknowledgement means only that the change was seen.
