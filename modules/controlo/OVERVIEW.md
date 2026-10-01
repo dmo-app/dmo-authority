@@ -33,6 +33,29 @@ Examples include:
 
 UI grouping under Controlo does not, by itself, make all of these children of one generic parent.
 
+## Pre-production Tool control
+
+A Tool/lote may need to be controlled before any Job On exists.
+
+Job On is **not** a prerequisite for recording a valid pre-production control fact where the owning Controlo workflow supports that operation.
+
+In that state, the record is anchored directly to the canonical `tool_id` it actually controls.
+
+The application must not fabricate:
+
+- `jobon_id`;
+- `cm_id`;
+- `mf_id`;
+- `bq_id`;
+
+merely to make a pre-production record look production-bound.
+
+When that Tool is later explicitly selected into a Job On slot, the selection itself is the association intent. The owning workflow may then bind the same durable record to the applicable production component context and clear its temporary direct `tool_id` anchor.
+
+After association, the Tool remains reachable through the production context relation; the record must not keep two competing canonical anchors for the same association.
+
+Peso follows this rule explicitly as defined in `../controlo-create/PESO.md`.
+
 ## Future Job On preparation context
 
 A successfully created Job On immediately receives its associated canonical `controlo_id`.
