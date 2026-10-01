@@ -17,6 +17,10 @@ For each required production Tool:
 
 The normal path is therefore **reuse an existing registered Tool**.
 
+The explicit Tool selection is also the association intent for that production slot. Once the operator chooses the Tool for CM, MF or BQ, Job On creates/resolves the corresponding production context without asking a second “associate?” question.
+
+Where a current-Beta workflow has a valid pre-production record anchored directly to that same `tool_id`, the new production context resolves that record's production association according to its owning workflow. The record keeps its own identity; after association its temporary direct `tool_id` anchor is cleared when the owning workflow defines that transition.
+
 ## If the Tool does not exist
 
 If the required Tool is not yet registered, the user may create it from the same Ferramentas flow.
@@ -153,16 +157,28 @@ Those context IDs belong to the production occurrence. They do not replace the c
 
 A different lot is a different canonical Tool and therefore a different `tool_id`.
 
-Therefore, changing the selected Tool because the lot changed is a Tool replacement, not an edit of the existing Tool identity.
+Tool replacement inside one Job On follows the operational-use boundary.
 
-Example for CM inside the same Job On:
+### Before operational use
+
+While the Job On/component context is still planning only and no downstream operational record has consumed that component context, the operator may change the selected Tool and keep the same `cm_id`, `mf_id` or `bq_id`.
+
+The context is not yet historical operational evidence at that point.
+
+### After operational use
+
+Once the component context has been operationally consumed, changing to another Tool — including another lot — creates a new component-context identity.
+
+Example:
 
 ```text
-old cm_id
-→ tool_id A
-→ lot 001
+same jobon_id
 
-operator selects the Tool for lot 002
+old cm_id
+→ tool_id A / lot 001
+→ already consumed by operational history
+
+operator selects Tool for lot 002
 
 tool_id B
 → lot 002
@@ -175,8 +191,6 @@ old cm_id
 → still references tool_id A / lot 001
 ```
 
-The implementation must not mutate `tool_id A` from lot 001 to lot 002, and it must not retarget the old `cm_id` from `tool_id A` to `tool_id B`.
+The implementation must never rewrite historical downstream records so that they point to the replacement context.
 
-The same identity-preservation rule applies to MF and BQ production contexts.
-
-A later change to mutable Tool master facts must not rewrite the saved production context of an earlier Job On.
+The same temporal identity-preservation rule applies to CM, MF and BQ.
