@@ -106,10 +106,10 @@ The backend resolves:
 BQ tool_id
 → Tool-associated machine
 → Boquilhas Definições machine→repairer
-→ movement.repairer snapshot/reference
+→ resolved repairer used by the movement
 ```
 
-Historical movements retain the repairer that was resolved when the movement occurred.
+The repairer resolved when the movement occurred remains historical truth. The exact persistence representation is an implementation decision.
 
 ## Reviewer checks
 
