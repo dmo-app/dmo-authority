@@ -30,14 +30,16 @@ The creation flow captures the Tool facts already defined by the Ferramentas reg
 - state;
 - optional CM → MF-reference association where applicable.
 
-The current selectable Tool process values are:
+For **CM Tools**, the manufacturing process is a required Tool fact. The current selectable CM process values are:
 
 ```text
 NNPB
 PS
 ```
 
-The selected process is persisted as a Tool fact and can later be used for consultation/filtering. It does not determine or derive `tool_id`.
+The selected process is persisted on the canonical CM Tool and can later be used for consultation/filtering. Peso consumes this process through the selected CM production context; the process is not re-entered or independently owned by Peso.
+
+The process does not determine or derive `tool_id`.
 
 Specialized `tool_technical_values` remain the optional Tool-owned extension defined in `VALORES_TECNICOS.md`; their existence must not make the normal registry table heavy.
 
