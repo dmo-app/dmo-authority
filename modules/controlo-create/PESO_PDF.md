@@ -70,8 +70,8 @@ The former generic Boquilha block is replaced by the technical references requir
 | PDF field | Canonical source | Backend resolution |
 | --- | --- | --- |
 | Processo | Tool fact of the selected Peso/CM Tool; current values are NNPB or PS | peso_id → cm_id → tool_id → Tool.process |
-| Volume BQ | Tool-owned technical value used by Peso; product-facing label for volume_marisa | cm_id → tool_id → tool_technical_values.volume_marisa |
-| Volume PU | Tool-owned technical value used by Peso; product-facing label for volume_puncao | cm_id → tool_id → tool_technical_values.volume_puncao |
+| Volume BQ | BQ Tool-owned technical value used by Peso; product-facing label for volume_marisa | peso_id → jobon_id → bq_id → BQ tool_id → tool_technical_values.volume_marisa |
+| Volume PU | CM Tool-owned technical value used by Peso; product-facing label for volume_puncao | peso_id → cm_id → CM tool_id → tool_technical_values.volume_puncao |
 | Volume TP | production-specific TP/Calote value | peso_id → jobon_id → TP/Calote production context |
 
 Volume TP is shown as technical context. It does not become a term in the main Peso formula merely because it appears in the PDF.
@@ -177,7 +177,7 @@ These are not the same source and must not be joined or substituted for one anot
 
 | PDF field | Source rule |
 | --- | --- |
-| Peso nominal do desenho | drawing/reference data resolved for the current production reference |
+| Peso nominal do desenho | CM Tool-owned `peso_nominal` technical value originating from the applicable drawing/reference |
 | Diferença para novo | backend-derived difference using the applicable drawing/reference weight |
 | Variação | backend-derived percentage for that reference comparison |
 | Peso médio SAP da produção anterior | SAP/reference data for the previous production |
@@ -211,7 +211,8 @@ READ Peso PDF by peso_id
 → validate peso_id and approved state
 → resolve current Job On / Controlo / CM context
 → resolve CM Tool facts
-→ resolve only required Tool technical values
+→ resolve the BQ production context/Tool required for `volume_marisa`
+→ resolve only required Tool technical values from their actual owner Tools
 → resolve frozen Peso calculation inputs/results
 → resolve explicitly selected historical peso_id and comparison results
 → resolve drawing/SAP reference data required by the document
