@@ -25,10 +25,25 @@ The creation flow captures the Tool facts already defined by the Ferramentas reg
 - Tool type;
 - canonical reference;
 - lot;
+- quantity of physical tools represented by that Tool/lot;
 - compatible machines/lines;
 - process;
 - state;
 - optional CM → MF-reference association where applicable.
+
+`quantity` is Tool-owned data associated with the canonical `tool_id`. It does not create one Tool identity per physical piece.
+
+Example:
+
+```text
+BQ
+lot = 4
+quantity = 120
+```
+
+This means that the created BQ Tool/lot carries an accounted quantity of 120 physical BQ tools.
+
+For BQ Tools, Boquilhas later consumes this quantity as the lot total used together with repair movements to derive operational quantities. Boquilhas consumes the value but does not own or duplicate it.
 
 For **CM Tools**, the manufacturing process is a required Tool fact. The current selectable CM process values are:
 
