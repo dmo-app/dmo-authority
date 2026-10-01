@@ -36,7 +36,7 @@ Only the latest movement of a trace may be directly corrected or removed.
 
 To correct an older movement, later movements must first be removed from newest to oldest until the target becomes the latest movement.
 
-Corrections and removals remain auditable. Audit preserves the before/after or removal fact even though the active operational projection is recalculated from the corrected remaining sequence.
+Corrections and removals remain auditable. The exact technical representation of that audit is an implementation decision.
 
 An explicit correction of the affected movement is different from automatic reconciliation: later ordinary movements must never silently erase an earlier discrepancy.
 
