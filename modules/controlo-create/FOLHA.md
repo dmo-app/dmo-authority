@@ -1,83 +1,80 @@
 # Controlo — Folha
 
-Folha is one shared Controlo surface/state exposed through both Controlo Create and Controlo Approve.
+Folha is a Controlo Create control/evaluation surface.
 
-There is not a separate "Folha Create" and "Folha Approve" copy.
+It does **not** have an approval lifecycle.
+
+There is no Folha approve/reject/reopen workflow and no approval copy of Folha.
 
 ## Capability behavior
 
-### Controlo Create
+Controlo Create may:
 
-Create may:
+- read Folha;
+- edit its operational fields;
+- record/evaluate the applicable OK/NOK facts;
+- save the resulting control state.
 
-- read;
-- edit;
-- evaluate;
-- submit.
+Controlo Approve must not treat Folha as an approvable record.
 
-Changes made through Create become part of the same underlying Folha/control state that Approve later reads.
+Folha information may be visible through the broader Controlo/Resumo composition where useful, but visibility does not create a Folha approval state.
 
-### Controlo Approve
+## Families and identity boundary
 
-Approve reads the same Folha/control state.
+Folha covers the visible families:
 
-It does **not** edit the operational Folha content.
+- CM;
+- BQ;
+- MF;
+- PU;
+- CS.
 
-Approve may perform the approval-side actions defined by the approval workflow:
-
-- approve;
-- reject;
-- reopen where permitted.
-
-Those actions persist approval decisions/history; they do not give Approve permission to change Create-owned Folha fields, measurements, observations or technical facts.
-
-Conceptually:
+CM, BQ and MF use their real production Tool contexts:
 
 ```text
-Create edits Folha/state
--> same underlying state changes
--> Approve sees the updated state
-
-no copied Folha
-no second Folha
-no approval-side editing of operational content
+CM → cm_id
+BQ → bq_id
+MF → mf_id
 ```
 
-## Families
+PU and CS are different.
 
-Folha covers the families:
+They are fixed Folha fields named **PU** and **CS** where the user records the applicable OK/NOK control fact (and the observation/content already required by the Folha design).
 
-- CM
-- BQ
-- MF
-- PU
-- CS
+They are **not** Tool identities or dynamic canonical entities.
 
-## Beta context
+Do not create:
 
-Folha reuses the production context that already exists in the Beta Job On.
-
-The Beta Job On intentionally contains only the production facts needed by the current Beta workflows. Folha must not force Job On to absorb additional final-application configuration merely because Folha evaluates more piece families.
-
-Any additional data required only to complete the current Beta Folha evaluation, and not already present in the Job On context, is entered manually in Folha.
-
-This manual entry is a **Beta scope/UX solution**, not a permanent ownership decision.
-
-It does not redefine Folha as the canonical owner of those data, does not imply that the same data must remain Folha-owned in the complete application, and does not anticipate or prescribe any future module ownership.
-
-If the complete application later establishes a real canonical owner for one of those facts, that ownership must be decided from the real process and represented there; the Beta manual-entry behavior must not be used as evidence against it.
-
-This manual entry must also not be interpreted as a reason to invent new Tool identities, new Job On fields, or out-of-scope module relationships.
+- `pu_id`;
+- `cs_id`;
+- PU/CS Tool selection;
+- a dynamic identity mapping for those fields.
 
 ## Per-piece facts
 
-Each applicable piece may carry:
+Each applicable Folha field may carry:
 
 - OK/NOK;
-- observation;
+- observation where applicable.
 
 NOK does not automatically stop production.
 
 OK does not automatically authorize production.
 
-These are recorded/evaluated facts; production decisions remain explicit human actions under the owning workflow.
+These are recorded/evaluated control facts, not approval decisions.
+
+## Beta boundary
+
+Folha reuses the production context already available from Job On for CM, BQ and MF.
+
+It must not create replacement Tool identities or duplicate the production configuration.
+
+MCaliper is outside the current Beta. Folha therefore has no Beta requirement for:
+
+- MCaliper links;
+- MCaliper integration;
+- MCaliper URL validation/history;
+- MCaliper permissions;
+- MCaliper content in Resumo.
+
+Folha and Resumo must function without MCaliper.
