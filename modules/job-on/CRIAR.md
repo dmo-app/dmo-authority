@@ -67,7 +67,9 @@ The reference may therefore help find candidates, but it never determines `tool_
 3. Create the production context:
    - new `jobon_id`;
    - production-specific `cm_id`, `mf_id` and `bq_id` as applicable;
-   - each component context references the selected canonical `tool_id`;
+   - each component context references the explicitly selected canonical `tool_id`;
+   - selecting the Tool for the slot is itself the association decision; do not ask the user for a second association confirmation;
+   - where a current-Beta pre-production record already exists on the same `tool_id`, its owning workflow associates that same durable record to the newly resolved production context and clears its temporary direct `tool_id` anchor where defined;
    - create the production's `controlo_id` and associate it immediately with this `jobon_id`.
 
 4. Record the production-specific values required by the current Beta workflows:
@@ -105,6 +107,21 @@ It does not create replacement Tool identities.
 Production-specific values must not be pushed into Ferramentas merely because they are used alongside a Tool.
 
 ## Human choice
+
+Tool selection is explicit.
+
+Explicit selection has two consequences that must not be separated into redundant prompts:
+
+```text
+user selects Tool
+→ canonical tool_id accepted
+→ component context created/resolved
+→ applicable pre-production record on that Tool may bind to that context
+```
+
+For Boquilhas this means a matching unresolved BQ repair trace is attached to the new `bq_id` and its direct `tool_id` anchor is cleared.
+
+For a pre-production Peso anchored to the selected CM Tool, the same `peso_id` becomes associated to the new `cm_id` and its direct `tool_id` anchor is cleared.
 
 Tool selection is explicit.
 
