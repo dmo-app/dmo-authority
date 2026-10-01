@@ -219,21 +219,6 @@ glass weight =
 
 TP/Tampão does not enter this main formula that produces the Peso value sent to production.
 
-## Production-specific CM usage percentage
-
-Peso may display the CM usage percentage established for the production.
-
-The value is not entered or calculated in Peso:
-
-```text
-Job On
-→ manual % de uso from SAP
-→ saved with the production/CM context
-→ Peso reads the saved value
-```
-
-Peso does not take ownership of that value and must not create a second editable copy.
-
 ## CM manufacturing process
 
 Peso consumes the manufacturing process of the selected canonical CM Tool.
