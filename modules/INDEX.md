@@ -120,15 +120,10 @@ Functional:
 
 `boquilhas/`
 
-Functional:
-- `OVERVIEW.md`
-- `REGISTO.md`
-- `MOVIMENTOS.md`
-- `HISTORICO.md`
-- `DEFINICOES.md`
+Functional source:
+- `BOQUILHAS.md`
 
-Backend:
-- `backend/REPAIR_TRACE.md`
+Backend/frontend material may add technical detail only when needed and must not duplicate or redefine the functional rules in `BOQUILHAS.md`.
 
 ## Cross-cutting technical material
 
@@ -137,9 +132,9 @@ Backend:
 
 ## File rule
 
-A functional rule belongs in the module file that owns the behavior.
+A module should have one consolidated functional source by default.
 
-More technical implementation detail should be placed under that module's `backend/` or `frontend/` folder instead of mixing both concerns into one large document.
+Backend/frontend files may add implementation or presentation contracts when needed, but must not become competing copies of functional truth.
 
 Current implementation state belongs in `../IMPLEMENTATION_STATUS.md`.
 
