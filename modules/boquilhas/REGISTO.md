@@ -59,9 +59,13 @@ The fact that BQ-X is no longer visible as the current machine card must not blo
 
 For a BQ not yet associated with a Job On, Registo may begin from the canonical BQ Tool identity (`tool_id`) and create/preserve a future production trace with `bq_id = null`.
 
-The blueprint does **not yet decide** whether the same `tool_id` may have more than one simultaneous unresolved pre-production trace. Registo must not enforce or infer a one-pending-trace rule.
+For one `tool_id`, Registo uses **one unresolved pre-production trace at a time**. If that trace already exists, later movements for the same Tool continue in it; Registo does not create another unresolved trace.
 
-When Job On later creates a `bq_id` that references the same canonical `tool_id`, an existing pending trace is associated automatically only when the intended match is unambiguous. The association does not create a replacement trace or move its existing movements. While `bq_id` is unresolved, Registo shows a persistent Job On association warning derived from that missing association.
+When that BQ Tool is explicitly selected in Job On, the resulting `bq_id` associates to the same trace automatically. The Tool selection is already the association decision; there is no separate association prompt.
+
+Association keeps the same `bq_repair_trace_id` and its movements, sets `bq_id`, and clears the trace's temporary direct `tool_id` anchor. The Tool remains reachable through `bq_id → tool_id`.
+
+A pre-production BQ has no current production machine card, but its Tool still has its associated machine/line. Boquilhas uses that Tool association to resolve the repairer automatically from Boquilhas Definições when recording a Saída.
 
 Therefore the module has two valid entry patterns:
 
@@ -88,7 +92,7 @@ The card must expose, in real time, three operational values derived from the se
 2. quantity currently **out for repair**;
 3. accumulated **discrepancy** for the relevant repair trace context associated with the current BQ.
 
-These values are read projections over the register facts. They are not independently editable balances and must not be stored as a second source of truth.
+These values are read projections over the fixed BQ Tool quantity plus the movement facts of the applicable trace. They are not independently editable balances and must not be stored as a second source of truth. Repair movements never mutate the fixed quantity on the Tool.
 
 The discrepancy value follows the rules in `MOVIMENTOS.md`: it is the accumulated historical discrepancy of the current trace and is not automatically reconciled by later movements.
 
@@ -163,8 +167,10 @@ The implementation must preserve these distinct concepts:
     → one trace for one bq_id / production context
     → groups all movement cycles of that production
     → may temporarily exist from tool_id with bq_id unresolved before Job On
-    → simultaneous unresolved-trace cardinality for one tool_id is not yet decided
-    → has no open/closed lifecycle; association to bq_id resolves the pre-production state when the intended match is unambiguous
+    → at most one unresolved pre-production trace per tool_id
+    → explicit BQ Tool selection in Job On associates that trace to bq_id
+    → direct trace.tool_id is cleared on association
+    → has no open/closed lifecycle
 
     Movement facts
     → belong to their repair trace regardless of which BQ is currently shown on the machine card
