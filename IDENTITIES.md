@@ -59,8 +59,9 @@ The exact technical representation may be designed during implementation, but th
 
 ## 6. `comparacao_id` — Peso Comparação event
 
-- Identifies one Comparação event started for an existing `peso_id`.
+- Identifies one Comparação event started for an existing **approved** `peso_id`.
 - A Peso without a Comparação is valid.
+- `por_aprovar` and `nao_aprovado` Pesos are not eligible to start Comparação.
 - Multiple Comparação events may exist for the same Peso.
 - Comparação reuses existing `cm_id`; it does not create a new CM.
 - It does not alter the original Peso and does not create `previous_peso_id`.
