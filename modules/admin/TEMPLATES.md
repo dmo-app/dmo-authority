@@ -101,7 +101,15 @@ App Definições answers:
 
 > How is this module administratively configured?
 
-## 6. Reviewer invariants
+## 6. Boquilhas module access
+
+For the current Beta, assigning the BQ/Boquilhas module through the User's effective Access Template is sufficient for that User to access Boquilhas consultation, including its module-local Registo/Histórico information.
+
+Boquilhas does not rely on PDF/email distribution as a substitute for module access.
+
+This rule defines visibility/access to the BQ module. It does not create a second profile label or a separate Boquilhas user identity.
+
+## 7. Reviewer invariants
 
 An implementation must not:
 
