@@ -22,6 +22,7 @@
 - **Reparação Interna / Reparação Programada** — workshop flows.
 - **Tampões as an independent module.**
 - **Full Tool lifecycle** — verification/reset/deactivation workflows.
+- **Tool `% de uso` / utilisation workflow** — not part of the current Beta; no automatic or manual `% de uso` functionality is required in the Beta.
 - **HISTÓRICO GLOBAL** as a top-level aggregating destination. Module-local Histórico remains in scope where its owning module requires it.
 - **MCaliper** — control-template integration, links and related workflow are outside the current Beta.
 - **Boquilhas PDF/email artifacts** — Boquilhas is consulted directly by Users who have the BQ module assigned; no BQ PDF or email workflow is required in the Beta.
