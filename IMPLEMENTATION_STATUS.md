@@ -109,7 +109,7 @@ The blueprint itself defines current product behavior. Commit wording, historica
 Verify the current application against the present blueprint for:
 
 - Peso calculation inputs and their historical stability;
-- Tool-owned technical values consumed by Peso;
+- Tool-owned technical values consumed by Peso through the correct owner paths: `volume_puncao`/`peso_nominal` from CM and `volume_marisa` from BQ;
 - the current ownership boundary between Tool facts and production/Controlo facts;
 - Duplicate Tool creating a new canonical Tool identity while using the source only as a starting point.
 
@@ -134,15 +134,21 @@ Verify the current application against the present Boquilhas blueprint for:
 - canonical `bq_repair_trace_id` as the single movement trace for one `bq_id` / production BQ context;
 - movements belonging to the repair trace rather than being attached as one flat lifetime movement list directly to `bq_id`;
 - pre-production traces anchored to canonical BQ `tool_id` where applicable, with `bq_id` initially unresolved;
-- no enforcement of unresolved pre-production trace cardinality until the owning product rule is explicitly decided; implementation must not derive that rule from schema/index convenience;
-- automatic later association of the same pending trace to the matching `bq_id` through their shared canonical `tool_id` when that match is unambiguous, without replacing the trace or moving existing movements;
+- at most one unresolved pre-production trace per BQ `tool_id` at a time; later pre-production movements reuse it;
+- automatic association of the same pending trace when that BQ Tool is explicitly selected in Job On; the same trace is kept, `bq_id` is set, and the temporary direct `tool_id` anchor is cleared without moving existing movements;
 - multiple repair movement cycles belonging to the same production trace rather than creating one trace per repair trip;
 - a new production/BQ context using a new trace even when it references the same physical BQ `tool_id`;
 - machine-side current-production context;
 - independence of a repair trace from machine production changes;
 - current-production registration shortcut;
 - independent access to old, non-current and pre-production repair traces;
-- preservation of the same repair-trace identity when later associated with production.
+- preservation of the same repair-trace identity when later associated with production;
+- fixed BQ Tool quantity as the lot base, not a Boquilhas-owned mutable total;
+- automatic machine→repairer resolution from Boquilhas Definições;
+- exceptional Saída/Entrada recording without hard blocking;
+- Entrada-only discrepancy/Saldo semantics;
+- latest-movement-only correction/removal ordering;
+- module-local Beta consultation with no Boquilhas PDF/email artifact.
 
 Any remaining semantic question must be resolved from the current blueprint or owner confirmation before implementation is changed.
 
