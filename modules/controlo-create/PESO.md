@@ -134,42 +134,33 @@ automatic association
 
 Even when only one eligible historical Peso remains, the system must not silently associate it; the user confirms the selection.
 
-## Identity, CM context and measurement rows
+## Identity, pre-production anchor and CM context
 
 - `peso_id` is the durable Peso identity.
-- The same `peso_id` persists through the later decision lifecycle.
-- Approval does not create a copy.
-- Peso is anchored through the production `cm_id`.
-- That `cm_id` represents the CM Tool/context selected for the production, not each individual CM unit observed during weighing.
-- A single Peso may contain several measurement rows for that same production CM context.
-- Those rows are facts of the `peso_id`; they do not create additional `cm_id`, `tool_id`, or canonical CM records.
-- A visible CM number/position on a measurement row is an operational measurement identifier/label, not a canonical `cm_id`.
-- Peso may consume production/context facts without taking ownership of them.
+- The same `peso_id` persists through create, save, calculate, submit, approval, rejection, reopen and history.
+- Approval does not create a copy or reassign the Peso to another production.
+- Before a production context exists, Peso may be created against the canonical CM `tool_id` directly.
+- When that same CM Tool is explicitly selected in Job On and the production `cm_id` is created/resolved, the existing `peso_id` is associated to that `cm_id`.
+- The temporary direct `tool_id` anchor on Peso is then cleared. The Tool remains reachable through `peso_id → cm_id → tool_id`.
+- The explicit CM Tool selection in Job On is already the association decision; there is no second “associate this Peso?” confirmation.
+- Production-dependent calculation waits until the required production context and owner values are available.
+
+The production `cm_id` represents the CM Tool/context selected for the production, not each individual CM unit observed during weighing.
+
+A single Peso may contain several measurement rows for that same production CM context. Those rows are facts of the `peso_id`; they do not create additional `cm_id`, `tool_id`, or canonical CM records.
+
+A visible CM number/position on a measurement row is an operational measurement identifier/label, not a canonical `cm_id`.
 
 Conceptually:
 
 ```text
-jobon_id
-→ cm_id
-→ tool_id
+pre-production:
+peso_id → CM tool_id
 
-peso_id
-→ cm_id
-→ measurement row 1
-→ measurement row 2
-→ measurement row 3
-→ ...
+after Job On association:
+peso_id → cm_id → CM tool_id
+direct peso.tool_id = null
 ```
-
-Therefore:
-
-```text
-number of Peso measurement rows
-!=
-number of cm_id records
-```
-
-The application must not model every physically observed CM during a Peso control as a separate Tool-in-production context when the real process does not require that identity.
 
 ## Physical measurement vs technical calculation
 
@@ -242,17 +233,39 @@ The process belongs to Ferramentas/Tool. It is not selected or re-entered indepe
 
 ## Tool technical values
 
-`volume_marisa` and `volume_puncao` are not re-entered manually in Peso.
+Peso does not re-enter Tool-owned technical values.
 
-They are resolved through the real production context:
+The two volume terms in the main formula come from **different Tools**:
 
 ```text
-cm_id
-→ tool_id
-→ tool_technical_values
+volume_puncao
+peso_id → cm_id → CM tool_id → tool_technical_values.volume_puncao
+
+volume_marisa
+peso_id → jobon_id → bq_id → BQ tool_id → tool_technical_values.volume_marisa
 ```
 
-The Tool remains the canonical owner of those technical values. Missing values must not be invented.
+The nominal drawing weight used where applicable is also a Tool-owned CM value:
+
+```text
+peso_nominal
+peso_id → cm_id → CM tool_id → tool_technical_values.peso_nominal
+```
+
+The Tool remains the canonical owner of these values.
+
+If Peso needs an applicable Tool technical value that is missing:
+
+```text
+Peso identifies the missing Tool value
+→ user completes it in Ferramentas
+→ Peso re-reads the owner Tool
+→ calculation continues
+```
+
+Peso must not invent the value, calculate a substitute, copy another Tool's value, or persist a second editable owner field merely for convenience.
+
+Where historical reproducibility requires the exact value consumed by a completed Peso calculation, the consumed value may be frozen with the Peso as historical evidence while canonical ownership remains with the Tool.
 
 ## Peso PDF
 
