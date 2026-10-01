@@ -27,7 +27,6 @@ The creation flow captures the Tool facts already defined by the Ferramentas reg
 - lot;
 - quantity of physical tools represented by that Tool/lot;
 - compatible machines/lines;
-- fixed lot quantity where applicable;
 - process;
 - state;
 - optional CM → MF-reference association where applicable.
@@ -100,6 +99,36 @@ The association is optional:
 - absence of an association does not create a replacement identity or alter the CM's canonical reference.
 
 Its only purpose is to help consuming workflows discover relevant CM candidates.
+
+## Duplicate Tool
+
+Duplicating an existing Tool uses the source Tool only as a starting point.
+
+```text
+source tool_id
+→ copy editable Tool facts into duplication form
+→ user must provide/change lot
+→ save
+→ new canonical tool_id
+```
+
+A duplicated Tool is always a new canonical Tool.
+
+Because a different lot is a different Tool, the duplicated Tool must not be saved with the source lot as though it were the same physical lot.
+
+The duplication flow may prefill reusable source facts, including where applicable:
+
+- reference;
+- compatible machines/lines;
+- CM process;
+- optional MF-reference association;
+- Tool technical values.
+
+All copied values remain editable before save.
+
+Changing an inherited reference, machine/line association, process or other copied compatibility fact may produce an informational warning so the user notices the divergence, but that warning must not become a hidden hard block.
+
+The source Tool is never mutated by duplication.
 
 ## Contextual creation
 
