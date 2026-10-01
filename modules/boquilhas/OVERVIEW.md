@@ -8,7 +8,10 @@ The existing register/movement implementation is a valid base to preserve and ev
 
 ```text
 tool_id
-= canonical physical BQ
+= canonical physical BQ Tool/lot
+
+Tool.quantity
+= accounted quantity of physical BQ tools in that Tool/lot
 
 jobon_id
 → bq_id
@@ -17,6 +20,18 @@ jobon_id
 ```
 
 `bq_id` identifies that BQ in one specific production and references its canonical `tool_id`.
+
+Boquilhas consumes the BQ Tool quantity owned by Ferramentas. Example:
+
+```text
+BQ Tool
+lot = 4
+quantity = 120
+```
+
+The value `120` is the accounted lot total for that canonical BQ Tool. Boquilhas uses it together with movement facts to derive operational quantities such as quantity in house and quantity out for repair.
+
+Boquilhas does not own or duplicate this Tool master quantity. Repair movements do not silently increase it when unexplained physical returns are observed; those exceptional observations follow the discrepancy rules in `MOVIMENTOS.md`.
 
 `bq_repair_trace_id` identifies the movement trace for that BQ production context. It is not created per repair trip. Several cycles may exist inside the same trace:
 
@@ -112,7 +127,7 @@ Movement types remain:
 
 The existing `boquilhas_id`-based persistence remains a valid implementation base and must be reconciled without discarding real operational history.
 
-Quantity-in-house, quantity-out and discrepancy are projections/derivations over movement facts. Their detailed mathematics may be refined independently of this identity structure.
+Quantity-in-house, quantity-out and discrepancy are projections/derivations over the Tool quantity plus movement facts. Their detailed mathematics may be refined independently of this identity structure.
 
 Detailed rules:
 
