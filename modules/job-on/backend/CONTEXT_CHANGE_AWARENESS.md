@@ -12,8 +12,7 @@ The complete functional behavior belongs to:
 
 Consumer-specific configuration/behavior belongs to the relevant owning module, for example:
 
-- `modules/boquilhas/DEFINICOES.md`
-- `modules/boquilhas/REGISTO.md`
+- `modules/boquilhas/BOQUILHAS.md`
 
 This feature file is an implementation/review checklist. It must not become a second copy of the functional rule.
 
