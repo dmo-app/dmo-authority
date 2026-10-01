@@ -55,7 +55,15 @@ Known technical inputs are resolved from the relevant production context and can
 
 The component Tools are already established by the active Job On context. Pegamentos does not reselect CM, MF or BQ merely to perform the measurement.
 
-The relevant throat-diameter nominal values are Tool technical values resolved through the applicable component context.
+The relevant throat-diameter nominal values are Tool technical values resolved separately through the applicable component context:
+
+```text
+cm_id → CM tool_id → diametro_gargalo
+bq_id → BQ tool_id → diametro_gargalo
+mf_id → MF tool_id → diametro_gargalo
+```
+
+If Pegamentos requires a missing Tool diameter, it tells the user which Tool-owned value is missing. The user completes that value in Ferramentas, then Pegamentos re-reads the Tool and continues. Pegamentos must not invent or privately re-enter the canonical Tool diameter.
 
 ## Implementation during testing
 
