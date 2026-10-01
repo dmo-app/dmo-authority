@@ -21,11 +21,12 @@ This file defines domain identities. A database table, read model, UI tab or doc
 
 - Identify the CM, MF or BQ context used in one `jobon_id`.
 - They reference a canonical `tool_id` but are not Tools themselves.
-- They preserve the production-context snapshot required for historical truth.
-- If the selected Tool changes inside the same `jobon_id`, the replacement receives a new `cm_id`, `mf_id` or `bq_id` as applicable and points to the new canonical `tool_id`.
-- An existing component-context identity must never be retargeted from one canonical Tool to another.
-- The previous context remains referencable by downstream records and history that already used it.
 - Clients never mint these identities.
+- Tool selection in Job On is explicit. Selecting the Tool for a CM/MF/BQ slot is itself the production-association decision; the application must not ask for a second confirmation just to associate that selected Tool.
+- **Before operational use**, while the Job On/component context is still only planning and no operational record has consumed that context, replacing the selected Tool may update that same `cm_id`, `mf_id` or `bq_id` in place.
+- **After operational use**, once downstream history exists for that component context, replacing the Tool must create a new `cm_id`, `mf_id` or `bq_id`. The old context remains attached to its original `tool_id` and remains referencable by the records that used it.
+- A different lot is a different canonical Tool, so the same temporal rule applies when the operator changes to another lot.
+- Historical downstream facts are never retargeted to a replacement Tool.
 
 ## 4. `controlo_id` — Controlo context in a production
 
@@ -43,12 +44,16 @@ The exact technical representation may be designed during implementation, but th
 ## 5. `peso_id` — Peso record
 
 - Identifies one specific Peso control/result record.
-- It persists through create, submit, approval, rejection and reopen lifecycle.
+- It persists through create, save, submit, approval, rejection and reopen.
 - There is no approval copy.
 - It is not a production identity, Tool identity, Job On identity, CM identity or revision.
-- The normal production path anchors Peso through one production `cm_id` context.
-- That `cm_id` identifies the CM Tool/context used for the production; it does **not** identify each individual CM unit/position observed during the Peso measurement.
-- One `peso_id` may therefore contain several measurement rows while remaining associated with the same production `cm_id`.
+- A Peso may begin **before production association** anchored directly to the canonical CM `tool_id`.
+- When that same CM Tool is explicitly selected in a Job On and the applicable `cm_id` exists, the same `peso_id` becomes associated to that `cm_id`; the direct `tool_id` anchor on the Peso is then cleared.
+- No second association confirmation is required: the explicit CM Tool selection in Job On already expresses the association intent.
+- After association, the Tool remains reachable through `peso_id → cm_id → tool_id`; Peso must not keep a competing direct Tool anchor.
+- The same `peso_id` then follows that production through later save/calculate/submit/approve/reject/reopen/history actions. Approval never reassigns it to another production.
+- The production `cm_id` identifies the CM Tool/context used for the production; it does **not** identify each individual CM unit/position observed during the Peso measurement.
+- One `peso_id` may contain several measurement rows while remaining associated with the same production `cm_id`.
 - A Peso measurement row does not create another `cm_id`, another `tool_id`, or another canonical CM entity merely because an individual CM position/unit was measured.
 - Any visible CM number/position recorded on a Peso measurement row is measurement data inside that `peso_id`, not a canonical Tool-in-production identity.
 
@@ -65,24 +70,19 @@ The exact technical representation may be designed during implementation, but th
 - Identifies the durable Boquilhas movement trace for one BQ context in one production.
 - Normal relationship: one `bq_id` has one `bq_repair_trace_id`, and that trace contains many `movement_id` events.
 - The trace is **not** the identity of each individual repair trip/cycle. Several `saida` / `entrada` / `entrada_sem_reparacao` cycles may occur inside the same trace.
-- `bq_id` remains the BQ Tool-in-production context. The movements belong to the trace, so `bq_id` does not become a direct undifferentiated lifetime container for Boquilhas movements.
-- `tool_id` is the canonical Tool identity referenced by `bq_id` and is the stable identity used to correlate a pre-production repair trace with the later BQ production context.
-- This correlation does not make `tool_id` and `bq_id` interchangeable. `tool_id` identifies the canonical Tool; `bq_id` identifies its use in one specific production context.
-- A trace may therefore be created before Job On and initially reference only the canonical BQ `tool_id`, with `bq_id` unresolved.
-- The same `tool_id` may have many repair traces across time because each production receives its own `bq_id` and trace.
-- The allowed cardinality of simultaneous pre-production traces with `bq_id` unresolved for the same `tool_id` is **not yet decided**. It must not be inferred from an existing/provisional database index or implementation convenience.
-- There is no open/closed lifecycle for a trace. A pre-production trace is simply unresolved until it is associated to its production `bq_id`.
-- When Job On later creates a `bq_id` for that same `tool_id`, automatic association is valid only when the intended pending trace is unambiguous under the product rules then in force.
-- If no pre-production trace exists when the production context is created, that production uses its own new trace.
-- If the trace starts after the production `bq_id` already exists, it is associated to that `bq_id` immediately.
-- Association does not create a replacement trace, recreate movements, or reset trace history.
+- A trace may begin before Job On and initially reference the canonical BQ `tool_id` directly, with `bq_id = null`.
+- For one BQ `tool_id`, **at most one unresolved pre-production trace may exist at a time**. While that trace still carries the direct `tool_id`, later repair movements for that Tool continue in the same trace; a second unresolved trace is not created.
+- When the BQ Tool is explicitly selected in Job On and the matching `bq_id` is created/resolved, that Tool selection is the association decision. The same pre-production trace is associated to the `bq_id` automatically; no second confirmation is required.
+- On association, the trace keeps the same `bq_repair_trace_id` and all existing movements, sets `bq_id`, and clears its direct `tool_id` anchor. The canonical Tool remains reachable through `bq_repair_trace_id → bq_id → tool_id`.
+- Clearing the direct `tool_id` after association permits a later pre-production repair trace for the same physical Tool when a future production cycle requires one.
+- The same physical `tool_id` may therefore have many repair traces **historically**, but never more than one simultaneous unresolved pre-production trace.
+- There is no trace `open` / `closed` lifecycle.
+- If no pre-production trace exists when a production `bq_id` is created, that production uses a new trace.
+- If the trace starts after the production `bq_id` already exists, it is associated immediately to that production context.
 - A new production creates a new `bq_id` and therefore a new production trace, even when the canonical physical BQ `tool_id` is the same as in a previous production.
 - Late returns remain movements of the original production trace where their repair activity originated; a later current production never steals or reassigns them.
-- While a pre-production trace still has no `bq_id`, the UI exposes a persistent Job On association warning derived from the missing association rather than from a separate lifecycle state.
 
 The existing `boquilhas_id`-based implementation is a valid implementation base and its real records/history must be preserved. The implementation must reconcile that persistence with this canonical trace relationship without destructive loss.
-
-The implementation must not invent a cardinality rule for unresolved pre-production traces. If the current blueprint does not make the intended association unambiguous, that case remains blocked pending a product decision.
 
 ## 8. `movement_id` — Boquilhas movement
 
