@@ -17,7 +17,6 @@ Examples include:
 - Peso;
 - Folha;
 - Pegamentos;
-- Boquilhas movement records where a document is derived from them.
 
 A PDF is generated from persisted application facts for presentation, printing or distribution.
 
@@ -104,6 +103,12 @@ Configured production/email recipients are not automatically application-authent
 See:
 
 - `DEFINICOES.md`
+
+## Boquilhas boundary
+
+Boquilhas does not produce a PDF/email artifact in the current Beta. Users with the BQ module assigned consult its Registo/Histórico directly.
+
+This Controlo document contract must not be used to invent a Boquilhas repair PDF merely because Boquilhas movement records are persisted.
 
 ## Availability
 
