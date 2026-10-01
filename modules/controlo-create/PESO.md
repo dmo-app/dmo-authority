@@ -234,6 +234,27 @@ Job On
 
 Peso does not take ownership of that value and must not create a second editable copy.
 
+## CM manufacturing process
+
+Peso consumes the manufacturing process of the selected canonical CM Tool.
+
+The supported CM process values are:
+
+```text
+NNPB
+PS
+```
+
+The process is resolved through the real production context:
+
+```text
+cm_id
+→ tool_id
+→ process
+```
+
+The process belongs to Ferramentas/Tool. It is not selected or re-entered independently in Peso. Peso uses the resolved CM process where its process-specific behavior or configuration requires it.
+
 ## Tool technical values
 
 `volume_marisa` and `volume_puncao` are not re-entered manually in Peso.
