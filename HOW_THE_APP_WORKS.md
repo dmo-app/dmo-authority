@@ -197,6 +197,8 @@ peso_id
 → jobon_id
 ```
 
+Before production association, the same durable Peso may temporarily be anchored directly to its canonical CM `tool_id`. When that Tool is explicitly selected in Job On, the existing `peso_id` associates to the resulting `cm_id` and its temporary direct `tool_id` anchor is cleared. The same `peso_id` continues through the later approval lifecycle.
+
 When Tool-owned technical values are required, the query follows the actual owner Tool for each value:
 
 ```text
