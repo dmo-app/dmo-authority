@@ -1,61 +1,64 @@
 # Peso / Tool Technical Values Alignment
 
-**Status:** REQUIRED RECOVERY ALIGNMENT — DEPENDS ON TOOL TECHNICAL VALUES IMPLEMENTATION
+**Status:** REQUIRED RECOVERY ALIGNMENT
 
 **Type:** Controlo Create recovery alignment / regression prevention
 
 ## Purpose
 
-Ensure the recovered Peso implementation follows the current blueprint after Tool technical-value ownership was clarified.
+Ensure Peso consumes Tool-owned technical values through the real owner/context relations and preserves historical truth without duplicating ownership.
 
-The older application backup does not contain the canonical Tool technical-values structure, so this work must be coordinated with:
+## Peso identity and production association
 
-- `TOOL_TECHNICAL_VALUES_IMPLEMENTATION.md`;
-- `modules/controlo-create/PESO.md`;
-- `modules/ferramentas/VALORES_TECNICOS.md`.
+Peso may begin before Job On with a temporary direct anchor to the canonical CM `tool_id`.
 
-## Required model
-
-Peso is normally anchored through the production `cm_id`.
-
-Tool-owned technical values are resolved through the real relation:
+When that CM Tool is explicitly selected in Job On:
 
 ```text
-cm_id
--> tool_id
--> tool_technical_values
+peso_id → cm_id → CM tool_id
+direct peso.tool_id = null
 ```
 
-Confirmed reusable Tool-owned values include:
+The same `peso_id` continues through the production and approval lifecycle. The Job On Tool selection itself is the association decision; no second association prompt is required.
 
-- `volume_marisa`;
-- `volume_puncao`;
-- `diametro_gargalo`.
-
-Missing Tool technical values must not be invented.
-
-## Recovery implication
-
-When restoring from the older backup, do not preserve an old input location merely because that is where an earlier implementation happened to obtain a value.
-
-Recovery must move toward the current ownership model:
+## Required technical-value paths
 
 ```text
-stable reusable Tool fact
--> Tool technical values
+volume_puncao:
+peso_id → cm_id → CM tool_id → tool_technical_values.volume_puncao
 
-production-specific fact
--> owning production/context record
+volume_marisa:
+peso_id → jobon_id → bq_id → BQ tool_id → tool_technical_values.volume_marisa
 
-Peso measurement/result
--> Peso
+peso_nominal:
+peso_id → cm_id → CM tool_id → tool_technical_values.peso_nominal
 ```
 
-Any old data migration must preserve historical truth. It must not silently rewrite a historical Peso with today's Tool value if the value consumed at the time must remain historically frozen.
+The CM manufacturing process is resolved separately from the CM Tool:
+
+```text
+peso_id → cm_id → CM tool_id → Tool.process
+```
+
+Supported process values are `NNPB` and `PS`.
+
+## Missing Tool values
+
+Missing Tool technical values must not be invented or privately re-entered inside Peso.
+
+When calculation needs a missing value:
+
+```text
+backend identifies missing owner field
+→ UI tells user which Tool value is missing
+→ user completes it in Ferramentas
+→ Peso re-reads the Tool
+→ calculation continues
+```
+
+The Tool remains valid while the optional technical value is absent.
 
 ## Measurement/calculation distinction
-
-Physical measurement and technical calculation are separate concepts.
 
 Physical weighing uses:
 
@@ -65,29 +68,34 @@ CM + TP
 
 TP/Calote belongs to the Job On production context.
 
-The later technical calculation uses the applicable drawing/Tool technical values according to the Peso blueprint.
+The later main calculation uses:
 
-TP does not become a Tool-owned technical value merely because Peso consumes it.
+```text
+capacity = water weight / water density
+glass weight = (capacity + volume_marisa - volume_puncao) * glass density
+```
+
+TP does not become a term in this main formula.
 
 ## Historical stability
 
-Planning/Architect must classify each consumed input as either:
+Canonical ownership stays with Tool/Job On as applicable. Where reproducing a completed Peso requires the exact consumed input, Peso may freeze that consumed value as historical evidence.
 
-- current stable owner fact that can be resolved through its real relation; or
-- historically consumed/frozen fact that must remain attached to the Peso record to preserve what was actually used.
+Do not:
 
-Do not duplicate stable Tool facts into Peso merely for convenience.
-
-Do not overwrite truthful historical Peso inputs during recovery.
+- create a second editable owner for stable Tool facts;
+- overwrite historical consumed values with later Tool edits;
+- resolve `volume_marisa` from the CM Tool;
+- move TP/Calote into Tool technical values.
 
 ## Reviewer checks
 
 Reject an implementation that:
 
-- manually re-enters Tool technical values in Peso when they belong to the Tool;
-- moves TP/Calote ownership into Tool technical values;
-- invents missing technical values;
-- merges physical weighing and the later technical formula into one misleading concept;
-- duplicates owner facts without a historical-stability reason;
-- overwrites historical consumed values with current Tool values during recovery;
-- keeps an obsolete backup ownership model merely because it is easier to migrate.
+- manually re-enters Tool technical values in Peso;
+- keeps a direct `tool_id` on Peso after association to `cm_id`;
+- creates a second Peso during approval;
+- invents a missing technical value;
+- obtains `volume_marisa` from CM instead of BQ;
+- treats TP as part of the main Peso formula;
+- rewrites historical consumed values from current Tool data.
