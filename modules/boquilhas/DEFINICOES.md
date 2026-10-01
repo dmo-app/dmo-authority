@@ -14,30 +14,26 @@ Conceptually:
 
 ```text
 future Job On
--> may already exist as planning information
--> does not change Boquilhas operational context
+→ may already exist as planning information
+→ does not change Boquilhas operational context
 
 Boquilhas production-activation time arrives
--> Boquilhas reads Job On
--> resolves the applicable production/BQ context
--> machine card switches to that context
+→ Boquilhas reads Job On
+→ resolves the applicable production/BQ context
+→ machine card switches to that context
 ```
 
-This is a Boquilhas setting, not a global application time. Its administrative editing surface is `Admin → App Definições → Boquilhas`.
+This is a Boquilhas setting, not a global application time.
 
-It must not be interpreted as the time when every other module changes production.
+It does **not** delay awareness of a change inside the same operational `jobon_id`. If the BQ context of the production Boquilhas is already using changes, Boquilhas receives that context-change awareness immediately and revalidates Job On.
 
-It also does **not** delay awareness of a change inside the same `jobon_id`. If the BQ context of the production Boquilhas is already using changes, Boquilhas receives that context-change awareness immediately and revalidates the Job On without waiting for the next scheduled production-activation time.
-
-Changing the configured activation time affects how Boquilhas handles planned production transitions. It must not rewrite historical movements or reassign records that already belong to an earlier production context.
+Changing the configured activation time must not rewrite historical movements or reassign records that already belong to an earlier production context.
 
 ## Repairers
 
-The module maintains the repairer register used when recording applicable repair movements.
+The repairer register belongs to Boquilhas Definições.
 
-## Machine assignments
-
-Repairer assignment is configured independently for the production machines:
+For the current Beta, repair routing is configured by production machine:
 
 - B1;
 - B2;
@@ -46,14 +42,28 @@ Repairer assignment is configured independently for the production machines:
 - C2;
 - C3.
 
-Machines are not grouped for this assignment rule.
+Each machine resolves its current BQ repairer from this configuration.
 
-A machine may have no current assignment ("Sem associação").
+The movement workflow does **not** ask the operator to choose a repairer from a list.
+
+Conceptually:
+
+```text
+BQ tool_id
+→ associated machine
+→ Boquilhas Definições
+→ configured repairer for that machine
+→ Saída stores the repairer actually resolved
+```
+
+If a BQ is already in production, the current production context confirms the machine. If it is still pre-production, it may have no current production machine, but its Tool already carries the associated machine used for this repair routing.
+
+The BQ Tool does not own or duplicate the repairer configuration.
 
 ## Historical rule
 
-Changing a current machine→repairer assignment must not rewrite historical movements.
+A movement stores the repairer that was actually resolved for that Saída.
 
-When a movement requires a repairer, the selected/resolved repairer used for that movement is preserved with the movement facts required by the implementation.
+Changing a later machine→repairer configuration must not rewrite historical movements.
 
-Definições provides configuration to the workflow; it is not a replacement identity or history store.
+Definições is current configuration; movement history preserves the repairer that applied when the real movement occurred.
