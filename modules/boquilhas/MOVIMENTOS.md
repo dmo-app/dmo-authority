@@ -58,14 +58,7 @@ observed Saída = 17
 
 The movement is accepted and recorded in full.
 
-Conceptually:
-
-```text
-15 = explainable/normal outgoing quantity
-2  = exceptional outgoing quantity
-```
-
-The exceptional outgoing portion remains visible as an operational exception. It does not change the fixed Tool quantity.
+In this example, the recorded Saída exceeds the currently derived in-house quantity by 2. That fact does not change the fixed Tool quantity.
 
 A Saída does **not** create the Entrada discrepancy/Saldo described below.
 
@@ -140,7 +133,7 @@ A later normal movement does not automatically cancel an earlier Entrada discrep
 
 ```text
 trace_discrepancy
-= sum(active Entrada movement discrepancies in the trace)
+= sum(all movement discrepancies in this trace)
 ```
 
 Example:
@@ -216,13 +209,11 @@ correct latest Entrada to 5
 → Saldo becomes blank
 ```
 
-The same `movement_id` may remain the corrected movement identity where the implementation uses in-place business correction, while audit preserves the before/after fact.
-
 ### Audit
 
 Correction/removal must remain auditable.
 
-Audit history may preserve that an earlier value or removed movement once existed, while the active operational projection is recalculated from the remaining/corrected movement sequence.
+The exact technical representation of that audit, including how a correction/removal is persisted, is an implementation decision. The functional rule here is only that older movements cannot be corrected while later movements remain after them.
 
 ## 10. Explicitly forbidden interpretations
 
