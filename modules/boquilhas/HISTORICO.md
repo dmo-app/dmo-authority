@@ -10,7 +10,7 @@ Its movements remain grouped under that trace before and after association to pr
 
 A pre-production trace keeps the same identity when later associated to its `bq_id`. A later machine/production change must not move those historical movements onto the new production trace.
 
-`bq_id` identifies the BQ-in-production context and has one production trace. The canonical `tool_id` may repeat across productions, while each production receives a different `bq_id` and trace. Therefore the same canonical BQ Tool may have many historical traces over time. The allowed number of simultaneous pre-production traces whose `bq_id` is still unresolved for the same `tool_id` is **not yet decided**. History must not impose or imply a one-pending-trace rule.
+`bq_id` identifies the BQ-in-production context and has one production trace. The canonical `tool_id` may repeat across productions, while each production receives a different `bq_id` and trace. Therefore the same canonical BQ Tool may have many historical traces over time. At any one time, however, a BQ `tool_id` may have at most one unresolved pre-production trace. When that trace associates to `bq_id`, its direct `tool_id` anchor is cleared and the Tool remains reachable through `bq_id → tool_id`.
 
 ## Movement history
 
@@ -30,10 +30,20 @@ The accumulated discrepancy for a repair trace is derived from the movement disc
 
 Broader BQ history may compose several traces, but one trace's discrepancy is never silently transferred into another.
 
-## Editing
+## Correction/removal history
 
-Where explicit movement editing is allowed, it must remain auditable.
+Only the latest movement of a trace may be directly corrected or removed.
 
-Editing must not be used as an automatic reconciliation mechanism.
+To correct an older movement, later movements must first be removed from newest to oldest until the target becomes the latest movement.
 
-The exact permitted edit boundary follows the movement rules in `MOVIMENTOS.md` and the implemented audit behavior.
+Corrections and removals remain auditable. Audit preserves the before/after or removal fact even though the active operational projection is recalculated from the corrected remaining sequence.
+
+An explicit correction of the affected movement is different from automatic reconciliation: later ordinary movements must never silently erase an earlier discrepancy.
+
+## Beta consultation boundary
+
+Boquilhas Histórico is module-local in the current Beta.
+
+A User with the BQ module assigned may consult the Boquilhas history directly in the module.
+
+No Boquilhas PDF/email artifact is required, and Job On does not duplicate the BQ repair-trace history as another Beta consultation surface.
