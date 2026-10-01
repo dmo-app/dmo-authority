@@ -28,7 +28,27 @@ new lot
 
 A lot change is never an in-place update of an existing Tool identity.
 
-Reference, compatible machines/lines, lot and other visible Tool facts help a person find and distinguish candidates, but they do not form a derived Tool identity key.
+Reference, compatible machines/lines, lot, quantity and other visible Tool facts help a person find and distinguish candidates, but they do not form a derived Tool identity key.
+
+## Tool quantity
+
+A Tool record also carries the quantity of physical tools represented by that Tool/lot.
+
+Example:
+
+```text
+Tool type = BQ
+lot = 4
+quantity = 120
+```
+
+This means that the canonical BQ Tool for lot 4 represents an accounted quantity of 120 physical BQ tools.
+
+`quantity` is Tool-owned master data stored with the canonical `tool_id`. It is an attribute of the Tool, not a second identity and not one `tool_id` per physical piece.
+
+For BQ Tools, the Boquilhas module consumes this quantity as the accounted lot total used together with repair movements to derive operational values such as quantity in house and quantity out for repair. Boquilhas does not become the owner of the Tool quantity merely because it consumes it.
+
+Repair movements must not silently increase the Tool quantity when an unexplained Entrada is observed; the discrepancy rules remain owned by Boquilhas.
 
 For CM Tools, an exceptional compatibility case may be recorded through one or more optional MF-reference associations. These associations exist only to help candidate discovery when the CM's real reference differs from the relevant MF/production reference.
 
@@ -71,6 +91,8 @@ The relevant filtering dimensions include:
 - lot;
 - compatible machines/lines;
 - process.
+
+The registry/detail view exposes the Tool quantity as Tool-owned data.
 
 The current Tool process values are:
 
@@ -130,7 +152,7 @@ The dedicated contract is in [VALORES_TECNICOS.md](./VALORES_TECNICOS.md).
 
 ## Ownership boundary
 
-Ferramentas owns canonical Tool identity and Tool-owned reusable facts.
+Ferramentas owns canonical Tool identity and Tool-owned reusable facts, including the Tool quantity.
 
 It does not absorb:
 
