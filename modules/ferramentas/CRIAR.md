@@ -27,6 +27,7 @@ The creation flow captures the Tool facts already defined by the Ferramentas reg
 - lot;
 - quantity of physical tools represented by that Tool/lot;
 - compatible machines/lines;
+- fixed lot quantity where applicable;
 - process;
 - state;
 - optional CM → MF-reference association where applicable.
@@ -56,7 +57,16 @@ The selected process is persisted on the canonical CM Tool and can later be used
 
 The process does not determine or derive `tool_id`.
 
+For **BQ Tools** in the current Beta:
+
+- the Tool/lote has one associated production machine/line;
+- the Tool/lote has a fixed quantity entered manually on the Tool record;
+- that quantity is a Tool fact and is not recalculated by Boquilhas repair movements;
+- repairer ownership does not move into Ferramentas: Boquilhas resolves the repairer from the Tool's associated machine through Boquilhas Definições.
+
 Specialized `tool_technical_values` remain the optional Tool-owned extension defined in `VALORES_TECNICOS.md`; their existence must not make the normal registry table heavy.
+
+Technical values are **not mandatory for Tool creation**. They may be entered at creation when known or completed/edited later on the same `tool_id`. A missing technical value does not invalidate the Tool.
 
 ## Beta access
 
