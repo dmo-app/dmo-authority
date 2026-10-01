@@ -53,7 +53,7 @@ BQ tool_id
 → associated machine
 → Boquilhas Definições
 → configured repairer for that machine
-→ Saída stores the repairer actually resolved
+→ Saída uses that repairer automatically
 ```
 
 If a BQ is already in production, the current production context confirms the machine. If it is still pre-production, it may have no current production machine, but its Tool already carries the associated machine used for this repair routing.
@@ -62,8 +62,8 @@ The BQ Tool does not own or duplicate the repairer configuration.
 
 ## Historical rule
 
-A movement stores the repairer that was actually resolved for that Saída.
-
 Changing a later machine→repairer configuration must not rewrite historical movements.
 
-Definições is current configuration; movement history preserves the repairer that applied when the real movement occurred.
+The repairer resolved for a movement remains part of that movement's historical truth. The exact persistence representation is an implementation decision.
+
+Definições is current configuration; it must not retroactively change which repairer applied to an earlier real movement.
