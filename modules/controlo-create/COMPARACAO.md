@@ -4,90 +4,89 @@ Comparação belongs entirely to Controlo Create.
 
 There is no separate Comparação approval workflow.
 
-## Purpose
+## Purpose and eligibility
 
-Comparação is an optional workflow performed against an already decided Peso.
+Comparação exists when a problem or doubt about the current production Peso needs to be checked again against the CM that is actually producing.
 
-It allows one or more CM subjects from the same production context to be re-measured during production in order to verify consistency or investigate a deviation.
+It may be started **only from an approved Peso**:
 
-Comparação complements the original Peso. It does not replace, revise or rewrite it.
+```text
+peso.status = aprovado
+→ eligible for Comparação
 
-This workflow is distinct from the **historical difference shown in the normal Peso flow**. The normal Peso historical difference lets the user explicitly select an eligible historical Peso for display/support; it does not create a `comparacao_id` and is not this workflow.
+peso.status = por_aprovar / nao_aprovado
+→ not eligible
+```
+
+This is not a second approval of the Peso.
+
+The operator performs a new confirmation measurement against the current CM context and decides whether that CM can remain in use.
 
 ## Flow
 
-1. Start a Comparação against an existing decided `peso_id`.
+1. Start from an existing approved `peso_id`.
 2. Allocate a new `comparacao_id`.
-3. Add one or more CM subjects by reusing their existing production `cm_id` values.
-4. Record the required comparison measurements using the applicable facts already established by the referenced Peso/context.
-5. Decide each measured CM explicitly:
+3. Reuse the production `cm_id` already associated with that Peso.
+4. Record the new confirmation measurement(s) required by the real situation.
+5. Decide explicitly:
    - `Manter`;
    - `Colocar de parte`.
-6. Confirm the Comparação when every measured CM subject has a final decision.
+6. Confirm the Comparação.
 
 `Colocar de parte` requires a non-empty justification.
 
-The application must not infer either decision from warnings, measurements or calculated results.
-
-Calculated comparison results may legitimately be negative. A negative derived result is a valid signed result and must not be clamped, converted to zero, or treated as invalid merely because of its sign.
+Warnings or calculated results may inform the person but must not silently choose the decision.
 
 ## Identity and relations
 
 - Comparação has its own `comparacao_id`.
-- It references one existing `peso_id`.
-- It reuses existing `cm_id` values; it does not create new CM identities.
-- A Comparação may contain one or several CM subjects.
-- The subject inside one Comparação is identified by the pair `(comparacao_id, cm_id)`.
-- Multiple Comparação events may exist for the same Peso.
-- Multiple events may legitimately include the same `cm_id`.
+- It references one existing approved `peso_id`.
+- It reuses that Peso's production `cm_id`; it does not create another CM production-context identity.
+- Physical CM number/position labels used inside comparison measurements are operational measurement data, not new `cm_id` or `tool_id` identities.
+- Multiple Comparação events may exist for the same `peso_id`.
+- A later problem creates another `comparacao_id`; it does not reopen or overwrite the previous confirmed event.
 
 Comparação does not create a `previous_peso_id` relation. It is not a comparison between two Peso records.
 
-## Measurement boundary
+## Decision boundary
 
-Comparison measurements belong to the Comparação event.
+The decision is about the CM being checked:
 
-They must remain distinguishable from the measurement rows of the original Peso.
+```text
+confirmation good
+→ Manter
 
-Where the comparison needs conditions or technical values already frozen/established by the referenced Peso, it reuses those truthful facts rather than inventing new conditions.
+confirmation not good
+→ Colocar de parte
+```
 
-The original Peso remains unchanged.
+Comparação does **not** change the original Peso approval status.
 
-## Per-CM decisions
+It does not approve, reject or reopen the original Peso and does not rewrite the Peso's measurements, averages, frozen inputs or generated outputs.
 
-Each measured CM subject receives its own explicit decision.
+## Corrections and history
 
-Within one Comparação event:
+While the Comparação is still being filled in, the user may correct the current input before confirming it.
 
-- a measured CM must have a final decision before the event can be confirmed;
-- `Manter` requires no justification;
-- `Colocar de parte` requires a non-empty justification;
-- the same CM subject must not receive a second conflicting final decision inside that event.
+Once confirmed, the event is historical. It is not reopened for a later operational issue.
 
-Confirmation records the completion of the event after all measured subjects are decided.
+If another check is required later:
+
+```text
+same approved peso_id
+→ new comparacao_id
+→ new confirmation event
+```
+
+This preserves each verification independently.
 
 ## What Comparação does not do
 
-Comparação does not modify the original Peso.
+Comparação does not:
 
-It does not rewrite the Peso's:
-
-- measurements;
-- calculated results;
-- averages;
-- status;
-- approval decision;
-- frozen facts;
-- generated/derived outputs.
-
-It does not create new CM identities and does not require every CM in the production to participate.
-
-One or several CMs may be compared according to the real operational need.
-
-## History
-
-Each Comparação event has its own `comparacao_id`.
-
-History accumulates by creating additional events rather than overwriting earlier ones.
-
-This allows the same Peso and the same `cm_id` to participate in more than one Comparação over time while preserving each event independently.
+- replace or revise the original Peso;
+- create another approval lifecycle;
+- create new Tool or production-context identities;
+- require every physical CM position to participate;
+- silently infer `Manter` or `Colocar de parte`;
+- overwrite a previously confirmed Comparação event.
