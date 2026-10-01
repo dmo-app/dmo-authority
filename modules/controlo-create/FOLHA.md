@@ -75,7 +75,6 @@ Each applicable piece may carry:
 
 - OK/NOK;
 - observation;
-- MCaliper link where applicable.
 
 NOK does not automatically stop production.
 
