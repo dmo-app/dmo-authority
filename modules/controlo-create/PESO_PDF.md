@@ -48,7 +48,6 @@ CM-specific facts stay grouped with the CM. Lot must not be displayed as a gener
 | Referência CM | selected CM Tool/context | peso_id → cm_id → tool_id |
 | Lote | selected canonical CM Tool / preserved CM production context where historical truth requires it | cm_id → tool_id |
 | Estado | selected CM Tool/context state | cm_id → tool_id / preserved production context |
-| % de uso | production-specific CM usage percentage entered manually in Job On from SAP | peso_id → Job On / CM production context |
 
 Normal display uses the raw lot value:
 
@@ -63,8 +62,6 @@ Lote: L8
 ~~~
 
 The L prefix is only a filename-formatting convention when a filename explicitly requires a lot token. It is not part of the lot domain value.
-
-The CM usage percentage is entered manually in Job On from SAP and persisted as part of that production/CM context. Peso and the PDF consume that saved production value. The frontend/PDF renderer must not calculate it, infer it from Tool history, or ask for a second independent value.
 
 ## Top technical-reference block
 
@@ -214,7 +211,6 @@ READ Peso PDF by peso_id
 → validate peso_id and approved state
 → resolve current Job On / Controlo / CM context
 → resolve CM Tool facts
-→ resolve Job On production-specific CM % de uso
 → resolve only required Tool technical values
 → resolve frozen Peso calculation inputs/results
 → resolve explicitly selected historical peso_id and comparison results
