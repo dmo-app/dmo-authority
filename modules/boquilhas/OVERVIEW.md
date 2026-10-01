@@ -31,7 +31,9 @@ quantity = 120
 
 The value `120` is the accounted lot total for that canonical BQ Tool. Boquilhas uses it together with movement facts to derive operational quantities such as quantity in house and quantity out for repair.
 
-Boquilhas does not own or duplicate this Tool master quantity. Repair movements do not silently increase it when unexplained physical returns are observed; those exceptional observations follow the discrepancy rules in `MOVIMENTOS.md`.
+Boquilhas does not own or duplicate this Tool master quantity. Repair movements do not silently increase it when unexplained physical returns are observed; those exceptional observations follow the movement rules in `MOVIMENTOS.md`.
+
+For BQ in the current Beta, the Tool/lote also has one associated machine/line. A pre-production BQ may have no current production machine, but its Tool-associated machine still exists and is used by Boquilhas Definições to resolve the repairer automatically.
 
 `bq_repair_trace_id` identifies the movement trace for that BQ production context. It is not created per repair trip. Several cycles may exist inside the same trace:
 
@@ -49,51 +51,45 @@ A new production creates a new `bq_id` and a new trace, even if both the previou
 
 ## Pre-production trace
 
-A repair movement may need to be recorded before the relevant Job On exists.
+A repair movement may be recorded before the relevant Job On exists.
 
 In that case:
 
 ```text
 tool_id
-→ bq_repair_trace_id
+→ one unresolved bq_repair_trace_id
 → movements
 
 bq_id = null
 ```
 
-The trace keeps that identity.
+For one BQ `tool_id`, **only one unresolved pre-production trace may exist at a time**.
 
-The same `tool_id` may accumulate many traces historically because each production has its own `bq_id` and trace.
+While that trace still carries the direct `tool_id`, every later Boquilhas movement for that Tool continues in the same trace. A second unresolved trace for the same `tool_id` is not created.
 
-The allowed number of simultaneous pre-production traces with `bq_id = null` for the same `tool_id` is **not yet decided**.
-
-There is no trace `open` / `closed` lifecycle. The relevant distinction is only:
+When the BQ Tool is explicitly selected in Job On:
 
 ```text
-pre-production trace
-→ bq_id = null
-
-associated production trace
-→ bq_id = <production_bq_id>
+selected BQ tool_id
+→ bq_id created/resolved
+→ same pending bq_repair_trace_id associates to bq_id
+→ direct trace.tool_id is cleared
+→ existing movements remain on the same trace
 ```
 
-When Job On later creates a `bq_id` that references the same canonical `tool_id`, the same pre-production trace is associated automatically **only when the intended match is unambiguous** under the current product rules:
+The explicit Tool selection is already the association intent. There is no second association confirmation.
+
+After association, the Tool remains reachable through:
 
 ```text
-pending trace.tool_id
-==
-new bq_id.tool_id
-
-+ unambiguous intended match
-
-→ same bq_repair_trace_id
-→ attach to bq_id
-→ preserve existing movements
+bq_repair_trace_id
+→ bq_id
+→ tool_id
 ```
 
-If more than one unresolved trace could legitimately exist and the intended match cannot be determined without a still-missing product rule, the implementation must not guess.
+Because the direct `tool_id` anchor is cleared after production association, a later future cycle may create a new pre-production trace for that same physical Tool. The Tool may therefore have many traces historically, but never multiple simultaneous unresolved pre-production traces.
 
-While `bq_id` remains unresolved, the UI exposes a persistent Job On association warning derived from the missing association.
+There is no trace `open` / `closed` lifecycle.
 
 If no pending trace exists when the production `bq_id` is created, that production uses a new trace. If a trace starts after the production `bq_id` already exists, it is associated immediately to that production context.
 
@@ -128,6 +124,14 @@ Movement types remain:
 The existing `boquilhas_id`-based persistence remains a valid implementation base and must be reconciled without discarding real operational history.
 
 Quantity-in-house, quantity-out and discrepancy are projections/derivations over the Tool quantity plus movement facts. Their detailed mathematics may be refined independently of this identity structure.
+
+## Beta access and consultation boundary
+
+A User with the BQ module assigned can access Boquilhas consultation.
+
+The Beta keeps Boquilhas operational history inside the Boquilhas module. Job On does not become a second surface for BQ repair movements/discrepancy.
+
+No Boquilhas PDF or email artifact is required in the current Beta.
 
 Detailed rules:
 
