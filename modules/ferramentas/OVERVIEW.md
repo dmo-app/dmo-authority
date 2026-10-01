@@ -148,6 +148,8 @@ That extension:
 
 A separate table does not imply a separate domain identity.
 
+Technical values are optional at Tool creation and may be completed or corrected later on the same Tool. If a consuming operation needs a missing value, the application identifies the missing Tool value, the user completes it in Ferramentas, and the operation re-reads the Tool before continuing. Consumers must not invent or independently re-enter missing Tool values.
+
 The dedicated contract is in [VALORES_TECNICOS.md](./VALORES_TECNICOS.md).
 
 ## Ownership boundary
