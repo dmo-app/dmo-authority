@@ -20,7 +20,24 @@ Changes must preserve the distinction between:
 
 Editing must not silently rewrite historical downstream facts.
 
-If a selected CM, MF or BQ Tool is replaced inside the same production:
+Tool replacement follows the operational-use boundary.
+
+### Planning-only replacement
+
+If the CM/MF/BQ context has not yet been operationally consumed, replacing the selected Tool may update that same component-context identity in place:
+
+```text
+jobon_id = unchanged
+context_id = unchanged
+old tool selection -> new tool selection
+no downstream operational history on that context
+```
+
+This is a planning edit, not a rewrite of operational history.
+
+### Replacement after operational use
+
+Once operational work has consumed the context, replacing the Tool creates a new context identity:
 
 ```text
 jobon_id = unchanged
@@ -31,29 +48,11 @@ jobon_id = unchanged
 
 The previous `cm_id`, `mf_id` or `bq_id` remains attached to the Tool it originally represented. It is never retargeted to the replacement `tool_id`.
 
-The replacement receives a new context identity so records that already reference the previous context remain historically truthful.
-
-A lot change is a common example of this rule because a different lot is a different canonical Tool:
-
-```text
-same jobon_id
-
-old cm_id
-→ tool_id A / lot 001
-
-operator selects Tool for lot 002
-
-new cm_id
-→ tool_id B / lot 002
-
-old cm_id remains historical
-```
-
-The implementation must not edit `tool_id A` so that lot 001 becomes lot 002, and it must not retarget the old `cm_id` to `tool_id B`.
+A lot change follows the same rule because another lot means another canonical Tool.
 
 ### Context-change awareness
 
-A relevant production-context edit also follows the lightweight awareness rule:
+A relevant **operational** production-context edit also follows the lightweight awareness rule. A planning-only edit to a future/not-yet-consumed context updates planning truth but does not create an urgent operational context-change ping merely because the plan changed:
 
 ```text
 change
