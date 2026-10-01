@@ -27,6 +27,6 @@ Shared Controlo context rules, including the planned `controlo_id` evolution whe
 
 Create-side workflows record measurements and operational facts.
 
-Approval/rejection/reopen actions that belong to the approval workflow live in Controlo Approve.
+Approval/rejection/reopen actions that belong to the approval workflow live in Controlo Approve. In the current Beta that approval lifecycle applies to submitted Peso records; Folha has no approval lifecycle.
 
 Comparação is an exception in the sense that its own per-CM operational decision belongs to the Comparação workflow itself and does not create a separate approval flow.
