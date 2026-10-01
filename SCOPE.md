@@ -10,10 +10,11 @@
 4. **Controlo**
    - **Resumo** — tab/function inside Controlo; the consolidated output is a product of Controlo, not the production-level node itself.
    - **Peso** — measurement, calculation and submission.
-   - **Comparação** — optional child workflow of an existing Peso.
+   - **Comparação** — optional child workflow of an existing **approved** Peso.
    - **Pegamentos** — in Beta scope; backend still not implemented.
+   - **Folha** — Controlo Create control/evaluation surface; it has no approval lifecycle of its own.
    - **Approve** — review and explicit human decision over submitted Peso records.
-5. **Boquilhas** — one `bq_repair_trace_id` per BQ production context (`bq_id`), many movements per trace, pre-JobOn trace creation from canonical `tool_id` where applicable, automatic later association when unambiguous, late-return continuity, derived quantities/discrepancy and module-local history.
+5. **Boquilhas** — one `bq_repair_trace_id` per BQ production context (`bq_id`), many movements per trace, at most one unresolved pre-JobOn trace per canonical BQ `tool_id`, automatic association when that Tool is selected into production, late-return continuity, derived quantities/discrepancy and module-local history. Boquilhas consultation stays inside the BQ module in the Beta; its movement history/discrepancy is not embedded into Job On as a second consultation surface.
 
 ## OUT OF SCOPE
 
@@ -22,3 +23,5 @@
 - **Tampões as an independent module.**
 - **Full Tool lifecycle** — verification/reset/deactivation workflows.
 - **HISTÓRICO GLOBAL** as a top-level aggregating destination. Module-local Histórico remains in scope where its owning module requires it.
+- **MCaliper** — control-template integration, links and related workflow are outside the current Beta.
+- **Boquilhas PDF/email artifacts** — Boquilhas is consulted directly by Users who have the BQ module assigned; no BQ PDF or email workflow is required in the Beta.
