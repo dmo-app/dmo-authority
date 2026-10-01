@@ -1,12 +1,12 @@
 # Boquilhas Repair Trace Implementation
 
-**Status:** CANONICAL MODEL DEFINED — IMPLEMENTATION RECONCILIATION REQUIRED
+**Status:** CANONICAL MODEL CLOSED — IMPLEMENTATION RECONCILIATION REQUIRED
 
 **Type:** Boquilhas persistence / migration / workflow implementation
 
 ## Purpose
 
-Bring the existing Boquilhas implementation into line with the current canonical repair-trace model without losing real operational history.
+Bring the Boquilhas implementation into line with the canonical repair-trace model without losing real operational history.
 
 The existing `boquilhas_id`-based register/movement persistence is a valid implementation base. It must be adapted, not discarded merely to rename or normalize schema.
 
@@ -14,96 +14,115 @@ The existing `boquilhas_id`-based register/movement persistence is a valid imple
 
 ```text
 tool_id
-= canonical physical BQ Tool
+= canonical physical BQ Tool/lote
 
 jobon_id
--> bq_id
--> one bq_repair_trace_id
--> many movement_id
+→ bq_id
+→ one bq_repair_trace_id
+→ many movement_id
 ```
 
-A `bq_id` identifies that BQ Tool in one production context.
+A `bq_repair_trace_id` is one movement trace for one BQ production context, not one repair trip.
 
-A `bq_repair_trace_id` identifies the single movement trace for that BQ production context.
+## Pre-production trace cardinality
 
-The trace is **not** created per repair trip. Several cycles belong to the same trace:
-
-```text
-trace
--> saida
--> entrada
--> saida
--> entrada_sem_reparacao
--> ...
-```
-
-A new production/BQ context receives a new trace even when the same canonical `tool_id` is reused.
-
-## Pre-production trace
-
-A trace may begin before the relevant Job On exists.
+A trace may begin before Job On:
 
 ```text
 tool_id
--> bq_repair_trace_id
--> movements
+→ one unresolved bq_repair_trace_id
+→ movements
 
-bq_id = unresolved
+bq_id = null
 ```
 
-When Job On later creates the matching `bq_id` that references the same canonical `tool_id`, the **same trace** is associated when the match is unambiguous.
+For one BQ `tool_id`, the backend must enforce **at most one unresolved pre-production trace at a time**.
 
-Existing movements are preserved. The trace is not recreated and its history is not reset.
+If an unresolved trace already exists, a new movement for that Tool reuses it rather than creating another unresolved trace.
 
-While `bq_id` is unresolved, the UI must expose the missing Job On association condition.
+## Association to production
 
-## Late returns
+When the operator explicitly selects the BQ Tool in Job On and the matching `bq_id` is created/resolved:
 
-A later production never takes ownership of an earlier trace.
+```text
+pending trace.tool_id = selected bq_id.tool_id
+→ keep same bq_repair_trace_id
+→ set bq_id
+→ clear direct trace.tool_id
+→ preserve all movements
+```
 
-Movements that belong to the earlier production remain on that earlier trace even after a new production begins.
+The Tool selection in Job On is already the association decision. No second association command/confirmation is required.
 
-## Movement/discrepancy behavior
+After association, the Tool is resolved through:
 
-Implementation must also preserve the current Boquilhas movement rules in:
+```text
+trace → bq_id → tool_id
+```
+
+Clearing the temporary direct `tool_id` makes it possible for a future unresolved trace for the same physical Tool to be created later.
+
+## Production trace lifecycle
+
+There is no separate trace open/closed state.
+
+A new production/BQ context receives a new trace even if it uses the same physical Tool.
+
+Late returns stay on the earlier trace where their repair activity originated.
+
+## Tool quantity
+
+The fixed BQ lot quantity is owned by the canonical Tool in Ferramentas.
+
+Boquilhas reads that quantity as its accounted base.
+
+Repair movements and exceptional movements must not mutate the Tool quantity.
+
+## Movement rules
+
+Implementation must follow:
 
 - `modules/boquilhas/MOVIMENTOS.md`;
 - `modules/boquilhas/REGISTO.md`;
-- `modules/boquilhas/HISTORICO.md`.
+- `modules/boquilhas/HISTORICO.md`;
+- `modules/boquilhas/DEFINICOES.md`.
 
-Do not collapse the repair trace into a flat lifetime movement list directly on `bq_id`.
+Key current rules include:
 
-## Open product decision that must remain open
+- exceptional Saída is accepted and recorded rather than hard-blocked;
+- Entrada excess produces the per-movement discrepancy/Saldo;
+- `entrada_sem_reparacao` is a return-without-repair movement, not a discrepancy classification;
+- only the latest movement may be directly corrected/removed;
+- correcting an older movement requires removing every later movement newest-first;
+- corrections/removals remain auditable.
 
-The current blueprint intentionally leaves one cardinality question unresolved:
+## Repairer resolution
 
-> May the same canonical BQ `tool_id` have more than one simultaneous pending `bq_repair_trace_id` with `bq_id = null`?
+A Saída does not accept an arbitrary repairer choice from the operator.
 
-The implementation must not silently decide unresolved-trace cardinality from an existing/provisional database index or implementation convenience.
+The backend resolves:
 
-Automatic association is canonical only when the intended pending match is unambiguous. If it is not unambiguous, implementation of that ambiguous case is blocked pending an explicit product decision.
+```text
+BQ tool_id
+→ Tool-associated machine
+→ Boquilhas Definições machine→repairer
+→ movement.repairer snapshot/reference
+```
 
-## Implementation work
-
-Planning/Architect must inspect the current Boquilhas schema and services and define a migration/reconciliation path that:
-
-- preserves existing real register and movement history;
-- introduces or reconciles canonical `bq_repair_trace_id`;
-- makes movements belong to the trace;
-- keeps one trace for all movement cycles of one BQ production context;
-- supports a trace that starts from `tool_id` before Job On;
-- later attaches that same trace to the matching `bq_id`;
-- preserves late returns on the original trace;
-- does not mutate historical production contexts.
+Historical movements retain the repairer that was resolved when the movement occurred.
 
 ## Reviewer checks
 
 Reject an implementation that:
 
-- creates a new trace for every `saida`;
-- treats `bq_id` as the canonical physical BQ identity;
-- changes the `tool_id` underneath an existing `bq_id`;
-- recreates a pre-production trace when Job On appears;
-- moves old movements to the current production;
-- destroys valid existing operational history during migration;
-- chooses a rule for multiple simultaneous pending traces without resolving the open product decision.
+- creates a new trace for every Saída;
+- permits multiple simultaneous unresolved traces for the same BQ `tool_id`;
+- asks for a redundant trace-association confirmation after the BQ Tool was selected in Job On;
+- keeps the temporary direct `tool_id` on a trace after it has associated to `bq_id`;
+- recreates or resets the trace when Job On appears;
+- moves late movements to the current production;
+- mutates the fixed Tool quantity because of repair movements;
+- hard-blocks a physically observed exceptional Saída/Entrada merely to make arithmetic tidy;
+- applies Entrada discrepancy semantics to `entrada_sem_reparacao`;
+- allows an older movement to be edited while later movements remain active;
+- lets a later repairer-setting change rewrite historical movement attribution.
