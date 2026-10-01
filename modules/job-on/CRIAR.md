@@ -14,7 +14,6 @@ It records:
 - production start date;
 - the selected CM, MF and BQ Tools and their production contexts;
 - TP/Tampão/Calote;
-- CM usage percentage (% de uso), entered manually from SAP for this production;
 - only other production values that are strictly required by current Beta Peso or Boquilhas flows.
 
 It does not expand into final-application configuration merely because other piece families or future modules may exist elsewhere.
@@ -72,8 +71,7 @@ The reference may therefore help find candidates, but it never determines `tool_
    - create the production's `controlo_id` and associate it immediately with this `jobon_id`.
 
 4. Record the production-specific values required by the current Beta workflows:
-   - TP/Tampão/Calote;
-   - CM usage percentage (% de uso), entered manually from SAP for this Job On/CM production context.
+   - TP/Tampão/Calote.
 
 5. Persist the Job On:
    - the new `jobon_id` becomes discoverable immediately in the Job On planning calendar for its planned production date/machine;
@@ -97,24 +95,6 @@ This does not make TP/Calote part of the main Peso formula that produces the val
 This also does not transfer ownership of TP/Calote to Peso and does not require duplicating the production TP/Calote into `controlo_id`.
 
 No canonical physical `tampao_id` is introduced by this rule. The physical piece may be reused across different references/lots, but DMO currently preserves the production value needed by the workflow rather than inventing a separate Tool identity for Tampão.
-
-## CM usage percentage from SAP
-
-CM usage percentage (`% de uso`) is a production-specific value captured in Job On.
-
-The operator reads the applicable percentage from SAP and enters it manually while preparing the Job On.
-
-```text
-SAP
-→ operator reads % de uso
-→ manual entry in Job On
-→ stored with the Job On / CM production context
-→ Controlo/Peso reads it when needed
-```
-
-It is not calculated by DMO, is not canonical Tool master data, and must not be written into Ferramentas merely because it describes the CM used in that production.
-
-A later Peso/PDF reads the persisted production value through the real Job On/CM context rather than asking the operator to enter it again.
 
 ## Ownership
 
