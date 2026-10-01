@@ -51,6 +51,8 @@ The implementation must provide:
 - lightweight awareness rather than a duplicated Job On snapshot;
 - an event-kind distinction equivalent to `PRODUCTION_TRANSITION` vs `CONTEXT_CHANGED`;
 - immediate planning/read availability of a successfully created future Job On;
+- planning-only Tool replacement may keep the same component-context ID while that context has not yet been operationally consumed;
+- after operational consumption, Tool replacement creates a new component-context ID and preserves the old one;
 - Controlo-specific future-`jobon_id` selection for Resumo/preparation;
 - no generic downstream production-transition event solely from Job On creation;
 - per-consumer pending/acknowledgement state where acknowledgement is used;
@@ -115,7 +117,8 @@ Reject an implementation that:
 - lets acknowledgement of a future production transition cancel or complete the scheduled activation;
 - trusts an old transition payload instead of re-reading Job On at activation time;
 - delays a same-`jobon_id` context change until a later scheduled activation time;
-- mutates an existing CM/MF/BQ context to point at a replacement Tool;
+- mutates an already operationally consumed CM/MF/BQ context to point at a replacement Tool;
+- creates a new context identity unnecessarily for a planning-only replacement before any operational record has consumed the context;
 - rewrites historical Peso, Boquilhas traces or other existing records onto the new context;
 - deletes the permanent same-Job-On change fact when awareness is acknowledged;
 - interprets acknowledgement as correction, recalculation, approval or resolution;
