@@ -72,59 +72,30 @@ Controlo receives no duplicated production snapshot. Its selection points to the
 
 This early preparation behavior is Controlo-specific. It must not be generalized so that Boquilhas or another operational module adopts a future Job On before its own real transition rule applies.
 
-## Shared state surfaces — Folha and Resumo
+## Shared read context — Resumo and Folha visibility
 
-Folha and Resumo are shared Controlo surfaces over the same production/control state.
+Resumo is a shared read/composition surface over the real production/control records.
 
-They are **not duplicated into separate Create and Approve copies**.
+Folha is a Controlo Create control/evaluation surface and has **no approval lifecycle**.
 
-The capability changes what the user may do; it does not create a second Folha, a second Resumo, or a second set of control facts.
+Controlo Approve may read the production/control context and the Resumo composition needed for an approvable workflow, but that visibility must not be interpreted as Folha approval.
 
 Conceptually:
 
 ```text
-same Controlo production/control state
-        │
-        ├── Controlo Create
-        │   ├── may create/edit the operational control facts it owns
-        │   ├── may edit/evaluate/submit Folha where applicable
-        │   └── sees Resumo composed from the current control state
-        │
-        └── Controlo Approve
-            ├── reads the same Folha/state
-            ├── reads the same Resumo/state
-            └── may write approval decisions/history only
+Controlo Create
+→ creates/edits operational facts
+→ owns Folha control/evaluation facts
+→ sees Resumo composition
+
+Controlo Approve
+→ reviews approvable records
+→ in the current Beta, approval decisions apply to submitted Peso records
+→ may read Resumo/context
+→ does not approve/reject/reopen Folha
 ```
 
-When Create changes an operational fact or edits Folha, the approval surface must read the updated state through the same underlying records/relations.
-
-There is no synchronization-by-copy step from Create to Approve.
-
-### Approve read-only boundary
-
-Controlo Approve must not edit the operational control content merely because it can see it.
-
-In particular, the approval capability must not modify the Create-owned measurements, Folha fields, observations, technical values or other operational facts while reviewing them.
-
-Approve may persist only the approval-side facts defined by the approval workflow, such as:
-
-- approve;
-- reject;
-- reopen where permitted;
-- required decision reason/context;
-- actor;
-- timestamp;
-- decision history.
-
-Those approval facts do not turn the approval surface into an editor of the underlying operational content.
-
-### Resumo is the same composition on both capabilities
-
-Resumo is one read/composition concept over the current Controlo state.
-
-Create and Approve may expose different controls around that read because their capabilities differ, but they must not derive two conflicting Resumo truths.
-
-A Create-side change that affects the composed control state must be visible when Approve reads Resumo.
+There is no copied Folha or copied Resumo created for approval.
 
 ## `controlo_id` — canonical Controlo production context
 
@@ -185,7 +156,7 @@ Resumo
 
 Controlo Create owns create-side operational actions such as measurement, editing and submission where the workflow uses submission.
 
-Controlo Approve owns review and approval-side decisions where the workflow is approvable.
+Controlo Approve owns review and approval-side decisions where the workflow is approvable. In the current Beta, the defined approval lifecycle is the submitted Peso lifecycle; Folha is not approvable.
 
 The same underlying record identity persists across both surfaces. Approval must not create a duplicate record simply because it occurs in another capability surface.
 
