@@ -26,7 +26,9 @@ Example:
 BQ · lot 4 · quantity 120
 ```
 
-For BQ Tools, Boquilhas consumes this quantity from Ferramentas when it needs the accounted lot total for its repair-movement projections.
+For BQ Tools, this quantity is fixed for the Tool/lote, entered manually on the Tool record, and consumed by Boquilhas as the accounted lot base. Boquilhas movements do not mutate it.
+
+In the current Beta, a BQ Tool/lote has one associated machine/line. That machine association is Tool data used by Boquilhas to resolve the configured repairer; it does not mean the BQ is currently in production on that machine.
 
 The user may filter the list by the applicable operational dimensions.
 
