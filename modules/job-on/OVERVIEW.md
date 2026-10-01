@@ -88,7 +88,11 @@ Controlo and other operational modules consume the production context establishe
 
 They must not silently reinterpret or replace the selected Tool identities.
 
-If an editable production context is replaced while the same `jobon_id` remains valid, Job On preserves the previous context identity, creates the applicable replacement context identity, permanently logs the change and exposes lightweight awareness to the consumers of that context.
+Tool replacement follows the operational-use boundary.
+
+Before the component context has been operationally consumed, a planning-only Tool replacement may keep the same `cm_id`, `mf_id` or `bq_id`.
+
+After operational use, replacing the Tool creates a new component-context identity, preserves the previous context for historical records, permanently logs the change and exposes lightweight awareness to the consumers of that operational context.
 
 The awareness mechanism does not decide what downstream work should be done. A module acknowledgement means only that the change was seen.
 
