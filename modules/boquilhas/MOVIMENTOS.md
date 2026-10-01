@@ -1,33 +1,77 @@
 # Boquilhas — Movimentos
 
-This file defines the movement discrepancy behavior of the Boquilhas module.
-
+This file defines the quantity, exceptional-movement, discrepancy and correction behavior of the Boquilhas module.
 
 ## Implementation boundary — one movement trace per BQ production context
-
-This rule evolves the Boquilhas movement behavior already implemented in the application.
-
-The existing `boquilhas_id`-based register/persistence is a valid implementation base and its real operational history must be preserved.
 
 The canonical movement boundary is `bq_repair_trace_id`.
 
 One `bq_id` / production context has one repair trace, and that trace groups all Boquilhas movement cycles for that production. A new `saida` does not create another trace.
 
-A trace may begin before Job On from the canonical BQ `tool_id`, with `bq_id` unresolved. The blueprint does **not yet decide** whether the same `tool_id` may have more than one simultaneous unresolved pre-production trace. No implementation may infer or enforce that cardinality from persistence convenience. The same Tool may have many traces historically because each associated production has its own `bq_id` and trace. When Job On later creates a matching `bq_id` referencing the same canonical `tool_id`, an existing pending trace is associated automatically only when the intended match is unambiguous under the product rules then in force. That association does not replace the trace, move its existing movements, or reset its history. No separate open/closed trace state is required.
+A trace may begin before Job On from the canonical BQ `tool_id`, with `bq_id = null`.
 
-Implementation should adapt/reconcile the existing register model rather than destroy valid data merely to rename persistence.
+For one `tool_id`, there is at most one unresolved pre-production trace at a time. Later movements for that Tool continue in the same trace.
 
-## 1. Operational truth has priority over mathematical reconciliation
+When the BQ Tool is explicitly selected in Job On, the same trace associates to the matching `bq_id`, keeps all movements, and clears its temporary direct `tool_id` anchor.
 
-Boquilhas must preserve what physically happened, including operational inconsistencies.
+The existing `boquilhas_id`-based register/persistence is a valid implementation base and its real operational history must be preserved.
 
-The system must **not** reject, clamp, invent, compensate or silently rewrite a real movement merely because the movement cannot be fully explained by the preceding history.
+## 1. Fixed Tool quantity is the lot base
 
-A mathematically tidy ledger is not more important than the observed physical event.
+The canonical BQ Tool/lote has a fixed quantity entered manually in Ferramentas.
 
-## 2. Matched quantity and unexplained quantity
+Example:
 
-For a return movement, the system first determines how much of the returned quantity can be explained by the quantity that was legitimately out of the lot in that trace.
+```text
+BQ Tool quantity = 20
+```
+
+Boquilhas consumes that value as the accounted lot base.
+
+Repair movements do **not** mutate the fixed Tool quantity.
+
+Exceptional movements record what physically happened; they do not silently make the Tool quantity larger or smaller.
+
+## 2. Operational truth has priority
+
+Boquilhas preserves the movement the operator actually observed, including quantities that do not fit the current calculated availability.
+
+The system must not reject, clamp, invent or silently rewrite a real movement merely to make the arithmetic tidy.
+
+This applies to both exceptional Saídas and exceptional Entradas.
+
+## 3. Saída
+
+A Saída records BQ sent to the repairer resolved automatically from Boquilhas Definições.
+
+A Saída may exceed the quantity currently derived as in-house.
+
+Example:
+
+```text
+Tool quantity = 20
+already out for repair = 5
+derived in-house = 15
+
+observed Saída = 17
+```
+
+The movement is accepted and recorded in full.
+
+Conceptually:
+
+```text
+15 = explainable/normal outgoing quantity
+2  = exceptional outgoing quantity
+```
+
+The exceptional outgoing portion remains visible as an operational exception. It does not change the fixed Tool quantity.
+
+A Saída does **not** create the Entrada discrepancy/Saldo described below.
+
+## 4. Entrada and discrepancy
+
+Discrepancy is specifically the quantity **too many on an Entrada** compared with the quantity that can legitimately return at that point in the trace.
 
 Example:
 
@@ -35,210 +79,163 @@ Example:
 Saída:   5
 Entrada: 7
 
-Matched:       5
-Discrepância: -2
+matched quantity = 5
+extra on Entrada = 2
+Saldo = -2
 ```
 
-The five matched BQ return to the normal flow.
+The full observed Entrada is recorded.
 
-The two additional BQ are physically observed, so the movement is recorded in full, but those two **must not increase the accounted total of the lot**. They are an unexplained operational discrepancy.
+Only the explainable/matched portion returns to the normal accounted flow.
 
-The system must never make the lot become 102 merely because 102 physical BQ were observed around a lot whose accounted total is 100.
+The extra observed quantity:
 
-## 3. Meaning of "Saldo" in the movement table
+- remains recorded as part of the real Entrada;
+- does not increase the fixed Tool quantity;
+- creates the movement discrepancy.
 
-The **Saldo** column is not stock, outstanding repair quantity, or a conventional running accounting balance.
+Conceptually:
 
-It is a **per-movement discrepancy indicator**.
+```text
+matched_quantity = explainable return portion
+unmatched_quantity = observed Entrada - matched_quantity
+movement_discrepancy = -unmatched_quantity
+```
 
-When a movement has no discrepancy:
+## 5. EntradaSemReparação
+
+`entrada_sem_reparacao` means BQ returned without having been repaired.
+
+It is a distinct movement meaning. It reduces the quantity that was out for repair according to the movement flow.
+
+It is **not itself a discrepancy concept**.
+
+Do not treat “sem reparação” as a reason to create the Entrada excess-discrepancy calculation. Its movement meaning and the discrepancy rule are separate concerns.
+
+## 6. Meaning of Saldo
+
+The **Saldo** column is a per-movement Entrada discrepancy indicator.
+
+It is not stock, quantity out for repair, or a conventional running accounting balance.
+
+Normal movement:
 
 ```text
 Saldo = blank
 ```
 
-The UI must not display `0`. An empty cell is intentional so that exceptional values attract immediate attention.
-
-When an Entrada contains quantity that cannot be explained by the trace history:
+Exceptional Entrada:
 
 ```text
-Saldo = -unmatched_quantity
+Saldo = -extra Entrada quantity
+```
+
+Do not display `0` for an ordinary movement.
+
+Saída exceptional quantity is not represented by this Entrada Saldo.
+
+## 7. Trace discrepancy
+
+A later normal movement does not automatically cancel an earlier Entrada discrepancy.
+
+```text
+trace_discrepancy
+= sum(active Entrada movement discrepancies in the trace)
 ```
 
 Example:
 
 ```text
-Movimento     Quantidade     Saldo
+Entrada discrepancy A = -2
+Entrada discrepancy B = -1
 
-Saída             5
-Entrada            5
-
-Saída             5
-Entrada            7          -2
+trace discrepancy = -3
 ```
 
-The visible negative value is an alert that this movement introduced BQ that cannot be counted inside the normal lot total.
+A later movement that happens to offset the arithmetic does not erase those facts.
 
-## 4. Discrepancies are historical facts, not debts to reconcile
+A deliberate correction/removal of the actual movement is different and follows the correction rules below.
 
-A discrepancy is never automatically cancelled, compensated or corrected by a later movement.
+## 8. Production scope
 
-If four movements produce:
+The discrepancy belongs to one `bq_repair_trace_id`.
+
+A pre-production trace may later associate to its `bq_id` without resetting the trace.
+
+A new BQ production context receives a new trace with its own derived discrepancy state.
+
+Previous movement facts remain on the previous trace.
+
+Late returns remain on the trace where the original repair activity occurred.
+
+## 9. Correction and removal order
+
+Movement calculations depend on the movement sequence.
+
+Therefore **only the latest movement in a trace may be directly corrected or removed**.
+
+To correct an older movement:
 
 ```text
--2
--1
--4
--1
+target old movement
+→ remove every later movement, newest first
+→ target becomes the latest movement
+→ correct target
+→ re-enter later real movements if they still need to exist
 ```
 
-the trace discrepancy is:
+Example:
 
 ```text
--8
+M1 Saída 5
+M2 Entrada 7  → Saldo -2
+M3 Saída 4
+M4 Entrada 4
+
+to correct M2:
+→ remove M4
+→ remove M3
+→ correct M2
 ```
 
-A later movement that happens to create the opposite numerical situation does **not** reduce that `-8`.
+This prevents a correction in the middle of the trace from silently changing the meaning of later movements that were recorded against the previous sequence.
 
-The discrepancy records that the exceptional event happened. It is not a temporary account waiting for another event to make it zero.
+### Correcting the latest Entrada
 
-Therefore:
+If the latest Entrada was entered incorrectly, correcting its quantity recalculates the discrepancy of that same movement against the preceding trace state.
+
+Example:
 
 ```text
-trace_discrepancy = sum(all movement discrepancies in this trace)
+latest Entrada originally = 7
+explainable return = 5
+Saldo = -2
+
+correct latest Entrada to 5
+→ movement discrepancy recalculated
+→ Saldo becomes blank
 ```
 
-where normal movements contribute no discrepancy and are visually blank in the Saldo column.
+The same `movement_id` may remain the corrected movement identity where the implementation uses in-place business correction, while audit preserves the before/after fact.
 
-## 5. Scope and reset
+### Audit
 
-The accumulated discrepancy belongs to one repair trace identified by `bq_repair_trace_id`.
+Correction/removal must remain auditable.
 
-It is scoped to the trace of one `bq_id` / production and is not a lifetime balance of the physical BQ `tool_id`.
+Audit history may preserve that an earlier value or removed movement once existed, while the active operational projection is recalculated from the remaining/corrected movement sequence.
 
-A repair trace may:
-
-```text
-begin from tool_id before Job On
-→ later associate to bq_id
-→ keep the same bq_repair_trace_id
-→ continue receiving later movements
-```
-
-Association to production does not reset the trace.
-
-A **new BQ production context** uses a new trace with:
-
-```text
-trace_discrepancy = 0
-```
-
-Previous traces retain their historical discrepancy unchanged.
-
-A new production has its own `bq_id` and trace. That change must never migrate old movements or discrepancies out of the previous trace.
-
-## 6. Required implementation behavior
-
-The backend must preserve two separate concepts:
-
-1. the normal accounted movement of BQ that can be explained by the trace; and
-2. the unexplained quantity observed on a movement.
-
-For an Entrada whose quantity exceeds the explainable return quantity:
-
-```text
-matched_quantity   = explainable portion
-unmatched_quantity = observed quantity - matched_quantity
-movement_discrepancy = -unmatched_quantity
-```
-
-Only the matched portion may return to the accounted lot quantity.
-
-The unmatched portion remains recorded as part of the real movement but stays outside the accounted lot total.
-
-The trace-level discrepancy is derived from the discrepancies of the movements that belong to that trace. It must not be derived as a simple signed sum of all Saída and Entrada quantities.
-
-## 7. Explicitly forbidden interpretations
+## 10. Explicitly forbidden interpretations
 
 An implementation must not:
 
-- reject an Entrada only because its quantity exceeds the currently explainable return quantity;
-- truncate the observed Entrada to the expected quantity;
-- increase the nominal/accounted lot total to absorb the excess;
-- invent a missing Saída to make the numbers reconcile;
-- show `0` in the Saldo column for ordinary movements;
-- use a later movement to cancel an earlier discrepancy;
-- move or carry a discrepancy from one repair trace into another merely because production changes;
-- attach repair movements directly to `bq_id` as one undifferentiated lifetime movement list;
-- implement Saldo as `Σ Saída - Σ Entrada` or another conventional running stock balance.
-
-## 8. Acceptance examples
-
-### Normal flow
-
-```text
-Saída 5
-Entrada 5
-```
-
-Result:
-
-- Entrada fully matched.
-- Movement Saldo is blank.
-- Trace discrepancy remains unchanged.
-
-### Exceptional Entrada
-
-```text
-Saída 5
-Entrada 7
-```
-
-Result:
-
-- 5 are matched.
-- 2 are recorded as unexplained.
-- Movement Saldo shows `-2`.
-- Those 2 do not increase the accounted lot quantity.
-- Trace discrepancy gains `-2`.
-
-### Several exceptional movements
-
-```text
-Movement A: -2
-Movement B: -1
-Movement C: -4
-Movement D: -1
-```
-
-Result:
-
-```text
-Trace discrepancy: -8
-```
-
-None of the four historical discrepancies is cancelled by another movement.
-
-### New production trace
-
-Previous repair trace:
-
-```text
-Trace discrepancy: -8
-```
-
-New repair trace:
-
-```text
-Trace discrepancy: 0
-```
-
-The previous `-8` remains historical evidence on the previous `bq_repair_trace_id`.
-
-A new production uses a different trace, but it does not rewrite, transfer or reset the previous trace; late returns remain on the previous trace.
-
-## 9. Editing boundary
-
-This rule defines movement creation, display and trace accumulation.
-
-Editing an existing movement must never be used as an automatic reconciliation mechanism. Any future rule governing whether an explicit human edit may alter the discrepancy originally produced by that same movement must be defined separately rather than inferred.
+- mutate the fixed Tool quantity because of repair movements;
+- reject an exceptional Saída merely because its quantity exceeds derived in-house quantity;
+- reject an Entrada merely because it contains extra observed quantity;
+- truncate a physical movement to the mathematically expected quantity;
+- invent a missing movement to reconcile quantities;
+- treat `entrada_sem_reparacao` as synonymous with discrepancy;
+- use a later ordinary movement to cancel an earlier Entrada discrepancy;
+- show `0` in Saldo for ordinary movements;
+- implement Saldo as a stock/running-balance column;
+- edit an old movement while later movements remain active after it;
+- move historical movements to a later production trace.
