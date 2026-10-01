@@ -44,7 +44,6 @@ Each applicable piece may carry:
 
 - OK/NOK;
 - observation;
-- MCaliper link where applicable.
 
 OK/NOK is recorded/evaluated information. It does not automatically authorize or stop production.
 
