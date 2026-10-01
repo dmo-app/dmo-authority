@@ -13,11 +13,22 @@ The list exposes enough information to distinguish candidates, including:
 - type;
 - reference;
 - lot;
+- quantity;
 - compatible machines/lines;
 - process;
 - state.
 
-The user may filter the list by those dimensions.
+`quantity` is Tool-owned data: the number of physical tools represented by that canonical Tool/lot. It is display/operational data, not identity.
+
+Example:
+
+```text
+BQ · lot 4 · quantity 120
+```
+
+For BQ Tools, Boquilhas consumes this quantity from Ferramentas when it needs the accounted lot total for its repair-movement projections.
+
+The user may filter the list by the applicable operational dimensions.
 
 For process, the current values are `NNPB` and `PS`.
 
