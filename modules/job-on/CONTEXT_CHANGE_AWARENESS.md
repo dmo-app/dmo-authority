@@ -120,7 +120,7 @@ existing bq_id
 tool_id X -> tool_id Y
 ```
 
-Required model:
+Required model **after the BQ context has already been operationally consumed**:
 
 ```text
 <old_bq_id> -> tool_id X
@@ -132,7 +132,7 @@ The same principle applies to `cm_id` and `mf_id`.
 Therefore:
 
 - the `jobon_id` may remain the same;
-- the replacement Tool receives a new production-context identity;
+- after operational use, the replacement Tool receives a new production-context identity;
 - the previous context remains referencable;
 - downstream records that already use the previous context remain historically truthful.
 
