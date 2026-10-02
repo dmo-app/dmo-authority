@@ -9,7 +9,7 @@ This note records the current DMO development locations. It is operational devel
 ## Implementation workspaces
 
 - `D:\AI Dev\DMO\Alpha` — current main Alpha implementation workspace, including backend/integration work.
-- `D:\AI Dev\codex\Alpha` — current frontend Alpha workspace being developed by Codex.
+- `D:\AI Dev\codex\Alpha frontend` — current frontend Alpha workspace being developed by Codex.
 
 The two implementation workspaces must not be treated as competing functional authorities. When implementation behavior requires product/domain clarification, consult the current `dmo-app/dmo-recovery` source.
 
