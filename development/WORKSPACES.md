@@ -5,7 +5,6 @@ This note records the current DMO development locations. It is operational devel
 ## Functional source
 
 - `dmo-app/dmo-recovery` — current functional source for DMO rules, identities, flows, and product decisions used by implementation work.
-- `dmo-app/dmo-authority` is legacy and must not be used as the current authority source.
 
 ## Implementation workspaces
 
